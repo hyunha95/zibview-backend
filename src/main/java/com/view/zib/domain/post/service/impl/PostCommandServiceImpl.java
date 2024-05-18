@@ -37,7 +37,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     @Override
     public Long save(PostRequest.Save request, Document kakaoMapResponse) {
         // user
-        UserEntity user = userService.getById(authService.getUserId());
+        UserEntity user = userService.getBySubject(authService.getSubject());
 
         // images
         List<Image> images = imageRepository.findByUuidIn(request.getImageUuids());
@@ -51,7 +51,7 @@ public class PostCommandServiceImpl implements PostCommandService {
         userAddressRepository.save(userAddress);
 
         // post
-        Post post = Post.from(authService.getUser(), request, images, address);
+        Post post = Post.from(user, request, images, address);
         postRepository.save(post);
 
         return post.getId();

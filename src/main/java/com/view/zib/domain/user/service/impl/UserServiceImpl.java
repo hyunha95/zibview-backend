@@ -5,7 +5,6 @@ import com.view.zib.domain.user.repository.UserRepository;
 import com.view.zib.domain.user.service.UserService;
 import com.view.zib.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,4 +24,14 @@ public class UserServiceImpl implements UserService {
     public Optional<UserEntity> findById(Long userId) {
         return userRepository.findById(userId);
     }
+
+    @Override
+    public UserEntity getBySubject(String subject) {
+        return this.findBySubject(subject).orElseThrow(() -> new ResourceNotFoundException("User", subject));
+    }
+
+    public Optional<UserEntity> findBySubject(String subject) {
+        return userRepository.findBySubject(subject);
+    }
+
 }

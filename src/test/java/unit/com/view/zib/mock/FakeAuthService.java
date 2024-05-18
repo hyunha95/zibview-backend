@@ -1,33 +1,24 @@
 package com.view.zib.mock;
 
 import com.view.zib.domain.auth.controller.request.LoginRequest;
-import com.view.zib.domain.auth.controller.request.RefreshRequest;
 import com.view.zib.domain.auth.controller.response.LoginResponse;
-import com.view.zib.domain.auth.controller.response.RefreshResponse;
 import com.view.zib.domain.auth.service.AuthService;
-import com.view.zib.domain.user.entity.UserEntity;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public class FakeAuthService implements AuthService {
+
     @Override
-    public LoginResponse googleLoginOrCreateUser(LoginRequest loginRequest) throws GeneralSecurityException, IOException {
+    public Jwt getJwt() {
         return null;
     }
 
     @Override
-    public RefreshResponse refresh(RefreshRequest refreshRequest) {
-        return null;
+    public String getSubject() {
+        return "";
     }
 
     @Override
-    public UserEntity getUser() {
+    public LoginResponse loginOrCreateUser(LoginRequest request) {
         return null;
-    }
-
-    @Override
-    public Long getUserId() {
-        return 1L;
     }
 }

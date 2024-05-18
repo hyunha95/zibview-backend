@@ -19,7 +19,6 @@ public class PostFacade {
      * 외부 API 호출을 디비 트랜잭션에서 제거하기 위해 Facade 패턴을 사용한다.
      */
     public PostResponse.Save save(PostRequest.Save request) {
-
         Document document = kakaoMapService.searchAddress(new KakaoMapRequest(request.getAddress().getAddress()));
         return new PostResponse.Save(postCommandService.save(request, document));
     }

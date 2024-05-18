@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface UserService {
     UserEntity getById(Long userId);
     Optional<UserEntity> findById(Long userId);
+
+    UserEntity getBySubject(String subject);
 }

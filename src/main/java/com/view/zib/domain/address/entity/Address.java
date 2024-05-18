@@ -3,6 +3,7 @@ package com.view.zib.domain.address.entity;
 import com.view.zib.domain.api.kako.domain.Document;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
+import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +18,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Address {
+public class Address extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private Long id;
 
     @Builder.Default
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private List<Image> images = new ArrayList<>();
 
     private String zonecode;           // 	13529	국가기초구역번호. 2015년 8월 1일부터 시행될 새 우편번호.

@@ -1,13 +1,15 @@
 package com.view.zib.domain.user.entity;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.view.zib.domain.user.domain.User;
+import com.view.zib.domain.auth.controller.request.LoginRequest;
 import com.view.zib.domain.user.enums.Role;
+import com.view.zib.global.common.ClockHolder;
+import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,7 +25,7 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @Entity
-public class UserEntity implements UserDetails {
+public class UserEntity extends BaseEntity implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -33,49 +35,35 @@ public class UserEntity implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
     private List<UserAddress> userAddresses = new ArrayList<>();
 
+    @Unique
+    private String subject;
     private String pictureUrl;
     private String email;
     private String password;
     private String name;
-    private String firstName;
-    private String lastName;
+    private String givenName;
+    private String familyName;
     private LocalDateTime lastLoginAt;
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean enabled;
     private String authorities;
-    private String refreshToken;
 
-    public static UserEntity from(User user) {
+    public static UserEntity from(LoginRequest request, ClockHolder clockHolder, String subject) {
         return UserEntity.builder()
-                .id(user.id())
-                .pictureUrl(user.pictureUrl())
-                .email(user.email())
-                .password(user.password())
-                .name(user.name())
-                .firstName(user.firstName())
-                .lastName(user.lastName())
-                .enabled(user.enabled())
-                .lastLoginAt(user.lastLoginAt())
-                .authorities(user.authorities())
-                .build();
-    }
-
-    public static UserEntity from(GoogleIdToken.Payload payload, LocalDateTime lastLoginAt, String refreshToken) {
-        return UserEntity.builder()
-                .email(payload.getEmail())
-                .name((String) payload.get("name"))
-                .firstName((String) payload.get("given_name"))
-                .lastName((String) payload.get("family_name"))
-                .pictureUrl((String) payload.get("picture"))
+                .subject(subject)
+                .email(request.email())
+                .name(request.name())
+                .givenName(request.givenName())
+                .familyName(request.familyName())
+                .pictureUrl(request.picture())
                 .enabled(true)
-                .lastLoginAt(lastLoginAt)
-                .refreshToken(refreshToken)
+                .lastLoginAt(clockHolder.now())
                 .authorities(Role.ROLE_USER.name())
                 .build();
     }
 
-    public void updateLastLoginAt(LocalDateTime now) {
-        this.lastLoginAt = now;
+    public void updateLastLoginAt(ClockHolder clockHolder) {
+        this.lastLoginAt = clockHolder.now();
     }
 
     // ===============
@@ -116,9 +104,5 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 }
