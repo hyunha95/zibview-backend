@@ -5,9 +5,9 @@ import com.view.zib.domain.building.enums.BuildingType;
 public record GetPostsRequest (
         String longitude,
         String latitude,
-        int maxDistance, // in meters
-        String address,
-        BuildingType buildingType,
-        String buildingName
+        int maxDistance // in meters
+//        String address,
+//        BuildingType buildingType,
+//        String buildingName
 ) {
 }

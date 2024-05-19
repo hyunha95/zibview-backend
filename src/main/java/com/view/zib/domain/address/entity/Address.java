@@ -73,7 +73,7 @@ public class Address extends BaseEntity {
     private String longitude; // X 좌표값, 경위도인 경우 경도(longitude)
     private String latitude;  // Y 좌표값, 경위도인 경우 위도(latitude)
 
-    public static Address from(PostRequest.Address addressRequest, List<Image> images, Document kakaoMapResponse) {
+    public static Address of(PostRequest.Address addressRequest, List<Image> images, Document kakaoMapResponse) {
         Address address = Address.builder()
                 .images(images)
                 .zonecode(addressRequest.getZonecode())
@@ -119,7 +119,7 @@ public class Address extends BaseEntity {
                 .latitude(kakaoMapResponse.getY())
                 .build();
 
-        images.forEach(image -> image.addAddress(address));
+        images.forEach(image -> image.addEntity(address));
 
         return address;
     }

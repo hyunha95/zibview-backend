@@ -69,7 +69,7 @@ class PostCommandServiceImplTest {
             .build();
 
         // when
-        postCommandService.save(postRequestSave, kakaoMapResponse);
+        postCommandService.save(postRequestSave, null);
 
         // then
         Image image = fakeImageRepository.findById(1L).get();

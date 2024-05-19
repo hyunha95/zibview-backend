@@ -20,6 +20,16 @@ public class FakePostRepository implements PostRepository {
     private List<Post> posts = new CopyOnWriteArrayList<>();
 
     @Override
+    public List<Post> findByAddressIdIn(List<Integer> addressIds) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Post> findByAddressAndAddressType(String address, String addressType) {
+        return Optional.empty();
+    }
+
+    @Override
     public void flush() {
 
     }

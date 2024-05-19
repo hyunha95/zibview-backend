@@ -13,6 +13,11 @@ public class FakeUserService implements UserService {
     private final FakeUserRepository userRepository;
 
     @Override
+    public UserEntity getBySubject(String subject) {
+        return null;
+    }
+
+    @Override
     public UserEntity getById(Long userId) {
         return findById(userId).orElseThrow(() -> new ResourceNotFoundException("Users", userId));
     }

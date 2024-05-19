@@ -51,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
 
     private Runnable createUser(LoginRequest request, LoginResponse response) {
         return () -> {
+            log.info("User {} created", request.email());
             UserEntity userEntity = UserEntity.from(request, clockHolder, this.getSubject());
             response.setNeedOnboarding(true);
             userRepository.save(userEntity);
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
 
     private Consumer<UserEntity> login() {
         return userEntity -> {
+            log.info("User {} logged in", userEntity.getEmail());
             userEntity.updateLastLoginAt(clockHolder);
         };
     }

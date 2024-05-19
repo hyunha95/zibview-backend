@@ -1,10 +1,11 @@
-package com.view.zib.domain.post.service;
+package com.view.zib.domain.post.facade;
 
 import com.view.zib.domain.api.kako.domain.Document;
 import com.view.zib.domain.api.kako.domain.KakaoMapRequest;
 import com.view.zib.domain.api.kako.service.KakaoMapService;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
+import com.view.zib.domain.post.service.PostCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

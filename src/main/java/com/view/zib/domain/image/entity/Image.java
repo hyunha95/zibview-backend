@@ -2,7 +2,7 @@ package com.view.zib.domain.image.entity;
 
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
-import com.view.zib.domain.post.entity.Post;
+import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -23,8 +23,8 @@ public class Image extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "sub_post_id")
+    private SubPost subPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
@@ -64,11 +64,11 @@ public class Image extends BaseEntity {
                 .build();
     }
 
-    public void addPost(Post post) {
-        this.post = post;
+    public void addEntity(SubPost subPost) {
+        this.subPost = subPost;
     }
 
-    public void addAddress(Address address) {
+    public void addEntity(Address address) {
         this.address = address;
     }
 }

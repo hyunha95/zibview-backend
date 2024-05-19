@@ -20,7 +20,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     public final String[] whiteList = new String []{
-            "/api/login", "/api/*/auth/logout", "/api/*/auth/register", "/api/*/refresh/*", "/api/public", "/error"
+            "/api/login", "/api/public", "/error", "/map", "/api/posts"
     };
 
     @Bean
@@ -38,9 +38,6 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
                 .build();
     }
-
-
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

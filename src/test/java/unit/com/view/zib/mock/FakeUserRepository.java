@@ -21,12 +21,12 @@ public class FakeUserRepository implements UserRepository {
     private static List<UserEntity> users = new CopyOnWriteArrayList<>();
 
     @Override
-    public Optional<UserEntity> findByEmail(String email) {
+    public Optional<UserEntity> findBySubject(String subject) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<UserEntity> findByRefreshToken(String refreshToken) {
+    public Optional<UserEntity> findByEmail(String email) {
         return Optional.empty();
     }
 

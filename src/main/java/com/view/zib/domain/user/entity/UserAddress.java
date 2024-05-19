@@ -33,7 +33,7 @@ public class UserAddress extends BaseEntity {
     private LocalDate residenceEndDate;
 
 
-    public static UserAddress from(UserEntity user, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
+    public static UserAddress of(UserEntity user, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
         UserAddress userAddress = UserAddress.builder()
                 .userEntity(user)
                 .address(address)
