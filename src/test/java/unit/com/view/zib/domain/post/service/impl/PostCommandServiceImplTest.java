@@ -4,7 +4,7 @@ import com.view.zib.domain.building.enums.BuildingType;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.service.PostCommandService;
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.mock.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class PostCommandServiceImplTest {
     void init() {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
 
-        fakeUserRepository.save(UserEntity.builder().build());
+        fakeUserRepository.save(User.builder().build());
 
         postCommandService = PostCommandServiceImpl.builder()
                 .userService(new FakeUserService(fakeUserRepository))

@@ -3,9 +3,10 @@ package com.view.zib.domain.auth.service.impl;
 import com.view.zib.domain.auth.controller.request.LoginRequest;
 import com.view.zib.domain.auth.controller.response.LoginResponse;
 import com.view.zib.domain.auth.service.AuthService;
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.repository.UserRepository;
 import com.view.zib.global.common.ClockHolder;
+import com.view.zib.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,11 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final ClockHolder clockHolder;
 
+    @Override
+    public User getCurrentUser() {
+        return userRepository.findByEmail(this.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User", this.getEmail()));
+    }
 
     /**
      * Get the JWT from the SecurityContextHolder
@@ -38,6 +44,11 @@ public class AuthServiceImpl implements AuthService {
         return getJwt().getSubject();
     }
 
+    @Override
+    public String getEmail() {
+        return (String) getJwt().getClaims().get("email");
+    }
+
     @Transactional
     @Override
     public LoginResponse loginOrCreateUser(LoginRequest request) {
@@ -52,16 +63,16 @@ public class AuthServiceImpl implements AuthService {
     private Runnable createUser(LoginRequest request, LoginResponse response) {
         return () -> {
             log.info("User {} created", request.email());
-            UserEntity userEntity = UserEntity.from(request, clockHolder, this.getSubject());
+            User user = User.of(request, clockHolder, this.getSubject());
             response.setNeedOnboarding(true);
-            userRepository.save(userEntity);
+            userRepository.save(user);
         };
     }
 
-    private Consumer<UserEntity> login() {
-        return userEntity -> {
-            log.info("User {} logged in", userEntity.getEmail());
-            userEntity.updateLastLoginAt(clockHolder);
+    private Consumer<User> login() {
+        return user -> {
+            log.info("User {} logged in", user.getEmail());
+            user.updateLastLoginAt(clockHolder);
         };
     }
 }

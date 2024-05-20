@@ -1,6 +1,6 @@
 package com.view.zib.mock;
 
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.service.UserService;
 import com.view.zib.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +13,17 @@ public class FakeUserService implements UserService {
     private final FakeUserRepository userRepository;
 
     @Override
-    public UserEntity getBySubject(String subject) {
+    public User getBySubject(String subject) {
         return null;
     }
 
     @Override
-    public UserEntity getById(Long userId) {
+    public User getById(Long userId) {
         return findById(userId).orElseThrow(() -> new ResourceNotFoundException("Users", userId));
     }
 
     @Override
-    public Optional<UserEntity> findById(Long userId) {
+    public Optional<User> findById(Long userId) {
         return userRepository.findById(userId);
     }
 }

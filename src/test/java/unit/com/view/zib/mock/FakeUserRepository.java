@@ -1,6 +1,6 @@
 package com.view.zib.mock;
 
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.repository.UserRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -18,15 +18,15 @@ import java.util.function.Function;
 public class FakeUserRepository implements UserRepository {
 
     private AtomicLong atomicLong = new AtomicLong();
-    private static List<UserEntity> users = new CopyOnWriteArrayList<>();
+    private static List<User> users = new CopyOnWriteArrayList<>();
 
     @Override
-    public Optional<UserEntity> findBySubject(String subject) {
+    public Optional<User> findBySubject(String subject) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<UserEntity> findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return Optional.empty();
     }
 
@@ -36,17 +36,17 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public <S extends UserEntity> S saveAndFlush(S entity) {
+    public <S extends User> S saveAndFlush(S entity) {
         return null;
     }
 
     @Override
-    public <S extends UserEntity> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends User> List<S> saveAllAndFlush(Iterable<S> entities) {
         return List.of();
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<UserEntity> entities) {
+    public void deleteAllInBatch(Iterable<User> entities) {
 
     }
 
@@ -61,52 +61,52 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public UserEntity getOne(Long aLong) {
+    public User getOne(Long aLong) {
         return null;
     }
 
     @Override
-    public UserEntity getById(Long aLong) {
+    public User getById(Long aLong) {
         return null;
     }
 
     @Override
-    public UserEntity getReferenceById(Long aLong) {
+    public User getReferenceById(Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends UserEntity> List<S> findAll(Example<S> example) {
+    public <S extends User> List<S> findAll(Example<S> example) {
         return List.of();
     }
 
     @Override
-    public <S extends UserEntity> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends User> List<S> findAll(Example<S> example, Sort sort) {
         return List.of();
     }
 
     @Override
-    public <S extends UserEntity> List<S> saveAll(Iterable<S> entities) {
+    public <S extends User> List<S> saveAll(Iterable<S> entities) {
         return List.of();
     }
 
     @Override
-    public List<UserEntity> findAll() {
+    public List<User> findAll() {
         return List.of();
     }
 
     @Override
-    public List<UserEntity> findAllById(Iterable<Long> longs) {
+    public List<User> findAllById(Iterable<Long> longs) {
         return List.of();
     }
 
     @Override
-    public <S extends UserEntity> S save(S entity) {
+    public <S extends User> S save(S entity) {
         return null;
     }
 
     @Override
-    public Optional<UserEntity> findById(Long aLong) {
+    public Optional<User> findById(Long aLong) {
         return users.stream().filter(user -> Objects.equals(user.getId(), aLong)).findAny();
     }
 
@@ -126,7 +126,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public void delete(UserEntity entity) {
+    public void delete(User entity) {
 
     }
 
@@ -136,7 +136,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public void deleteAll(Iterable<? extends UserEntity> entities) {
+    public void deleteAll(Iterable<? extends User> entities) {
 
     }
 
@@ -146,37 +146,37 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findAll(Sort sort) {
+    public List<User> findAll(Sort sort) {
         return List.of();
     }
 
     @Override
-    public Page<UserEntity> findAll(Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends UserEntity> Optional<S> findOne(Example<S> example) {
+    public <S extends User> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends UserEntity> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends User> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends UserEntity> long count(Example<S> example) {
+    public <S extends User> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends UserEntity> boolean exists(Example<S> example) {
+    public <S extends User> boolean exists(Example<S> example) {
         return false;
     }
 
     @Override
-    public <S extends UserEntity, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends User, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 }

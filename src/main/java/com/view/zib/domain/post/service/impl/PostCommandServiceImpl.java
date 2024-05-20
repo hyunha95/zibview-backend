@@ -13,7 +13,7 @@ import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.SubPostRepository;
 import com.view.zib.domain.post.service.PostCommandService;
 import com.view.zib.domain.user.entity.UserAddress;
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.entity.UserPost;
 import com.view.zib.domain.user.repository.UserAddressRepository;
 import com.view.zib.domain.user.repository.UserPostRepository;
@@ -43,7 +43,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     @Override
     public Long save(PostRequest.Save request, Document kakaoMapResponse) {
         // user
-        UserEntity user = userService.getBySubject(authService.getSubject());
+        User user = userService.getBySubject(authService.getSubject());
 
         // images
         List<Image> images = imageRepository.findByUuidIn(request.getImageUuids());

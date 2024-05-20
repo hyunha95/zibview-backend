@@ -2,7 +2,7 @@ package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class SubPost extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -39,10 +39,10 @@ public class SubPost extends BaseEntity {
     private String title;
     private String description;
 
-    public static SubPost of(UserEntity user, PostRequest.Save postRequest, List<Image> images, Post post) {
+    public static SubPost of(User user, PostRequest.Save postRequest, List<Image> images, Post post) {
         SubPost subPost = SubPost.builder()
                 .post(post)
-                .userEntity(user)
+                .user(user)
                 .images(images)
                 .title(postRequest.getTitle())
                 .description(postRequest.getDescription())

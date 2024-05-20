@@ -23,7 +23,7 @@ public class UserAddress extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
@@ -33,9 +33,9 @@ public class UserAddress extends BaseEntity {
     private LocalDate residenceEndDate;
 
 
-    public static UserAddress of(UserEntity user, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
+    public static UserAddress of(User user, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
         UserAddress userAddress = UserAddress.builder()
-                .userEntity(user)
+                .user(user)
                 .address(address)
                 .residenceStartDate(residencyStartDate)
                 .residenceEndDate(residencyEndDate)

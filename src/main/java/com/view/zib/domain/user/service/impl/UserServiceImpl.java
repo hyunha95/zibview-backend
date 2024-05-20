@@ -1,6 +1,6 @@
 package com.view.zib.domain.user.service.impl;
 
-import com.view.zib.domain.user.entity.UserEntity;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.repository.UserRepository;
 import com.view.zib.domain.user.service.UserService;
 import com.view.zib.global.exception.ResourceNotFoundException;
@@ -16,22 +16,23 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserEntity getById(Long userId) {
+    public User getById(Long userId) {
         return findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", userId));
     }
 
     @Override
-    public Optional<UserEntity> findById(Long userId) {
+    public Optional<User> findById(Long userId) {
         return userRepository.findById(userId);
     }
 
     @Override
-    public UserEntity getBySubject(String subject) {
+    public User getBySubject(String subject) {
         return this.findBySubject(subject).orElseThrow(() -> new ResourceNotFoundException("User", subject));
     }
 
-    public Optional<UserEntity> findBySubject(String subject) {
+    public Optional<User> findBySubject(String subject) {
         return userRepository.findBySubject(subject);
     }
+
 
 }

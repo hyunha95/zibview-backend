@@ -1,16 +1,15 @@
 package com.view.zib.domain.user.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.view.zib.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-@RequestMapping("/api/v1")
+@RequiredArgsConstructor
+@RequestMapping("/api/users")
 @RestController
 public class UserController {
 
-    @GetMapping("/api/v1/users")
-    public String getUsers() {
-        return "users";
-    }
+    private final UserService userService;
+
 }

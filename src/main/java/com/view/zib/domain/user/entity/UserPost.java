@@ -21,13 +21,13 @@ public class UserPost {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public static UserPost of(UserEntity user, Post post) {
+    public static UserPost of(User user, Post post) {
         return UserPost.builder()
                 .user(user)
                 .post(post)

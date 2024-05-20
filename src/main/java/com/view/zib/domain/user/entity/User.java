@@ -1,6 +1,7 @@
 package com.view.zib.domain.user.entity;
 
 import com.view.zib.domain.auth.controller.request.LoginRequest;
+import com.view.zib.domain.location.entity.Location;
 import com.view.zib.domain.user.enums.Role;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.jpa.BaseEntity;
@@ -25,15 +26,18 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @Entity
-public class UserEntity extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<UserAddress> userAddresses = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private Location location;
 
     @Unique
     private String subject;
@@ -48,8 +52,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private boolean enabled;
     private String authorities;
 
-    public static UserEntity from(LoginRequest request, ClockHolder clockHolder, String subject) {
-        return UserEntity.builder()
+    public static User of(LoginRequest request, ClockHolder clockHolder, String subject) {
+        return User.builder()
                 .subject(subject)
                 .email(request.email())
                 .name(request.name())
@@ -64,6 +68,13 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     public void updateLastLoginAt(ClockHolder clockHolder) {
         this.lastLoginAt = clockHolder.now();
+    }
+
+    // ===============
+    // 연관 관계 세팅
+    // ===============
+    public void addEntity(Location location) {
+        this.location = location;
     }
 
     // ===============
