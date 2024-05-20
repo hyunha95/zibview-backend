@@ -30,6 +30,8 @@ public class Post extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Address address;
 
+    private double rating;
+
     public static Post from(Address address) {
         return Post.builder()
                 .address(address)

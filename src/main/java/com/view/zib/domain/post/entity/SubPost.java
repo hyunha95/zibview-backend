@@ -39,6 +39,11 @@ public class SubPost extends BaseEntity {
     private String title;
     private String description;
 
+    private double rating;
+
+    @Column(length = 1, columnDefinition = "tinyint(1)")
+    private boolean deleted;
+
     public static SubPost of(User user, PostRequest.Save postRequest, List<Image> images, Post post) {
         SubPost subPost = SubPost.builder()
                 .post(post)
