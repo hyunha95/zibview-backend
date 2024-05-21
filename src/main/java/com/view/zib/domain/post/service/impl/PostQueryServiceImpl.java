@@ -7,6 +7,7 @@ import com.view.zib.domain.post.controller.response.GetPostsResponse;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.service.PostQueryService;
+import com.view.zib.domain.storage.service.StorageService;
 import com.view.zib.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     private final JdbcClient jdbcClient;
     private final PostRepository postRepository;
+    private final StorageService storageService;
 
     /**
      * 입력 받은 좌표를 기준으로 가장 가까운 주소를 가진 게시글을 조회한다.
@@ -49,7 +51,7 @@ public class PostQueryServiceImpl implements PostQueryService {
         List<Post> posts = postRepository.findByAddressIdIn(addressIds);
 
         return posts.stream()
-                .map(GetPostsResponse::new)
+                .map(post -> GetPostsResponse.from(post, storageService))
                 .toList();
     }
 

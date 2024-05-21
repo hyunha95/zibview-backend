@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +32,12 @@ public class Rent extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RentType rentType;
 
-    private double deposit;
-    private double monthlyRent;
+    private double deposit;        // 보증금
+    private LocalDateTime depositUpdatedAt;
+    private double monthlyRent;    // 월세
+    private LocalDateTime monthlyRentUpdatedAt;
+    private double maintenanceFee; // 관리비
+    private LocalDateTime maintenanceFeeUpdatedAt;
+    private double annualRent;     // 전세
+    private LocalDateTime annualRentUpdatedAt;
 }

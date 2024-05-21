@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,7 +38,6 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Location location;
 
-    @Unique
     private String subject;
     private String pictureUrl;
     private String email;

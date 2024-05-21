@@ -1,23 +1,28 @@
 package com.view.zib.domain.storage.service;
 
+import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.utils.NumberUtils;
 import io.micrometer.common.util.StringUtils;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
-@Builder
-@RequiredArgsConstructor
 @Service
 public class StorageServiceImpl implements StorageService {
+    private final String zibViewUrl;
 
     private final NumberUtils numberUtils;
 
+    @Builder
+    public StorageServiceImpl(@Value("${api.zibview.url}") String zibViewUrl, NumberUtils numberUtils) {
+        this.zibViewUrl = zibViewUrl;
+        this.numberUtils = numberUtils;
+    }
 
     @Override
     public Storage store(MultipartFile file, ClockHolder clockHolder) {
@@ -58,5 +63,15 @@ public class StorageServiceImpl implements StorageService {
             return "";
         }
         return getExtension(multipartFile.getOriginalFilename());
+    }
+
+    /**
+     * 이미지 URL 생성
+     * @param image
+     * @return
+     */
+    @Override
+    public String generateImageUrl(Image image) {
+        return String.format("%s/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
     }
 }
