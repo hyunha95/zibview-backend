@@ -1,6 +1,7 @@
 package com.view.zib.domain.user.entity;
 
 import com.view.zib.domain.address.entity.Address;
+import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,16 +30,16 @@ public class UserAddress extends BaseEntity {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    private LocalDate residenceStartDate;
-    private LocalDate residenceEndDate;
+    private LocalDate contractStartDate;
+    private LocalDate contractEndDate;
 
 
-    public static UserAddress of(User user, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
+    public static UserAddress of(User user, Address address, PostRequest.ContractInfo contractInfo) {
         UserAddress userAddress = UserAddress.builder()
                 .user(user)
                 .address(address)
-                .residenceStartDate(residencyStartDate)
-                .residenceEndDate(residencyEndDate)
+                .contractStartDate(contractInfo.getContractStartDate())
+                .contractEndDate(contractInfo.getContractEndDate())
                 .build();
 
         // 연관관계 세팅

@@ -39,26 +39,29 @@ public class SubPost extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
     private Rent rent;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
+    private ContractInfo contractInfo;
+
     private String title;
     private String description;
-
     private double rating;
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean deleted;
 
-    public static SubPost of(User user, PostRequest.Save postRequest, List<Image> images, Post post) {
+    public static SubPost of(User user, PostRequest.Save request, List<Image> images, Post post, ContractInfo contractInfo) {
         SubPost subPost = SubPost.builder()
                 .post(post)
                 .user(user)
                 .images(images)
-                .title(postRequest.getTitle())
-                .description(postRequest.getDescription())
+                .contractInfo(contractInfo)
+                .title(request.getTitle())
+                .description(request.getDescription())
                 .build();
 
         images.forEach(image -> image.addEntity(subPost));
         post.getSubPosts().add(subPost);
-
+        contractInfo.addEntity(subPost);
         return subPost;
     }
 }

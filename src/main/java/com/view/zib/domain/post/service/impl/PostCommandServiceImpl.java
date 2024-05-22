@@ -7,8 +7,10 @@ import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
 import com.view.zib.domain.post.controller.request.PostRequest;
+import com.view.zib.domain.post.entity.ContractInfo;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
+import com.view.zib.domain.post.repository.ContractInfoRepository;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.SubPostRepository;
 import com.view.zib.domain.post.service.PostCommandService;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 @Transactional
 @Builder
@@ -39,9 +42,12 @@ public class PostCommandServiceImpl implements PostCommandService {
     private final AddressRepository addressRepository;
     private final UserPostRepository userPostRepository;
     private final SubPostRepository subPostRepository;
+    private final ContractInfoRepository contractInfoRepository;
 
     @Override
     public Long save(PostRequest.Save request, Document kakaoMapResponse) {
+        // TODO VALIDATE IMAGE
+
         // user
         User user = userService.getBySubject(authService.getSubject());
 
@@ -53,25 +59,37 @@ public class PostCommandServiceImpl implements PostCommandService {
         addressRepository.save(address);
 
         // userAddress
-        UserAddress userAddress = UserAddress.of(user, address, request.getResidencyStartDate(), request.getResidencyEndDate());
+        UserAddress userAddress = UserAddress.of(user, address, request.getContractInfo());
         userAddressRepository.save(userAddress);
 
         // post
-        Post post = postRepository.findByAddressAndAddressType(address.getAddress(), address.getAddressType())
-                        .orElseGet(() -> {
-                            Post newPost = Post.from(address);
-                            postRepository.save(newPost);
-                            return newPost;
-                        });
+        Post post = postRepository
+                .findByAddressAndAddressType(address.getAddress(), address.getAddressType())
+                .orElseGet(newPost(address));
+
+        // contractInfo
+        ContractInfo contractInfo = ContractInfo.from(request.getContractInfo());
+        contractInfoRepository.save(contractInfo);
 
         // subPost
-        SubPost subPost = SubPost.of(user, request, images, post);
+        SubPost subPost = SubPost.of(user, request, images, post, contractInfo);
         subPostRepository.save(subPost);
 
         // userPost
         UserPost userPost = UserPost.of(user, post);
         userPostRepository.save(userPost);
 
+        post.updateBuildingType(request.getBuildingType());
+        post.updateImage(Image.getLastestRepresentativeImage(images));
+
         return post.getId();
+    }
+
+    private Supplier<Post> newPost(Address address) {
+        return () -> {
+            Post newPost = Post.from(address);
+            postRepository.save(newPost);
+            return newPost;
+        };
     }
 }

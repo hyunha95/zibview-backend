@@ -15,8 +15,7 @@ public class PostRequest {
     private List<String> imageUuids;
     private BuildingType buildingType;
     private Address address;
-    private LocalDate residencyStartDate;
-    private LocalDate residencyEndDate;
+    private ContractInfo contractInfo;
 
 
     @NoArgsConstructor
@@ -24,8 +23,8 @@ public class PostRequest {
     public static class Save extends PostRequest {
 
         @Builder
-        public Save(String title, String description, List<String> imageUuids, BuildingType buildingType, Address address, LocalDate residencyStartDate, LocalDate residencyEndDate) {
-            super(title, description, imageUuids, buildingType, address, residencyStartDate, residencyEndDate);
+        public Save(String title, String description, List<String> imageUuids, BuildingType buildingType, Address address, ContractInfo contractInfo) {
+            super(title, description, imageUuids, buildingType, address, contractInfo);
         }
     }
 
@@ -73,5 +72,16 @@ public class PostRequest {
         private String userLanguageType; // K
         private String userSelectedType; // R
         private String zonecode; // 0677
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class ContractInfo {
+        private LocalDate contractStartDate;
+        private LocalDate contractEndDate;
+        private double deposit;        // 보증금
+        private double monthlyFee;        // 월세
+        private double maintenanceFee;     // 관리비
     }
 }

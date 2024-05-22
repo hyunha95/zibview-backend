@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -62,6 +64,13 @@ public class Image extends BaseEntity {
                 .latitudeGPS(image.getLatitudeGPS())
                 .longitudeGPS(image.getLongitudeGPS())
                 .build();
+    }
+
+    public static Image getLastestRepresentativeImage(List<Image> images) {
+        return images.stream()
+                .filter(Image::isRepresentative)
+                .findFirst()
+                .orElse(null); // 정상적인 경우에 NULL VALUE 허용안됨 -> NOTIFY TO ADMIN
     }
 
     public void addEntity(SubPost subPost) {

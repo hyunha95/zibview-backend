@@ -1,6 +1,7 @@
 package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.address.entity.Address;
+import com.view.zib.domain.building.enums.BuildingType;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -41,6 +42,8 @@ public class Post extends BaseEntity {
     private int likeCount;
     private int commentCount;
 
+    private BuildingType buildingType;
+
     public static Post from(Address address) {
         return Post.builder()
                 .address(address)
@@ -54,5 +57,13 @@ public class Post extends BaseEntity {
     public SubPost getLastestSubPost() {
         subPosts.sort(Comparator.comparing(SubPost::getCreatedAt));
         return subPosts.getLast();
+    }
+
+    public void updateBuildingType(BuildingType buildingType) {
+        this.buildingType = buildingType;
+    }
+
+    public void updateImage(Image lastRepresentativeImage) {
+        this.image = lastRepresentativeImage;
     }
 }

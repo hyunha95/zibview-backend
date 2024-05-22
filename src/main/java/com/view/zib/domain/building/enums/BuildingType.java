@@ -2,5 +2,5 @@ package com.view.zib.domain.building.enums;
 
 public enum BuildingType {
 
-    APARTMENT, OFFICETEL
+    APARTMENT, OFFICETEL, HOUSE, VILLA
 }
