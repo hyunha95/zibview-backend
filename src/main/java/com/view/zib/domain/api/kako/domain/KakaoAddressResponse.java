@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class KakaoMapResponse {
+public class KakaoAddressResponse {
     private Meta meta;
     private List<Document> documents;
 

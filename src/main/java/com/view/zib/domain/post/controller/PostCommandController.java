@@ -3,6 +3,7 @@ package com.view.zib.domain.post.controller;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
 import com.view.zib.domain.post.facade.PostFacade;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class PostCommandController {
     private final PostFacade postFacade;
 
     @PostMapping
-    public PostResponse.Save save(@RequestBody PostRequest.Save request) {
+    public PostResponse.Save save(@RequestBody @Valid PostRequest.Save request) {
         return postFacade.save(request);
     }
 }

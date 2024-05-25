@@ -1,6 +1,10 @@
 package com.view.zib.domain.post.controller.request;
 
 import com.view.zib.domain.building.enums.BuildingType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,11 +14,22 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class PostRequest {
+
+    @NotBlank
+    @Size(max = 200)
     private String title;
+
+    @NotBlank @Size(max = 1000)
     private String description;
     private List<String> imageUuids;
+
+    @NotNull
     private BuildingType buildingType;
+
+    @Valid
     private Address address;
+
+    @Valid
     private ContractInfo contractInfo;
 
 
@@ -32,6 +47,8 @@ public class PostRequest {
     @AllArgsConstructor
     @Data
     public static class Address {
+
+        @NotNull
         private String address; // 서울 서초구 강남대로 27
         private String addressEnglish; // 27, Gangnam-daero, Seocho-gu, Seoul, Korea
         private String addressType; // R
@@ -78,7 +95,11 @@ public class PostRequest {
     @AllArgsConstructor
     @Data
     public static class ContractInfo {
+
+        @NotNull
         private LocalDate contractStartDate;
+
+        @NotNull
         private LocalDate contractEndDate;
         private double deposit;        // 보증금
         private double monthlyFee;        // 월세
