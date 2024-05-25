@@ -64,8 +64,8 @@ class PostCommandServiceImplTest {
                                                 "서울 서초구 강남대로 27", "27, Gangnam-daero, Seocho-gu, Seoul, Korea", "강남대로",
                                                 "2102001", "Gangnam-daero", "서울", "Seoul", "서초구", "11650", "Seocho-gu", "K",
                                                 "R", "0677"))
-            .residencyStartDate(LocalDate.parse("2022-01-01"))
-            .residencyEndDate(LocalDate.parse("2022-12-31"))
+//            .residencyStartDate(LocalDate.parse("2022-01-01"))
+//            .residencyEndDate(LocalDate.parse("2022-12-31"))
             .build();
 
         // when

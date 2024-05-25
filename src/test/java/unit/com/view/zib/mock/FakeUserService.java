@@ -2,7 +2,7 @@ package com.view.zib.mock;
 
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.service.UserService;
-import com.view.zib.global.exception.ResourceNotFoundException;
+import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ public class FakeUserService implements UserService {
     private final FakeUserRepository userRepository;
 
     @Override
-    public User getBySubject(String subject) {
+    public User getByEmail(String email) {
         return null;
     }
 

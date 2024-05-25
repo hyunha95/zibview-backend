@@ -20,7 +20,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     public final String[] whiteList = new String []{
-            "/api/login", "/api/public", "/error", "/map", "/api/posts", "/actuator/**"
+            "/api/login", "/api/public", "/error", "/map", "/api/posts", "/actuator/**", "/test"
     };
 
     @Bean

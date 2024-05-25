@@ -8,7 +8,7 @@ import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.service.PostQueryService;
 import com.view.zib.domain.storage.service.StorageService;
-import com.view.zib.global.exception.ResourceNotFoundException;
+import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.simple.JdbcClient;

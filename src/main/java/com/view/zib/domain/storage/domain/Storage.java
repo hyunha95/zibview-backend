@@ -3,6 +3,7 @@ package com.view.zib.domain.storage.domain;
 import lombok.Builder;
 
 public record Storage(
+        String uuid,
         String mimeType,
         long fileSize,
         String originalFilename,

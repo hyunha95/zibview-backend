@@ -13,14 +13,15 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class StorageServiceImplTest {
+class LocalStorageServiceImplTest {
 
     private StorageService storageService;
+    private NumberUtils numberUtils = new NumberUtils();
 
     @BeforeEach
     void init() {
-        storageService = StorageServiceImpl.builder()
-                .numberUtils(new NumberUtils())
+        storageService = LocalStorageServiceImpl.builder()
+                .numberUtils(numberUtils)
                 .build();
     }
 
@@ -31,7 +32,7 @@ class StorageServiceImplTest {
         MultipartFile multipartFile = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test".getBytes());
 
         // When
-        Storage storage = storageService.store(multipartFile, clockHolder);
+        Storage storage = storageService.store(multipartFile, "", clockHolder);
 
         // Then
         assertThat(storage.originalFilename()).isEqualTo("test.jpg");
@@ -45,7 +46,7 @@ class StorageServiceImplTest {
         TestClockHolder testClockHolder = new TestClockHolder(LocalDateTime.of(2000, 2, 2, 0, 0, 0));
 
         // When
-        String path = storageService.createPath(testClockHolder);
+        String path = storageService.createPath(testClockHolder, numberUtils);
 
         // Then
         assertThat(path).isEqualTo("20000202");

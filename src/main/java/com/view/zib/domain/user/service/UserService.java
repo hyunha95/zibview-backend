@@ -9,7 +9,5 @@ public interface UserService {
 
     Optional<User> findById(Long userId);
 
-    User getBySubject(String subject);
-
-
+    User getByEmail(String email);
 }

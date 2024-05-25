@@ -4,6 +4,7 @@ import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.storage.domain.Storage;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 @AllArgsConstructor
@@ -23,6 +25,10 @@ public class Image extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_post_id")
@@ -51,8 +57,9 @@ public class Image extends BaseEntity {
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean representative;
 
-    public static Image from(SaveImageRequest.Image image, Storage storage) {
+    public static Image from(SaveImageRequest.Image image, Storage storage, User currentUser) {
         return Image.builder()
+                .user(currentUser)
                 .uuid(image.getUuid())
                 .mimeType(storage.mimeType())
                 .fileSize(storage.fileSize())
@@ -66,11 +73,10 @@ public class Image extends BaseEntity {
                 .build();
     }
 
-    public static Image getLastestRepresentativeImage(List<Image> images) {
+    public static Optional<Image> getLatestRepresentativeImage(List<Image> images) {
         return images.stream()
                 .filter(Image::isRepresentative)
-                .findFirst()
-                .orElse(null); // 정상적인 경우에 NULL VALUE 허용안됨 -> NOTIFY TO ADMIN
+                .findFirst();
     }
 
     public void addEntity(SubPost subPost) {

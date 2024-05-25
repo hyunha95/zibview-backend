@@ -6,7 +6,7 @@ import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.domain.user.repository.UserRepository;
 import com.view.zib.global.common.ClockHolder;
-import com.view.zib.global.exception.ResourceNotFoundException;
+import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;

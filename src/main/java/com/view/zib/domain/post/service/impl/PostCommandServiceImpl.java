@@ -22,15 +22,13 @@ import com.view.zib.domain.user.repository.UserPostRepository;
 import com.view.zib.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 @Transactional
-@Builder
-@RequiredArgsConstructor
+
 @Service
 public class PostCommandServiceImpl implements PostCommandService {
 
@@ -44,12 +42,23 @@ public class PostCommandServiceImpl implements PostCommandService {
     private final SubPostRepository subPostRepository;
     private final ContractInfoRepository contractInfoRepository;
 
+    @Builder
+    public PostCommandServiceImpl(UserService userService, PostRepository postRepository, ImageRepository imageRepository, UserAddressRepository userAddressRepository, AuthService authService, AddressRepository addressRepository, UserPostRepository userPostRepository, SubPostRepository subPostRepository, ContractInfoRepository contractInfoRepository) {
+        this.userService = userService;
+        this.postRepository = postRepository;
+        this.imageRepository = imageRepository;
+        this.userAddressRepository = userAddressRepository;
+        this.authService = authService;
+        this.addressRepository = addressRepository;
+        this.userPostRepository = userPostRepository;
+        this.subPostRepository = subPostRepository;
+        this.contractInfoRepository = contractInfoRepository;
+    }
+
     @Override
     public Long save(PostRequest.Save request, Document kakaoMapResponse) {
-        // TODO VALIDATE IMAGE
-
         // user
-        User user = userService.getBySubject(authService.getSubject());
+        User user = userService.getByEmail(authService.getEmail());
 
         // images
         List<Image> images = imageRepository.findByUuidIn(request.getImageUuids());
@@ -80,7 +89,10 @@ public class PostCommandServiceImpl implements PostCommandService {
         userPostRepository.save(userPost);
 
         post.updateBuildingType(request.getBuildingType());
-        post.updateImage(Image.getLastestRepresentativeImage(images));
+        post.updateImage(
+                Image.getLatestRepresentativeImage(images)
+                        .orElse(imageRepository.findLatestRepresentativeImage(post.getId()))
+        );
 
         return post.getId();
     }
