@@ -95,12 +95,19 @@ public class PostRequest {
     @AllArgsConstructor
     @Data
     public static class ContractInfo {
-
         @NotNull
         private LocalDate contractStartDate;
 
         @NotNull
         private LocalDate contractEndDate;
+        private ContractPrice contractPrice;
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class ContractPrice {
         private double deposit;        // 보증금
         private double monthlyFee;        // 월세
         private double maintenanceFee;     // 관리비

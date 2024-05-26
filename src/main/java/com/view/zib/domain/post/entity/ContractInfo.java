@@ -32,9 +32,9 @@ public class ContractInfo extends BaseEntity {
 
     public static ContractInfo from(PostRequest.ContractInfo contractInfo) {
         return com.view.zib.domain.post.entity.ContractInfo.builder()
-                .deposit(BigDecimal.valueOf(contractInfo.getDeposit()))
-                .monthlyFee(BigDecimal.valueOf(contractInfo.getMonthlyFee()))
-                .maintenanceFee(BigDecimal.valueOf(contractInfo.getMaintenanceFee()))
+                .deposit(BigDecimal.valueOf(contractInfo.getContractPrice().getDeposit()))
+                .monthlyFee(BigDecimal.valueOf(contractInfo.getContractPrice().getMonthlyFee()))
+                .maintenanceFee(BigDecimal.valueOf(contractInfo.getContractPrice().getMaintenanceFee()))
                 .build();
     }
 

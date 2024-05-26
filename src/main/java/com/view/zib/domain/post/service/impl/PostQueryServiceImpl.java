@@ -4,6 +4,7 @@ import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.post.controller.request.GetPostsRequest;
 import com.view.zib.domain.post.controller.response.GetPostResponse;
 import com.view.zib.domain.post.controller.response.GetPostsResponse;
+import com.view.zib.domain.address.domain.Coordinate;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.service.PostQueryService;
@@ -24,6 +25,10 @@ public class PostQueryServiceImpl implements PostQueryService {
     private final JdbcClient jdbcClient;
     private final PostRepository postRepository;
     private final StorageService storageService;
+
+    public Post getById(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", id));
+    }
 
     /**
      * 입력 받은 좌표를 기준으로 가장 가까운 주소를 가진 게시글을 조회한다.
@@ -57,10 +62,19 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     @Override
     public GetPostResponse getPostDetails(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", postId));
+        Post post = getById(postId);
         post.getSubPosts();
         Address address = post.getAddress();
 
         return null;
+    }
+
+    @Override
+    public Coordinate getCoordinateByPostId(Long postId) {
+        Post post = getById(postId);
+        return Coordinate.builder()
+                .latitude(post.getAddress().getLatitude())
+                .longitude(post.getAddress().getLongitude())
+                .build();
     }
 }

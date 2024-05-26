@@ -8,11 +8,13 @@ import lombok.ToString;
 import java.util.List;
 
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class KakaoAddressResponse {
     private Meta meta;
     private List<Document> documents;
 
+    public KakaoAddressResponse() {
+        this(null, List.of(new Document()));
+    }
 }

@@ -26,7 +26,7 @@ public class PostFacade {
     public PostResponse.Save save(PostRequest.Save request) {
         log.info("kakao Address API Call with {}", request.getAddress().getAddress());
         KakaoAddressResponse kakaoAddressResponse = kakaoAddressClient.searchAddress(request.getAddress().getAddress(), "", 1, 10)
-                .orElse(new KakaoAddressResponse(null, List.of(new Document())));
+                .orElse(new KakaoAddressResponse());
 
         Long postId = postCommandService.save(request, kakaoAddressResponse.getDocuments().getFirst());
         return new PostResponse.Save(postId);

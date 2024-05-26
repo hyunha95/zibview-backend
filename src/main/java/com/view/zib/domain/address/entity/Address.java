@@ -75,8 +75,8 @@ public class Address extends BaseEntity {
     private String postcode2;          // 	-	구 우편번호 뒤 3자리 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
     private String postcodeSeq;        // 	-	구 우편번호 일련번호 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
 
-    private String longitude; // X 좌표값, 경위도인 경우 경도(longitude)
-    private String latitude;  // Y 좌표값, 경위도인 경우 위도(latitude)
+    private double longitude; // X 좌표값, 경위도인 경우 경도(longitude)
+    private double latitude;  // Y 좌표값, 경위도인 경우 위도(latitude)
 
     public static Address of(PostRequest.Address addressRequest, List<Image> images, Document kakaoMapResponse) {
         Address address = Address.builder()
@@ -127,5 +127,9 @@ public class Address extends BaseEntity {
         images.forEach(image -> image.addEntity(address));
 
         return address;
+    }
+
+    public void addEntity(Post post) {
+        this.post = post;
     }
 }

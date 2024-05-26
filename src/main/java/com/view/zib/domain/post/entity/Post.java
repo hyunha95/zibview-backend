@@ -45,9 +45,13 @@ public class Post extends BaseEntity {
     private BuildingType buildingType;
 
     public static Post from(Address address) {
-        return Post.builder()
+        Post post = Post.builder()
                 .address(address)
                 .build();
+
+        address.addEntity(post);
+
+        return post;
     }
 
     /**

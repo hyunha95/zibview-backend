@@ -24,8 +24,8 @@ public class Document {
         @JsonProperty("address_type")
         private String addressType;
 
-        private String x; // X 좌표값, 경위도인 경우 경도(longitude)
-        private String y; // Y 좌표값, 경위도인 경우 위도(latitude)
+        private double x; // X 좌표값, 경위도인 경우 경도(longitude)
+        private double y; // Y 좌표값, 경위도인 경우 위도(latitude)
 
 
 }
