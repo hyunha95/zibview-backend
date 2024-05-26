@@ -34,7 +34,6 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
     implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -42,6 +41,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1"
 
     // =============================
     // = lombok
