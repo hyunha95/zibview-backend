@@ -2,10 +2,12 @@ package com.view.zib.domain.image.facade;
 
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
+import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageCommandService;
 import com.view.zib.domain.image.service.ImageQueryService;
 import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.domain.storage.service.StorageService;
+import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
@@ -42,22 +44,24 @@ public class ImageFacade {
         try {
             imageCommandService.saveImage(saveImageRequest, storageByUuid);
         } catch (Exception e) {
-            // TODO 이미지 저장 실패 시 이미지 삭제 로직 추가
+            log.error("Failed to save image", e);
+            // TODO 이미지 저장 실패 시 이미지 파일 삭제 로직 추가
 //            storageByUuid.values().forEach(storage -> this.deleteImage(storage));
             throw e;
         }
     }
 
     public void deleteImage(String imageUuid) {
-        boolean mine = imageQueryService.isMyImage(imageUuid);
+        User currentUser = authService.getCurrentUser();
+        Image image = imageQueryService.getByUuid(imageUuid);
 
-        if (!mine) {
+        if (!currentUser.isMyImage(image)) {
             log.error("{} has no permission to delete image({})", authService.getEmail(), imageUuid);
             throw new ForbiddenException("이미지 삭제 권한이 없습니다.");
         }
 
         // 스토리지에서 이미지 파일 삭제
-        storageService.deleteImage(imageUuid);
+        storageService.deleteImage(image);
 
         // 데이터베이스에서 이미지 데이터 삭제
         imageCommandService.deleteImage(imageUuid);

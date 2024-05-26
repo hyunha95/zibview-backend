@@ -5,26 +5,54 @@ import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.utils.NumberUtils;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+@Slf4j
 @Service
 public class LocalStorageServiceImpl implements StorageService {
     private final String zibViewUrl;
-
+    private final String storageRootPath;
     private final NumberUtils numberUtils;
 
     @Builder
-    public LocalStorageServiceImpl(@Value("${api.zibview.url}") String zibViewUrl, NumberUtils numberUtils) {
+    public LocalStorageServiceImpl(
+            @Value("${api.zibview.url}") String zibViewUrl,
+            @Value("${storage.root-path}") String storageRootPath,
+            NumberUtils numberUtils) {
         this.zibViewUrl = zibViewUrl;
+        this.storageRootPath = storageRootPath;
         this.numberUtils = numberUtils;
     }
 
     @Override
     public Storage store(MultipartFile file, String uuid, ClockHolder clockHolder) {
-        // TODO: save file to storage
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Failed to store empty file.");
+        }
 
+        // create path
+        String path = createPath("images", clockHolder, numberUtils);
+        Path directories = createDirectories(storageRootPath, path);
+        Path destinationFile = directories.resolve(uuid + "." + getExtension(file));
+
+        // This is a security check
+        if (!destinationFile.getParent().equals(Paths.get(storageRootPath, path))) {
+            throw new IllegalArgumentException("Cannot store file outside current directory.");
+        }
+
+        // save file
+        saveFile(file, destinationFile);
 
         return Storage.builder()
                 .uuid(uuid)
@@ -32,12 +60,22 @@ public class LocalStorageServiceImpl implements StorageService {
                 .fileSize(file.getSize())
                 .mimeType(file.getContentType())
                 .extension(getExtension(file))
-                .path(createPath(clockHolder, numberUtils))
+                .path(path)
                 .build();
+    }
+
+    private static void saveFile(MultipartFile file, Path destinationFile) {
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Saving a file [{} -> {}]", file.getOriginalFilename(), destinationFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save file to storage", e);
+        }
     }
 
     /**
      * 이미지 URL 생성
+     *
      * @param image
      * @return
      */
@@ -46,8 +84,28 @@ public class LocalStorageServiceImpl implements StorageService {
         return String.format("%s/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
     }
 
+    /**
+     * 이미지 삭제
+     * @param image
+     */
     @Override
-    public void deleteImage(String imageUuid) {
-        // TODO: delete file from storage
+    public void deleteImage(Image image) {
+        if (image == null) {
+            throw new IllegalArgumentException("Image is null");
+        }
+
+        File file = Paths.get(storageRootPath)
+                .resolve(image.getPath())
+                .resolve(image.getStoredFilename())
+                .toFile();
+
+        boolean deleted = file.delete();
+        if (deleted) {
+            log.info("Deleting a file: [{}]", file.getPath());
+        } else {
+            log.error("Failed to delete a file: [{}]", file.getPath());
+            throw new IllegalArgumentException("Failed to delete a file.");
+        }
+
     }
 }

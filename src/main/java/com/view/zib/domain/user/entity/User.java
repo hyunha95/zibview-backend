@@ -1,6 +1,7 @@
 package com.view.zib.domain.user.entity;
 
 import com.view.zib.domain.auth.controller.request.LoginRequest;
+import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.location.entity.Location;
 import com.view.zib.domain.user.enums.Role;
 import com.view.zib.global.common.ClockHolder;
@@ -66,6 +67,10 @@ public class User extends BaseEntity implements UserDetails {
 
     public void updateLastLoginAt(ClockHolder clockHolder) {
         this.lastLoginAt = clockHolder.now();
+    }
+
+    public boolean isMyImage(Image image) {
+        return image.getUser().equals(this);
     }
 
     // ===============

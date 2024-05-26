@@ -1,5 +1,10 @@
 package com.view.zib.domain.image.service;
 
+import com.view.zib.domain.image.entity.Image;
+
+import java.util.Optional;
+
 public interface ImageQueryService {
-    boolean isMyImage(String imageUuid);
+    Image getByUuid(String imageUuid);
+    Optional<Image> findByUuid(String imageUuid);
 }

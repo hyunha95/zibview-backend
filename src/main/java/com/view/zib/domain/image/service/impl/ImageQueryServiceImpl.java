@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -18,10 +20,13 @@ public class ImageQueryServiceImpl implements ImageQueryService {
     private final AuthService authService;
 
     @Override
-    public boolean isMyImage(String imageUuid) {
-        Image image = imageRepository.findByUuid(imageUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Image", "imageUuid", imageUuid));
+    public Image getByUuid(String imageUuid) {
+        return this.findByUuid(imageUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Image", "uuid", imageUuid));
+    }
 
-        return image.getUser() == authService.getCurrentUser();
+    @Override
+    public Optional<Image> findByUuid(String imageUuid) {
+        return imageRepository.findByUuid(imageUuid);
     }
 }

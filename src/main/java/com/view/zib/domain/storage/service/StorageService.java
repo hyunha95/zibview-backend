@@ -7,6 +7,10 @@ import com.view.zib.global.utils.NumberUtils;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public interface StorageService {
@@ -15,7 +19,25 @@ public interface StorageService {
 
     String generateImageUrl(Image image);
 
-    void deleteImage(String imageUuid);
+    void deleteImage(Image image);
+
+    /**
+     * 파일 저장 루트 경로를 생성
+     * @param rootPath
+     * @param path
+     * @return
+     */
+    default Path createDirectories(String rootPath, String path) {
+        try {
+            Path directoryPath = Paths.get(rootPath, path);
+            if (!Files.exists(directoryPath)) {
+                return Files.createDirectories(directoryPath);
+            }
+            return directoryPath;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create storage directory("+rootPath+")", e);
+        }
+    }
 
     /**
      * 파일 저장 경로를 생성
@@ -23,13 +45,13 @@ public interface StorageService {
      * @param numberUtils
      * @return
      */
-    default String createPath(ClockHolder clockHolder, NumberUtils numberUtils) {
+    default String createPath(String directory, ClockHolder clockHolder, NumberUtils numberUtils) {
         LocalDateTime now = clockHolder.now();
         int year = now.getYear();
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
 
-        return year + numberUtils.zeroPadNumber(month, 2) + numberUtils.zeroPadNumber(day, 2);
+        return directory + "/" + year + numberUtils.zeroPadNumber(month, 2) + numberUtils.zeroPadNumber(day, 2);
     }
 
     /**
