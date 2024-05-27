@@ -81,6 +81,10 @@ public class LocalStorageServiceImpl implements StorageService {
      */
     @Override
     public String generateImageUrl(Image image) {
+        if (image == null) {
+            return null;
+        }
+
         return String.format("%s/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
     }
 

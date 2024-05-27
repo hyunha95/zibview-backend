@@ -37,9 +37,6 @@ public class SubPost extends BaseEntity {
     private List<Image> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
-    private Rent rent;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
     private ContractInfo contractInfo;
 
     private String title;

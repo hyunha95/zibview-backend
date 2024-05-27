@@ -45,13 +45,12 @@ public class PostQueryServiceImpl implements PostQueryService {
         """;
 
         List<Integer> addressIds = jdbcClient.sql(sql)
-                .param("longitude", request.longitude())
-                .param("latitude", request.latitude())
-                .param("distance", request.maxDistance())
+                .param("longitude", request.longitude() != null ? request.longitude() : "127.028361548")
+                .param("latitude", request.latitude() != null ? request.latitude() : "37.496486063")
+                .param("distance", request.maxDistance() != 0 ? request.maxDistance() : 10000)
                 .param("postIds", request.postIds() != null ? request.postIds() : 0)
                 .query(Integer.class)
                 .list();
-        log.info("query: {}, params: {}, result: {}", sql, request, addressIds);
 
         List<Post> posts = postRepository.findByAddressIdIn(addressIds);
 

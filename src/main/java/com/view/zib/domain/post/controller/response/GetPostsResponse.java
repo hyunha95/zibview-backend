@@ -1,5 +1,6 @@
 package com.view.zib.domain.post.controller.response;
 
+import com.view.zib.domain.post.entity.ContractInfo;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.storage.service.StorageService;
 import lombok.Builder;
@@ -13,11 +14,9 @@ public record GetPostsResponse(
         String imageUrl,
         int likeCount,
         int commentCount,
-
-        double monthlyRent,
-        LocalDate monthlyRentUpdatedAt,
-        double annualRent,
-        LocalDate annualRentUpdatedAt
+        DepositRent depositRent,
+        MonthlyRent monthlyRent,
+        MixedRent mixedRent
 ) {
 
     @Builder
@@ -32,10 +31,44 @@ public record GetPostsResponse(
                 .imageUrl(storageService.generateImageUrl(post.getImage()))
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
-                .monthlyRent(post.getLastestSubPost().getRent().getMonthlyRent())
-                .monthlyRentUpdatedAt(post.getLastestSubPost().getRent().getMonthlyRentUpdatedAt().toLocalDate())
-                .annualRent(post.getLastestSubPost().getRent().getAnnualRent())
-                .annualRentUpdatedAt(post.getLastestSubPost().getRent().getAnnualRentUpdatedAt().toLocalDate())
+                .depositRent(DepositRent.from(post.getDepositContractInfo()))
+                .monthlyRent(MonthlyRent.from(post.getMonthlyContractInfo()))
+                .mixedRent(MixedRent.from(post.getMixedContractInfo()))
                 .build();
+    }
+
+    // 전제
+    public record DepositRent(double deposit, double maintenanceFee, LocalDate lastUpdatedAt) {
+        public static DepositRent from(ContractInfo contractInfo) {
+            return new DepositRent(
+                    contractInfo.getDeposit().doubleValue(),
+                    contractInfo.getMaintenanceFee().doubleValue(),
+                    contractInfo.getUpdatedAt().toLocalDate()
+            );
+        }
+    }
+
+    // 월세
+    public record MonthlyRent(double deposit, double monthlyFee, double maintenanceFee, LocalDate lastUpdatedAt) {
+        public static MonthlyRent from(ContractInfo contractInfo) {
+            return new MonthlyRent(
+                    contractInfo.getDeposit().doubleValue(),
+                    contractInfo.getMonthlyFee().doubleValue(),
+                    contractInfo.getMaintenanceFee().doubleValue(),
+                    contractInfo.getUpdatedAt().toLocalDate()
+            );
+        }
+    }
+
+    // 반전세
+    public record MixedRent(double deposit, double monthlyFee, double maintenanceFee, LocalDate lastUpdatedAt) {
+        public static MixedRent from(ContractInfo contractInfo) {
+            return new MixedRent(
+                    contractInfo.getDeposit().doubleValue(),
+                    contractInfo.getMonthlyFee().doubleValue(),
+                    contractInfo.getMaintenanceFee().doubleValue(),
+                    contractInfo.getUpdatedAt().toLocalDate()
+            );
+        }
     }
 }

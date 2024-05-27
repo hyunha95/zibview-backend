@@ -1,6 +1,7 @@
 package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.post.controller.request.PostRequest;
+import com.view.zib.domain.post.enums.RentType;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,15 +24,24 @@ public class ContractInfo extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_post_id")
     private SubPost subPost;
+
+    @Enumerated(EnumType.STRING)
+    private RentType rentType;
 
     private BigDecimal deposit;
     private BigDecimal monthlyFee;
     private BigDecimal maintenanceFee;
 
-    public static ContractInfo from(PostRequest.ContractInfo contractInfo) {
+    public static ContractInfo of(PostRequest.ContractInfo contractInfo, Post post) {
         return com.view.zib.domain.post.entity.ContractInfo.builder()
+                .post(post)
+                .rentType(contractInfo.getContractPrice().getRentType())
                 .deposit(BigDecimal.valueOf(contractInfo.getContractPrice().getDeposit()))
                 .monthlyFee(BigDecimal.valueOf(contractInfo.getContractPrice().getMonthlyFee()))
                 .maintenanceFee(BigDecimal.valueOf(contractInfo.getContractPrice().getMaintenanceFee()))

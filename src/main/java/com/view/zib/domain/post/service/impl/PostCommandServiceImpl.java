@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Transactional
-
 @Service
 public class PostCommandServiceImpl implements PostCommandService {
 
@@ -77,7 +76,7 @@ public class PostCommandServiceImpl implements PostCommandService {
                 .orElseGet(newPost(address));
 
         // contractInfo
-        ContractInfo contractInfo = ContractInfo.from(request.getContractInfo());
+        ContractInfo contractInfo = ContractInfo.of(request.getContractInfo(), post);
         contractInfoRepository.save(contractInfo);
 
         // subPost
@@ -89,6 +88,7 @@ public class PostCommandServiceImpl implements PostCommandService {
         userPostRepository.save(userPost);
 
         post.updateBuildingType(request.getBuildingType());
+        post.updateContractInfo(contractInfo);
         post.updateImage(
                 Image.getLatestRepresentativeImage(images)
                         .orElse(imageRepository.findLatestRepresentativeImage(post.getId()))

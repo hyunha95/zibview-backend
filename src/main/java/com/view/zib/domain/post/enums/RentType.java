@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum RentType {
-
-    MONTHLY("월세")
-    , ANNUAL("전세");
+    DEPOSIT("전세"),
+    MONTHLY("월세"),
+    MIXED("반전세");
 
     private String description;
 

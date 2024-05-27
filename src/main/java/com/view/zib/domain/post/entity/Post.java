@@ -3,6 +3,7 @@ package com.view.zib.domain.post.entity;
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.building.enums.BuildingType;
 import com.view.zib.domain.image.entity.Image;
+import com.view.zib.domain.post.enums.RentType;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +33,15 @@ public class Post extends BaseEntity {
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<SubPost> subPosts = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
+    private ContractInfo depositContractInfo;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
+    private ContractInfo monthlyContractInfo;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
+    private ContractInfo mixedContractInfo;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Address address;
@@ -55,12 +68,18 @@ public class Post extends BaseEntity {
     }
 
     /**
-     * 오름차순 정렬 후 마지막 SubPost를 반환한다.
+     * RentType 별로 마지막 SubPost를 반환한다.
      * @return
      */
-    public SubPost getLastestSubPost() {
-        subPosts.sort(Comparator.comparing(SubPost::getCreatedAt));
-        return subPosts.getLast();
+    public Map<RentType, SubPost> getLatestSubPosts() {
+        return subPosts.stream()
+                .collect(groupingBy(
+                        subPost -> subPost.getContractInfo().getRentType(),
+                        collectingAndThen(
+                                toList(),
+                                list -> list.stream().sorted(comparing(SubPost::getCreatedAt)).toList().getLast()
+                        )
+                ));
     }
 
     public void updateBuildingType(BuildingType buildingType) {
@@ -69,5 +88,13 @@ public class Post extends BaseEntity {
 
     public void updateImage(Image lastRepresentativeImage) {
         this.image = lastRepresentativeImage;
+    }
+
+    public void updateContractInfo(ContractInfo contractInfo) {
+        switch (contractInfo.getRentType()) {
+            case DEPOSIT -> this.depositContractInfo = contractInfo;
+            case MONTHLY -> this.monthlyContractInfo = contractInfo;
+            case MIXED -> this.mixedContractInfo = contractInfo;
+        }
     }
 }

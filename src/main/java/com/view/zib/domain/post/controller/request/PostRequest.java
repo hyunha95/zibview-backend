@@ -1,6 +1,7 @@
 package com.view.zib.domain.post.controller.request;
 
 import com.view.zib.domain.building.enums.BuildingType;
+import com.view.zib.domain.post.enums.RentType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -108,6 +109,7 @@ public class PostRequest {
     @AllArgsConstructor
     @Data
     public static class ContractPrice {
+        private RentType rentType;        // 전세, 월세, 반전세
         private double deposit;        // 보증금
         private double monthlyFee;        // 월세
         private double maintenanceFee;     // 관리비
