@@ -22,6 +22,21 @@ public class FakeImageRepository implements ImageRepository {
     List<Image> images = new CopyOnWriteArrayList<>();
 
     @Override
+    public void deleteByUuid(String imageUuid) {
+        
+    }
+
+    @Override
+    public Optional<Image> findByUuid(String imageUuid) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Image findLatestRepresentativeImage(Long postId) {
+        return null;
+    }
+
+    @Override
     public List<Image> findByUuidIn(List<String> imageUuids) {
         return List.of();
     }

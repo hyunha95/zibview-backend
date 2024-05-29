@@ -46,7 +46,7 @@ class LocalStorageServiceImplTest {
         TestClockHolder testClockHolder = new TestClockHolder(LocalDateTime.of(2000, 2, 2, 0, 0, 0));
 
         // When
-        String path = storageService.createPath(testClockHolder, numberUtils);
+        String path = storageService.createPath("images", testClockHolder, numberUtils);
 
         // Then
         assertThat(path).isEqualTo("20000202");

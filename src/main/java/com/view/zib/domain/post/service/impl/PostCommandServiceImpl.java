@@ -6,6 +6,7 @@ import com.view.zib.domain.api.kako.domain.Document;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
+import com.view.zib.domain.post.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.entity.ContractInfo;
 import com.view.zib.domain.post.entity.Post;
@@ -95,6 +96,11 @@ public class PostCommandServiceImpl implements PostCommandService {
         );
 
         return post.getId();
+    }
+
+    @Override
+    public Long createComment(CreateCommentRequest request) {
+        return 0L;
     }
 
     private Supplier<Post> newPost(Address address) {

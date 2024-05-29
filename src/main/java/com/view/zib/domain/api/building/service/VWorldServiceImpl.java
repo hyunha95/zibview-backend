@@ -2,24 +2,14 @@ package com.view.zib.domain.api.building.service;
 
 import com.view.zib.domain.api.building.controller.request.BuildingRequest;
 import com.view.zib.domain.api.building.controller.response.BuildingUseResponse;
-import com.view.zib.domain.api.building.domain.BuildingUseApiResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
 public class VWorldServiceImpl implements VWorldService {
-
-    @Value("${api.vworld.key}")
-    private String apiKey;
 
     /**
      * https://www.data.go.kr/data/15044713/openapi.do
@@ -31,7 +21,7 @@ public class VWorldServiceImpl implements VWorldService {
         RestClient restClient = RestClient.create("http://apis.data.go.kr/1613000/BldRgstService_v2/getBrTitleInfo");
         String response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .queryParam(encode("serviceKey"),     "szdoyoxGdJJOLdZTgYr3rr%2F28p3bFNs28qegKTSqrChoYOLUACRpcgc3RmjV%2Bwgxf6qrZmTkCvb%2F2%2F7O6jjhQw%3D%3D")
+                        .queryParam(encode("serviceKey"),     "서비스키")
                         .queryParam(encode("sigunguCd"),  encode(request.sigunguCd()))
                         .queryParam(encode("bjdongCd"),   encode(request.bjdongCd()).substring(0, 5))
                         .queryParam(encode("platGbCd"),   encode("0")) /*0:대지 1:산 2:블록*/
@@ -52,5 +42,10 @@ public class VWorldServiceImpl implements VWorldService {
 
     private String encode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    public static void main(String[] args) {
+        VWorldServiceImpl vWorldService = new VWorldServiceImpl();
+        vWorldService.getBuildingUse(new BuildingRequest("11110", "10100"));
     }
 }

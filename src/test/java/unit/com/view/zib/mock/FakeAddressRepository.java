@@ -21,6 +21,11 @@ public class FakeAddressRepository implements AddressRepository {
     private List<Address> addresses = new CopyOnWriteArrayList<>();
 
     @Override
+    public Optional<Address> findByPostId(Long postId) {
+        return Optional.empty();
+    }
+
+    @Override
     public void flush() {
 
     }

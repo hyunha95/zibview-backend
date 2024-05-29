@@ -1,10 +1,10 @@
 package com.view.zib.domain.post.service.impl;
 
+import com.view.zib.domain.address.domain.Coordinate;
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.post.controller.request.GetPostsRequest;
 import com.view.zib.domain.post.controller.response.GetPostResponse;
 import com.view.zib.domain.post.controller.response.GetPostsResponse;
-import com.view.zib.domain.address.domain.Coordinate;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.service.PostQueryService;
@@ -47,7 +47,7 @@ public class PostQueryServiceImpl implements PostQueryService {
         List<Integer> addressIds = jdbcClient.sql(sql)
                 .param("longitude", request.longitude() != null ? request.longitude() : "127.028361548")
                 .param("latitude", request.latitude() != null ? request.latitude() : "37.496486063")
-                .param("distance", request.maxDistance() != 0 ? request.maxDistance() : 10000)
+                .param("distance", request.maxDistance() != null ? request.maxDistance() : 10000)
                 .param("postIds", request.postIds() != null ? request.postIds() : 0)
                 .query(Integer.class)
                 .list();

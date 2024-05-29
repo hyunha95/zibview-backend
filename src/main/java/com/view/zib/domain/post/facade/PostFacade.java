@@ -1,16 +1,14 @@
 package com.view.zib.domain.post.facade;
 
-import com.view.zib.domain.api.kako.domain.Document;
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.api.kako.service.KakaoAddressClient;
+import com.view.zib.domain.post.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
 import com.view.zib.domain.post.service.PostCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,4 +30,7 @@ public class PostFacade {
         return new PostResponse.Save(postId);
     }
 
+    public Long createComment(CreateCommentRequest request) {
+        return null;
+    }
 }

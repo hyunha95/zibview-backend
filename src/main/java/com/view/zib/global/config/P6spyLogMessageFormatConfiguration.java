@@ -2,16 +2,17 @@ package com.view.zib.global.config;
 
 import com.p6spy.engine.spy.P6SpyOptions;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-@RequiredArgsConstructor
 @Configuration
 public class P6spyLogMessageFormatConfiguration {
 
-    @Value("${spring.profiles.active}")
-    private String springProfile;
+    private final String springProfile;
+
+    public P6spyLogMessageFormatConfiguration(@Value("${spring.config.activate.on-profile}") String springProfile) {
+        this.springProfile = springProfile;
+    }
 
     @PostConstruct
     public void setLogMessageFormat() {
