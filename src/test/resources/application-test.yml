@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  threads:
+    virtual:
+      enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:tc:mysql:8.0.36://localhost:3306/zibview
+    username: Username
+    password: password
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "${SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
+            client-secret: "${SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 50MB
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: TRACE
+#        security: TRACE
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+okta:
+  oauth2:
+    issuer: "${OKTA_ISSUER}"
+    client-id: "${OKTA_CLIENT_ID}"
+    client-secret: "${OKTA_CLIENT_SECRET}"
+    audience: "${OKTA_AUDIENCE}"
+
+storage:
+  root-path: "${STORAGE_ROOT_PATH}"
+
+api:
+  zibview:
+    url: "${API_ZIBVIEW_URL}"
+  v-world:
+    url: "${API_VWORLD_URL}"
+    key: "${API_VWORLD_KEY}"
+  juso: # 도로명주소 검색 API 개발 ( 사용기간 : 2024-05-12 ~ 2024-08-10 )
+    key: "${API_JUSO_KEY}"
+  kakao-address:
+    key: "${API_KAKAO_ADDRESS_KEY}"
+    url: "${API_KAKAO_ADDRESS_URL}"
+  kakao-map:
+    key: "${API_KAKAO_MAP_KEY}"
