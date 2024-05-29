@@ -1,6 +1,5 @@
 package com.view.zib.domain.image.service.impl;
 
-import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
 import com.view.zib.domain.image.service.ImageQueryService;
@@ -17,7 +16,6 @@ import java.util.Optional;
 public class ImageQueryServiceImpl implements ImageQueryService {
 
     private final ImageRepository imageRepository;
-    private final AuthService authService;
 
     @Override
     public Image getByUuid(String imageUuid) {
@@ -29,4 +27,11 @@ public class ImageQueryServiceImpl implements ImageQueryService {
     public Optional<Image> findByUuid(String imageUuid) {
         return imageRepository.findByUuid(imageUuid);
     }
+
+    @Override
+    public Image getByStoredFilename(String storedFileName) {
+        return imageRepository.findByStoredFilename(storedFileName)
+                .orElseThrow(() -> new ResourceNotFoundException("Image", "storedFileName", storedFileName));
+    }
+
 }

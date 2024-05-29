@@ -3,6 +3,7 @@ package com.view.zib.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,6 +31,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteList).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/images/*/*").permitAll()
                         .requestMatchers("/api/private-scoped").hasAuthority("SCOPE_read:messages")
                         .anyRequest().authenticated()
                 )

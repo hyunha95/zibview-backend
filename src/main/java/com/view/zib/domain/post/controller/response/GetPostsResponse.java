@@ -5,7 +5,7 @@ import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.storage.service.StorageService;
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record GetPostsResponse(
         Long postId,
@@ -38,36 +38,36 @@ public record GetPostsResponse(
     }
 
     // 전제
-    public record DepositRent(double deposit, double maintenanceFee, LocalDate lastUpdatedAt) {
+    public record DepositRent(double deposit, double maintenanceFee, LocalDateTime lastUpdatedAt) {
         public static DepositRent from(ContractInfo contractInfo) {
             return new DepositRent(
                     contractInfo.getDeposit().doubleValue(),
                     contractInfo.getMaintenanceFee().doubleValue(),
-                    contractInfo.getUpdatedAt().toLocalDate()
+                    contractInfo.getUpdatedAt()
             );
         }
     }
 
     // 월세
-    public record MonthlyRent(double deposit, double monthlyFee, double maintenanceFee, LocalDate lastUpdatedAt) {
+    public record MonthlyRent(double deposit, double monthlyFee, double maintenanceFee, LocalDateTime lastUpdatedAt) {
         public static MonthlyRent from(ContractInfo contractInfo) {
             return new MonthlyRent(
                     contractInfo.getDeposit().doubleValue(),
                     contractInfo.getMonthlyFee().doubleValue(),
                     contractInfo.getMaintenanceFee().doubleValue(),
-                    contractInfo.getUpdatedAt().toLocalDate()
+                    contractInfo.getUpdatedAt()
             );
         }
     }
 
     // 반전세
-    public record MixedRent(double deposit, double monthlyFee, double maintenanceFee, LocalDate lastUpdatedAt) {
+    public record MixedRent(double deposit, double monthlyFee, double maintenanceFee, LocalDateTime lastUpdatedAt) {
         public static MixedRent from(ContractInfo contractInfo) {
             return new MixedRent(
                     contractInfo.getDeposit().doubleValue(),
                     contractInfo.getMonthlyFee().doubleValue(),
                     contractInfo.getMaintenanceFee().doubleValue(),
-                    contractInfo.getUpdatedAt().toLocalDate()
+                    contractInfo.getUpdatedAt()
             );
         }
     }

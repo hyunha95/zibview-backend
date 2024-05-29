@@ -6,11 +6,13 @@ import com.view.zib.global.exception.exceptions.SqlFailedException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +21,17 @@ import java.util.Comparator;
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {
+
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private String maxFileSize;
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Error> maxUploadSizeExceededExceptionHandler(MaxUploadSizeExceededException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new Error("File size is too large. Maximum upload size is " + maxFileSize, LocalDateTime.now(), new ArrayList<>()));
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Error> resourceNotFoundExceptionHandler(ResourceNotFoundException e) {

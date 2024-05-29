@@ -3,10 +3,13 @@ package com.view.zib.domain.storage.service;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
+import com.view.zib.global.exception.exceptions.StorageFileNotFoundException;
 import com.view.zib.global.utils.NumberUtils;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,7 +88,7 @@ public class LocalStorageServiceImpl implements StorageService {
             return null;
         }
 
-        return String.format("%s/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
+        return String.format("%s/api/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
     }
 
     /**
@@ -110,6 +113,16 @@ public class LocalStorageServiceImpl implements StorageService {
             log.error("Failed to delete a file: [{}]", file.getPath());
             throw new IllegalArgumentException("Failed to delete a file.");
         }
+    }
 
+    @Override
+    public Resource loadAsResource(Image image) {
+        Path file = Paths.get(storageRootPath, image.getPath(), image.getStoredFilename());
+        Resource resource = new FileSystemResource(file.toString());
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new StorageFileNotFoundException("Could not read file: " + image.getOriginalFilename());
+        }
     }
 }

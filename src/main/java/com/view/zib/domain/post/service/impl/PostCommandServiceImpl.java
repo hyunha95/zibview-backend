@@ -24,6 +24,7 @@ import com.view.zib.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -62,6 +63,9 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         // images
         List<Image> images = imageRepository.findByUuidIn(request.getImageUuids());
+        if (!CollectionUtils.isEmpty(request.getImageUuids())) {
+            images.getFirst().updateRepresentative(true);
+        }
 
         // address
         Address address = Address.of(request.getAddress(), images, kakaoMapResponse);

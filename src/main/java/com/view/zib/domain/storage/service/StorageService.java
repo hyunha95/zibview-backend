@@ -5,6 +5,7 @@ import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.utils.NumberUtils;
 import io.micrometer.common.util.StringUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ public interface StorageService {
     String generateImageUrl(Image image);
 
     void deleteImage(Image image);
+
+    Resource loadAsResource(Image image);
 
     /**
      * 파일 저장 루트 경로를 생성

@@ -70,6 +70,7 @@ public class Image extends BaseEntity {
                 .dateTimeOriginal(image.getDateTimeOriginal())
                 .latitudeGPS(image.getLatitudeGPS())
                 .longitudeGPS(image.getLongitudeGPS())
+                .representative(image.isRepresentative())
                 .build();
     }
 
@@ -85,5 +86,9 @@ public class Image extends BaseEntity {
 
     public void addEntity(Address address) {
         this.address = address;
+    }
+
+    public void updateRepresentative(boolean bool) {
+        this.representative = bool;
     }
 }

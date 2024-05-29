@@ -20,4 +20,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
             "ORDER BY i.createdAt DESC " +
             "LIMIT 1")
     Image findLatestRepresentativeImage(@Param("postId") Long postId);
+
+    Optional<Image> findByStoredFilename(String storedFileName);
 }

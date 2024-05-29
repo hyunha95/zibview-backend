@@ -12,6 +12,7 @@ import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -65,5 +66,10 @@ public class ImageFacade {
 
         // 데이터베이스에서 이미지 데이터 삭제
         imageCommandService.deleteImage(imageUuid);
+    }
+
+    public Resource getImage(String storedFilename) {
+        Image image = imageQueryService.getByStoredFilename(storedFilename);
+        return storageService.loadAsResource(image);
     }
 }

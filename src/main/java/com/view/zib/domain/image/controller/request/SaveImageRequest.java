@@ -24,6 +24,7 @@ public class SaveImageRequest {
         private String dateTimeOriginal;
         private String latitudeGPS;
         private String longitudeGPS;
+        private boolean representative;
         private MultipartFile image;
     }
 }

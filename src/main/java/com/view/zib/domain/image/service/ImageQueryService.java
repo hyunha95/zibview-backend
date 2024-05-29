@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ImageQueryService {
     Image getByUuid(String imageUuid);
     Optional<Image> findByUuid(String imageUuid);
+
+    Image getByStoredFilename(String storedFileName);
 }
