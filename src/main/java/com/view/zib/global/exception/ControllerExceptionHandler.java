@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @Slf4j
 @RestControllerAdvice
@@ -46,8 +47,11 @@ public class ControllerExceptionHandler {
     public ResponseEntity<Error> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         var invalidInputs = new ArrayList<Error.InvalidInput>();
         e.getBindingResult().getFieldErrors().forEach(fieldError -> {
-            invalidInputs.add(new Error.InvalidInput(fieldError.getField(), fieldError.getRejectedValue().getClass().getSimpleName(), fieldError.getDefaultMessage()));
+            invalidInputs.add(new Error.InvalidInput(fieldError.getField(), fieldError.getField().getClass().getSimpleName(), fieldError.getDefaultMessage()));
         });
+
+        invalidInputs.sort(Comparator.comparing(Error.InvalidInput::name));
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new Error("Invalid input", LocalDateTime.now(), invalidInputs));
