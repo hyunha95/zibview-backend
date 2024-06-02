@@ -12,6 +12,7 @@ public record GetPostsResponse(
         String address,
         String buildingName,
         String imageUrl,
+        String imageUrn,
         int likeCount,
         int commentCount,
         DepositRent depositRent,
@@ -29,6 +30,7 @@ public record GetPostsResponse(
                 .address(post.getAddress().getAddress())
                 .buildingName(post.getAddress().getBuildingName())
                 .imageUrl(storageService.generateImageUrl(post.getImage()))
+                .imageUrn(storageService.generateImageUrn(post.getImage()))
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
                 .depositRent(DepositRent.from(post.getDepositContractInfo()))
