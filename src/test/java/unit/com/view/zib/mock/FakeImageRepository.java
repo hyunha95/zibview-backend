@@ -22,6 +22,11 @@ public class FakeImageRepository implements ImageRepository {
     List<Image> images = new CopyOnWriteArrayList<>();
 
     @Override
+    public Optional<Image> findByStoredFilename(String storedFileName) {
+        return Optional.empty();
+    }
+
+    @Override
     public void deleteByUuid(String imageUuid) {
         
     }
