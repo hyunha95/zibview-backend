@@ -49,7 +49,7 @@ public class Address extends BaseEntity {
     private String autoJibunAddress;   // 	경기 성남시 분당구 백현동 532	'도로명주소'에 매핑된 '지번주소'가 여러개인 경우, 사용자가 '선택안함' 또는 '도로명주소'를 클릭했을 때 연관된 지번 주소 중 임의로 첫번째 매핑 주소를 넣어서 반환합니다. (autoMapping을 false로 설정한 경우에는 값이 채워지지 않습니다.)
     private String autoJibunAddressEnglish; // 	532, Baekhyeon-dong, Bundang-gu, Seongnam-si, Gyeonggi-do, Korea	autoJibunAddress의 영문 지번 주소
 
-//    @Column(unique = true) TODO: 주소 검색 시 해당 주소로 등록된 건물이 있는 확인 필요
+    @Column(unique = true) //  TODO: 주소 검색 시 해당 주소로 등록된 건물이 있는 확인 필요
     private String buildingCode;       // 	4113511000105320000000002	건물관리번호
     private String buildingName;       // 	카카오 판교 아지트	건물명
     private String apartment;          // 	Y/N	공동주택 여부 (아파트,연립주택,다세대주택 등)
@@ -70,10 +70,6 @@ public class Address extends BaseEntity {
     private String bname2English;      // 	Baekhyeon-dong	법정동/법정리 이름의 영문
     private String hname;              // 	-	행정동 이름, 검색어를 행정동으로 검색하고, 검색결과의 법정동과 검색어에 입력한 행정동과 다른 경우에 표시하고, 데이터를 내립니다.
     private String query;              // 	판교역로 166	사용자가 입력한 검색어
-    private String postcode;           // 	-	구 우편번호 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
-    private String postcode1;          // 	-	구 우편번호 앞 3자리 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
-    private String postcode2;          // 	-	구 우편번호 뒤 3자리 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
-    private String postcodeSeq;        // 	-	구 우편번호 일련번호 (2020년 3월 9일 이후로는 데이터가 내려가지 않습니다.)
 
     private double longitude; // X 좌표값, 경위도인 경우 경도(longitude)
     private double latitude;  // Y 좌표값, 경위도인 경우 위도(latitude)
@@ -116,10 +112,6 @@ public class Address extends BaseEntity {
                 .bname2English(addressRequest.getBname2English())
                 .hname(addressRequest.getHname())
                 .query(addressRequest.getQuery())
-                .postcode(addressRequest.getPostcode())
-                .postcode1(addressRequest.getPostcode1())
-                .postcode2(addressRequest.getPostcode2())
-                .postcodeSeq(addressRequest.getPostcodeSeq())
                 .longitude(kakaoMapResponse.getX())
                 .latitude(kakaoMapResponse.getY())
                 .build();
