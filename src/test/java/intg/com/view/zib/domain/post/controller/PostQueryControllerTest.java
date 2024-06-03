@@ -27,7 +27,7 @@ class PostQueryControllerTest {
     private MockMvc mockMvc;
 
     @Container
-    private MySQLContainer mySQLContainer = new MySQLContainer(DockerImageName.parse("mysql:8.0.36"));
+    private MySQLContainer mySQLContainer = new MySQLContainer(DockerImageName.parse("mysql:8.0.30"));
 
 
     /**
