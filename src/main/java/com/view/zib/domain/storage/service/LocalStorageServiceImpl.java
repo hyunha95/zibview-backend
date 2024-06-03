@@ -91,6 +91,15 @@ public class LocalStorageServiceImpl implements StorageService {
         return String.format("%s/api/%s/%s", zibViewUrl, image.getPath(), image.getStoredFilename());
     }
 
+    @Override
+    public String generateImageUrn(Image image) {
+        if (image == null) {
+            return null;
+        }
+
+        return String.format("/api/%s/%s", image.getPath(), image.getStoredFilename());
+    }
+
     /**
      * 이미지 삭제
      * @param image

@@ -17,11 +17,9 @@ import java.time.LocalDateTime;
 public interface StorageService {
 
     Storage store(MultipartFile file, String uuid, ClockHolder clockHolder);
-
     String generateImageUrl(Image image);
-
+    String generateImageUrn(Image image);
     void deleteImage(Image image);
-
     Resource loadAsResource(Image image);
 
     /**
