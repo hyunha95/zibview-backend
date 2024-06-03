@@ -10,8 +10,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Comparator.comparing;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,12 +43,19 @@ public class SubPost extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
     private ContractInfo contractInfo;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subPost")
+    private List<Comment> comments = new ArrayList<>();
+
     private String title;
     private String description;
     private double rating;
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean deleted;
+    private Long commentCount;
+
+    private LocalDate contractStartDate;
+    private LocalDate contractEndDate;
 
     public static SubPost of(User user, PostRequest.Save request, List<Image> images, Post post, ContractInfo contractInfo) {
         SubPost subPost = SubPost.builder()
@@ -54,11 +65,20 @@ public class SubPost extends BaseEntity {
                 .contractInfo(contractInfo)
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .contractStartDate(request.getContractInfo().getContractStartDate())
+                .contractEndDate(request.getContractInfo().getContractEndDate())
                 .build();
 
         images.forEach(image -> image.addEntity(subPost));
         post.getSubPosts().add(subPost);
         contractInfo.addEntity(subPost);
         return subPost;
+    }
+
+    public Optional<Comment> getLatestComment() {
+        return comments.stream()
+                .filter(comment -> !comment.isDeleted())
+                .sorted(comparing(Comment::getCreatedAt).reversed())
+                .findAny();
     }
 }
