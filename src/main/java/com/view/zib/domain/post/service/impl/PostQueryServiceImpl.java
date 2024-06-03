@@ -1,7 +1,6 @@
 package com.view.zib.domain.post.service.impl;
 
 import com.view.zib.domain.address.domain.Coordinate;
-import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.post.controller.request.GetPostsRequest;
 import com.view.zib.domain.post.controller.response.GetPostResponse;
 import com.view.zib.domain.post.controller.response.GetPostsResponse;
@@ -62,10 +61,7 @@ public class PostQueryServiceImpl implements PostQueryService {
     @Override
     public GetPostResponse getPostDetails(Long postId) {
         Post post = getById(postId);
-        post.getSubPosts();
-        Address address = post.getAddress();
-
-        return null;
+        return GetPostResponse.from(post, storageService);
     }
 
     @Override
