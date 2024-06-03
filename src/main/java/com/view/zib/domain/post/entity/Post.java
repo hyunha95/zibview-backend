@@ -43,7 +43,7 @@ public class Post extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
     private ContractInfo mixedContractInfo;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
     private Address address;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -54,8 +54,8 @@ public class Post extends BaseEntity {
 
     private int likeCount;
     private int commentCount;
-
     private BuildingType buildingType;
+
 
     public static Post from(Address address) {
         Post post = Post.builder()
@@ -80,6 +80,13 @@ public class Post extends BaseEntity {
                                 list -> list.stream().sorted(comparing(SubPost::getCreatedAt)).toList().getLast()
                         )
                 ));
+    }
+
+    public List<SubPost> getSubPostsNotDeletedOrderByIdDesc() {
+        return subPosts.stream()
+                .filter(subPost -> !subPost.isDeleted())
+                .sorted(comparing(SubPost::getId).reversed())
+                .toList();
     }
 
     public void updateBuildingType(BuildingType buildingType) {
