@@ -2,12 +2,9 @@ package com.view.zib.domain.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.view.zib.domain.post.controller.request.CreateCommentRequest;
-import com.view.zib.domain.post.facade.PostFacade;
-import com.view.zib.domain.post.service.PostCommandService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -24,12 +21,6 @@ class PostCommandControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private PostFacade postFacade;
-
-    @MockBean
-    private PostCommandService postCommandService;
 
     @Autowired
     private ObjectMapper objectMapper;
