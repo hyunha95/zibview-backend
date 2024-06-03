@@ -21,7 +21,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     public final String[] whiteList = new String []{
-            "/api/login", "/api/public", "/error", "/map/**", "/api/posts", "/actuator/**"
+            "/api/login", "/api/public", "/error", "/map/**", "/actuator/**"
     };
 
     @Bean
@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteList).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/images/*/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*", "/api/images/*/*").permitAll()
                         .requestMatchers("/api/private-scoped").hasAuthority("SCOPE_read:messages")
                         .anyRequest().authenticated()
                 )
