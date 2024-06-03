@@ -23,7 +23,7 @@ public class P6spySqlFormatDevConfig implements MessageFormattingStrategy {
             }else {
                 sql = FormatStyle.BASIC.getFormatter().format(sql);
             }
-            sql = "|query:"+ sql;
+            sql = "|query -> "+ sql;
         }
 
         return sql;
