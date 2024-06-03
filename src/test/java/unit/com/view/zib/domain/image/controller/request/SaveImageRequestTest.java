@@ -27,7 +27,7 @@ class SaveImageRequestTest {
     void imagesMoreThan10ShouldFail() {
         // given
         List<SaveImageRequest.Image> images = IntStream.rangeClosed(1, 11)
-                .mapToObj(i -> new SaveImageRequest.Image(UUID.randomUUID().toString(), "", "", "", new MockMultipartFile("image" + i, new byte[0])))
+                .mapToObj(i -> new SaveImageRequest.Image(UUID.randomUUID().toString(), "", "", "", true, new MockMultipartFile("image" + i, new byte[0])))
                 .toList();
         SaveImageRequest saveImageRequest = new SaveImageRequest(images);
 
