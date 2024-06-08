@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("container")
 @SpringBootTest
 class PostQueryControllerTest {
 

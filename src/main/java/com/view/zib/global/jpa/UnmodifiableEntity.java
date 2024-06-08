@@ -1,5 +1,6 @@
 package com.view.zib.global.jpa;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -14,9 +15,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class UnmodifiableEntity {
 
+    @Column(updatable = false)
     @CreatedBy
     private String createdBy;
 
+    @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 }

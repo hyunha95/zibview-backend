@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.view.zib.domain.post.controller.request.CreateCommentRequest;
+import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,7 +29,7 @@ class PostCommandControllerTest {
     @Test
     void shouldFailOnCreateCommentWhenRequestIsInvalid() throws Exception {
         // given
-        CreateCommentRequest request = new CreateCommentRequest(null, null);
+        CreateCommentRequest request = new CreateCommentRequest(null, null, null);
 
         // when
         // then

@@ -2,7 +2,7 @@ package com.view.zib.domain.post.facade;
 
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.api.kako.service.KakaoAddressClient;
-import com.view.zib.domain.post.controller.request.CreateCommentRequest;
+import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
 import com.view.zib.domain.post.service.PostCommandService;

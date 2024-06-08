@@ -1,8 +1,6 @@
 package com.view.zib.domain.post.controller;
 
-import com.view.zib.domain.post.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
-import com.view.zib.domain.post.controller.response.CreateCommentResponse;
 import com.view.zib.domain.post.controller.response.PostResponse;
 import com.view.zib.domain.post.facade.PostFacade;
 import com.view.zib.domain.post.service.PostCommandService;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostCommandController {
 
     private final PostFacade postFacade;
-    private final PostCommandService postCommandService;
 
     @PostMapping
     public ResponseEntity<PostResponse.Save> save(@RequestBody @Valid PostRequest.Save request) {
@@ -29,10 +26,5 @@ public class PostCommandController {
                 .body(postFacade.save(request));
     }
 
-    @PostMapping("/comments")
-    public ResponseEntity<CreateCommentResponse> createComment(@RequestBody @Valid CreateCommentRequest request) {
-        Long newCommentId = postCommandService.createComment(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CreateCommentResponse(newCommentId));
-    }
+
 }

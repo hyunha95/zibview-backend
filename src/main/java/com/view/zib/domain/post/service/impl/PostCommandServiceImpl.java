@@ -6,7 +6,6 @@ import com.view.zib.domain.api.kako.domain.Document;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
-import com.view.zib.domain.post.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.entity.ContractInfo;
 import com.view.zib.domain.post.entity.Post;
@@ -15,8 +14,8 @@ import com.view.zib.domain.post.repository.ContractInfoRepository;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.SubPostRepository;
 import com.view.zib.domain.post.service.PostCommandService;
-import com.view.zib.domain.user.entity.UserAddress;
 import com.view.zib.domain.user.entity.User;
+import com.view.zib.domain.user.entity.UserAddress;
 import com.view.zib.domain.user.entity.UserPost;
 import com.view.zib.domain.user.repository.UserAddressRepository;
 import com.view.zib.domain.user.repository.UserPostRepository;
@@ -100,11 +99,6 @@ public class PostCommandServiceImpl implements PostCommandService {
         );
 
         return post.getId();
-    }
-
-    @Override
-    public Long createComment(CreateCommentRequest request) {
-        return 0L;
     }
 
     private Supplier<Post> newPost(Address address) {

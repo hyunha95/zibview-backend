@@ -1,5 +1,6 @@
 package com.view.zib.domain.post.entity;
 
+import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.user.entity.User;

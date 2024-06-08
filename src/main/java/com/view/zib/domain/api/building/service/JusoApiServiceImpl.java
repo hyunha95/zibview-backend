@@ -8,8 +8,11 @@ import org.springframework.web.client.RestClient;
 @Service
 public class JusoApiServiceImpl implements JusoApiService {
 
-    @Value("${api.juso.key}")
-    private String jusoKey;
+    private final String jusoKey;
+
+    public JusoApiServiceImpl(@Value("${api.juso.key}") String jusoKey) {
+        this.jusoKey = jusoKey;
+    }
 
     @Override
     public void getBuildingInfo(AddressRequest addressRequest) {

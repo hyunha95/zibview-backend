@@ -2,7 +2,7 @@ package com.view.zib.domain.post.controller.response;
 
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.building.enums.BuildingType;
-import com.view.zib.domain.post.entity.Comment;
+import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.storage.service.StorageService;
