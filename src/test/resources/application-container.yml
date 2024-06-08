@@ -15,10 +15,10 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:tc:mysql:8.0.36://localhost:3306/zibview
+    username: Username
+    password: password
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
 
   security:
     oauth2:
