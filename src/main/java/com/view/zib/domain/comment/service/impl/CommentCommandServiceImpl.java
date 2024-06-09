@@ -1,13 +1,16 @@
 package com.view.zib.domain.comment.service.impl;
 
 import com.view.zib.domain.auth.service.AuthService;
+import com.view.zib.domain.comment.CommentAction;
 import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
-import com.view.zib.domain.comment.controller.request.LikeCommentRequest;
+import com.view.zib.domain.comment.controller.request.ToggleLikeRequest;
+import com.view.zib.domain.comment.controller.response.ToggleLikeResponse;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.comment.entity.CommentLike;
 import com.view.zib.domain.comment.repository.CommentLikeRepository;
 import com.view.zib.domain.comment.repository.CommentRepository;
 import com.view.zib.domain.comment.service.CommentCommandService;
+import com.view.zib.domain.log.service.CommentLikeLogService;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.post.service.SubPostService;
 import com.view.zib.domain.user.entity.User;
@@ -26,8 +29,11 @@ public class CommentCommandServiceImpl implements CommentCommandService {
 
     private final AuthService authService;
     private final SubPostService subPostService;
+    private final CommentLikeLogService commentLikeLogService;
+
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+
 
     @Override
     public Long createComment(CreateCommentRequest request) {
@@ -42,34 +48,41 @@ public class CommentCommandServiceImpl implements CommentCommandService {
      * 동시성 문제가 발생할 가능성이 있음
      */
     @Override
-    public void likeComment(LikeCommentRequest request) {
+    public ToggleLikeResponse toggleLike(ToggleLikeRequest request) {
         User currentUser = authService.getCurrentUser();
 
         Comment comment = this.getByIdForUpdate(request.commentId());
 
+        ToggleLikeResponse response = new ToggleLikeResponse();
         // 이미 좋아요를 눌렀다면 좋아요를 취소하고, 아니라면 좋아요를 누른다.
         commentLikeRepository.findByUserIdAndCommentIdForUpdate(currentUser.getId(), request.commentId())
-                .ifPresentOrElse(updateCommentAndCommentLike(comment), createCommentLike(comment));
+                .ifPresentOrElse(deleteCommentLike(comment, response), createCommentLike(comment, response));
+
+        return response;
     }
 
-    private Runnable createCommentLike(Comment comment) {
+    private Runnable createCommentLike(Comment comment, ToggleLikeResponse response) {
         return () -> {
             CommentLike newCommentLike = CommentLike.of(comment, authService.getCurrentUser());
             commentLikeRepository.save(newCommentLike);
             comment.increaseLikeCount();
+            // logging
+            commentLikeLogService.log(newCommentLike, CommentAction.CREATE);
+
+            response.setLiked(true);
         };
     }
 
 
-    private Consumer<CommentLike> updateCommentAndCommentLike(Comment comment) {
+    private Consumer<CommentLike> deleteCommentLike(Comment comment, ToggleLikeResponse response) {
         return commentLike -> {
-            if (commentLike.isLike()) {
-                commentLike.unLike();
-                comment.decreaseLikeCount();
-            } else {
-                commentLike.like();
-                comment.increaseLikeCount();
-            }
+            commentLikeRepository.delete(commentLike);
+            comment.decreaseLikeCount();
+
+            // logging
+            commentLikeLogService.log(commentLike, CommentAction.DELETE);
+
+            response.setLiked(false);
         };
     }
 

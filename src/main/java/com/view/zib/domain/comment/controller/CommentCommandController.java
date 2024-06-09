@@ -1,8 +1,9 @@
 package com.view.zib.domain.comment.controller;
 
 import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
-import com.view.zib.domain.comment.controller.request.LikeCommentRequest;
+import com.view.zib.domain.comment.controller.request.ToggleLikeRequest;
 import com.view.zib.domain.comment.controller.response.CreateCommentResponse;
+import com.view.zib.domain.comment.controller.response.ToggleLikeResponse;
 import com.view.zib.domain.comment.service.CommentCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,9 @@ public class CommentCommandController {
                 .body(new CreateCommentResponse(newCommentId));
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<Void> likeComment(@RequestBody @Valid LikeCommentRequest request) {
-        commentCommandService.likeComment(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping("/likes/toggle")
+    public ResponseEntity<ToggleLikeResponse> toggleLike(@RequestBody @Valid ToggleLikeRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).
+                body(commentCommandService.toggleLike(request));
     }
 }

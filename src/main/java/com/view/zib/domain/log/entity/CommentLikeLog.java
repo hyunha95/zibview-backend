@@ -1,7 +1,11 @@
 package com.view.zib.domain.log.entity;
 
+import com.view.zib.domain.comment.CommentAction;
+import com.view.zib.domain.comment.entity.CommentLike;
 import com.view.zib.global.jpa.UnmodifiableEntity;
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Table(name = "log_comment_like")
 @Entity
@@ -11,4 +15,14 @@ public class CommentLikeLog extends UnmodifiableEntity {
     @Column(name = "comment_like_id")
     private Long id;
     private String email;
+    private Long commentId;
+    private boolean like;
+
+    public static CommentLikeLog of(CommentLike commentLike, CommentAction commentAction) {
+        CommentLikeLog commentLikeLog = new CommentLikeLog();
+        commentLikeLog.email = commentLike.getUser().getEmail();
+        commentLikeLog.commentId = commentLike.getComment().getId();
+        commentLikeLog.like = Objects.equals(commentAction, CommentAction.CREATE);
+        return commentLikeLog;
+    }
 }

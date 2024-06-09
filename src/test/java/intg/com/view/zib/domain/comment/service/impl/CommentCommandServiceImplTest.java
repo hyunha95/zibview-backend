@@ -1,6 +1,6 @@
 package com.view.zib.domain.comment.service.impl;
 
-import com.view.zib.domain.comment.controller.request.LikeCommentRequest;
+import com.view.zib.domain.comment.controller.request.ToggleLikeRequest;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.comment.repository.CommentLikeRepository;
 import com.view.zib.domain.comment.repository.CommentRepository;
@@ -76,7 +76,7 @@ class CommentCommandServiceImplTest {
                 .forEach(i -> {
                     executorService.execute(() -> {
                         try {
-                            commentCommandService.likeComment(new LikeCommentRequest(1L));
+                            commentCommandService.toggleLike(new ToggleLikeRequest(1L));
                         } finally {
                             latch.countDown();
                         }
