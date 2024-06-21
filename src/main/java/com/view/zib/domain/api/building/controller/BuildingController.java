@@ -5,7 +5,7 @@ import com.view.zib.domain.api.building.controller.request.AddressRequest;
 import com.view.zib.domain.api.building.service.JusoApiService;
 import com.view.zib.domain.api.building.controller.request.BuildingRequest;
 import com.view.zib.domain.api.building.controller.response.BuildingUseResponse;
-import com.view.zib.domain.api.building.service.VWorldService;
+import com.view.zib.domain.api.vworld.service.VWorldService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

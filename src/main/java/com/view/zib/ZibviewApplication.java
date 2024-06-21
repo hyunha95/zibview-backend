@@ -1,8 +1,11 @@
 package com.view.zib;
 
+import com.view.zib.global.properties.ApiProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+@EnableConfigurationProperties(value = {ApiProperties.class})
 @SpringBootApplication
 public class ZibviewApplication {
 

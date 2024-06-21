@@ -16,13 +16,13 @@ public class CommentLikeLog extends UnmodifiableEntity {
     private Long id;
     private String email;
     private Long commentId;
-    private boolean like;
+    private boolean liked;
 
     public static CommentLikeLog of(CommentLike commentLike, CommentAction commentAction) {
         CommentLikeLog commentLikeLog = new CommentLikeLog();
         commentLikeLog.email = commentLike.getUser().getEmail();
         commentLikeLog.commentId = commentLike.getComment().getId();
-        commentLikeLog.like = Objects.equals(commentAction, CommentAction.CREATE);
+        commentLikeLog.liked = Objects.equals(commentAction, CommentAction.CREATE);
         return commentLikeLog;
     }
 }

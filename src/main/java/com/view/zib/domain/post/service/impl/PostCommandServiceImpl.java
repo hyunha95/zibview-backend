@@ -2,7 +2,7 @@ package com.view.zib.domain.post.service.impl;
 
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.address.repository.AddressRepository;
-import com.view.zib.domain.api.kako.domain.Document;
+import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
@@ -15,7 +15,6 @@ import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.SubPostRepository;
 import com.view.zib.domain.post.service.PostCommandService;
 import com.view.zib.domain.user.entity.User;
-import com.view.zib.domain.user.entity.UserAddress;
 import com.view.zib.domain.user.entity.UserPost;
 import com.view.zib.domain.user.repository.UserAddressRepository;
 import com.view.zib.domain.user.repository.UserPostRepository;
@@ -56,7 +55,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
-    public Long save(PostRequest.Save request, Document kakaoMapResponse) {
+    public Long save(PostRequest.Save request, KakaoAddressResponse kakaoAddressResponse) {
         // user
         User user = userService.getByEmail(authService.getEmail());
 
@@ -66,13 +65,15 @@ public class PostCommandServiceImpl implements PostCommandService {
             images.getFirst().updateRepresentative(true);
         }
 
-        // address
-        Address address = Address.of(request.getAddress(), images, kakaoMapResponse);
+        // TODO: 신규 등록 시 카카오 API 호출 결과를 BUILDING_IFNO에 저장해야 함
+
+//        // address
+        Address address = Address.of(request.getAddress(), images, kakaoAddressResponse);
         addressRepository.save(address);
 
         // userAddress
-        UserAddress userAddress = UserAddress.of(user, address, request.getContractInfo());
-        userAddressRepository.save(userAddress);
+//        UserAddress userAddress = UserAddress.of(user, address, request.getContractInfo());
+//        userAddressRepository.save(userAddress);
 
         // post
         Post post = postRepository
@@ -91,12 +92,11 @@ public class PostCommandServiceImpl implements PostCommandService {
         UserPost userPost = UserPost.of(user, post);
         userPostRepository.save(userPost);
 
-        post.updateBuildingType(request.getBuildingType());
-        post.updateContractInfo(contractInfo);
-        post.updateImage(
-                Image.getLatestRepresentativeImage(images)
-                        .orElse(imageRepository.findLatestRepresentativeImage(post.getId()))
-        );
+//        post.updateContractInfo(contractInfo);
+//        post.updateImage(
+//                Image.getLatestRepresentativeImage(images)
+//                        .orElse(imageRepository.findLatestRepresentativeImage(post.getId()))
+//        );
 
         return post.getId();
     }

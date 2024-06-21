@@ -28,21 +28,21 @@ public class CommentLike extends BaseEntity {
     private Comment comment;
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
-    private boolean like;
+    private boolean liked;
 
     public static CommentLike of(Comment comment, User currentUser) {
         return CommentLike.builder()
                 .user(currentUser)
                 .comment(comment)
-                .like(true)
+                .liked(true)
                 .build();
     }
 
     public void unLike() {
-        this.like = false;
+        this.liked = false;
     }
 
     public void like() {
-        this.like = true;
+        this.liked = true;
     }
 }

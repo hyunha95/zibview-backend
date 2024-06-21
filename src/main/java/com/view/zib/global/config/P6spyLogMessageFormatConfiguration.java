@@ -16,10 +16,10 @@ public class P6spyLogMessageFormatConfiguration {
 
     @PostConstruct
     public void setLogMessageFormat() {
-        if ("prod".equalsIgnoreCase(springProfile)) {
+//        if ("prod".equalsIgnoreCase(springProfile)) {
             P6SpyOptions.getActiveInstance().setLogMessageFormat(P6spySqlFormatConfig.class.getName());
-        } else {
-            P6SpyOptions.getActiveInstance().setLogMessageFormat(P6spySqlFormatDevConfig.class.getName());
-        }
+//        } else {
+//            P6SpyOptions.getActiveInstance().setLogMessageFormat(P6spySqlFormatDevConfig.class.getName());
+//        }
     }
 }

@@ -1,0 +1,64 @@
+package com.view.zib.domain.post.repository.custom.impl;
+
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.view.zib.domain.post.repository.custom.PostCustomRepository;
+import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.view.zib.domain.address.entity.QAdditionalInfo.additionalInfo;
+import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
+import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
+import static com.view.zib.domain.image.entity.QImage.image;
+import static com.view.zib.domain.post.entity.QPost.post;
+
+@RequiredArgsConstructor
+@Repository
+public class PostCustomRepositoryImpl implements PostCustomRepository {
+
+    private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Slice<LatestResidentialPost> findAllLatestResidentialPosts(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        List<LatestResidentialPost> responses = jpaQueryFactory.select(
+                        Projections.constructor(LatestResidentialPost.class,
+                                post.id.as("postId"),
+                                roadNameCode.sidoName,
+                                roadNameCode.sigunguName,
+                                roadNameCode.roadName,
+                                roadNameAddress.buildingNum,
+                                roadNameAddress.buildingSubNum,
+                                additionalInfo.buildingName,
+                                post.likeCount,
+                                post.commentCount,
+                                image.path.as("imagePath"),
+                                image.storedFilename.as("imageStoredFilename")
+                        )
+                )
+                .from(post)
+                .leftJoin(post.mostRecentImage, image)
+                .join(post.roadNameAddress, roadNameAddress)
+                .join(roadNameAddress.roadNameCode, roadNameCode)
+                .join(roadNameAddress.additionalInfo, additionalInfo)
+                .where(roadNameAddress.buildingPurposeCode.eq("1")) // 1 : 주거용 // TODO: change it to enum
+                .orderBy(post.updatedAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageSize + 1L) // // limit보다 데이터를 1개 더 들고와서, 해당 데이터가 있다면 hasNext 변수에 true를 넣어 알림
+                .fetch();
+
+        boolean hasNext = false;
+        if (responses.size() > pageable.getPageSize()) {
+            responses.remove(pageSize); // 위에서 + 1 해서 들고온 데이터는 hasNext 확인 후 삭제
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(responses, pageable, hasNext);
+    }
+}

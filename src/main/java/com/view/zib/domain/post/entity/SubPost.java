@@ -44,6 +44,7 @@ public class SubPost extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
     private ContractInfo contractInfo;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subPost")
     private List<Comment> comments = new ArrayList<>();
 

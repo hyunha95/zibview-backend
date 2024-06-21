@@ -34,4 +34,8 @@ public class ImageQueryServiceImpl implements ImageQueryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Image", "storedFileName", storedFileName));
     }
 
+    @Override
+    public Optional<Image> findMostRecentImageByPostIdIn(Long postId) {
+        return imageRepository.findMostRecentImageByPostId(postId);
+    }
 }

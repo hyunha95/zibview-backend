@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.controller.response;
 
-import com.view.zib.domain.address.entity.Address;
-import com.view.zib.domain.building.enums.BuildingType;
+import com.view.zib.domain.api.kako.domain.Coordinate;
+import com.view.zib.domain.building.entity.BuildingInfo;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
@@ -10,6 +10,7 @@ import com.view.zib.domain.storage.service.StorageService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public record GetPostResponse(
@@ -17,24 +18,24 @@ public record GetPostResponse(
         double longitude,
         String buildingName,
         String address,
-        BuildingType buildingType,
         List<SubPostDto> subPosts
 ) {
 
+    public boolean hasCoordinate() {
+        return latitude != 0.0 && longitude != 0.0;
+    }
+
     public static GetPostResponse from(Post post, StorageService storageService) {
-        Address address = post.getAddress();
-
-
+        BuildingInfo buildingInfo = null;
         List<SubPostDto> subPostDtos = post.getSubPostsNotDeletedOrderByIdDesc().stream()
                 .map(mapToSubPostDtos(storageService))
                 .toList();
 
         return new GetPostResponse(
-                address.getLatitude(),
-                address.getLongitude(),
-                address.getBuildingName(),
-                address.getAddress(),
-                post.getBuildingType(),
+                Optional.ofNullable(buildingInfo.getLatitude()).orElse(0.0),
+                Optional.ofNullable(buildingInfo.getLongitude()).orElse(0.0),
+                buildingInfo.getBuildingDongName(),
+                buildingInfo.getAddress(),
                 subPostDtos
         );
     }
@@ -66,6 +67,10 @@ public record GetPostResponse(
                     latestComment
             );
         };
+    }
+
+    public GetPostResponse setNewCoordinate(Coordinate coordinate) {
+        return new GetPostResponse(coordinate.latitude(), coordinate.longitude(), buildingName, address, subPosts);
     }
 
     public record SubPostDto(

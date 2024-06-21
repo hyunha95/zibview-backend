@@ -18,7 +18,9 @@ public interface StorageService {
 
     Storage store(MultipartFile file, String uuid, ClockHolder clockHolder);
     String generateImageUrl(Image image);
+    String generateImageUrl(String path, String storedFilename);
     String generateImageUrn(Image image);
+    String generateImageUrn(String path, String storedFilename);
     void deleteImage(Image image);
     Resource loadAsResource(Image image);
 

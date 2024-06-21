@@ -20,8 +20,7 @@ spring:
     hibernate:
       ddl-auto: "${DDL_AUTO}"
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+      default_batch_fetch_size: 10
 
   security:
     oauth2:
@@ -35,11 +34,17 @@ spring:
       max-file-size: 5MB
       max-request-size: 50MB
 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+
 logging:
   level:
     org:
       springframework:
-        jdbc: TRACE
+#        jdbc: TRACE
 #        security: TRACE
 
 management:
@@ -63,9 +68,9 @@ storage:
 
 api:
   zibview:
-    url: "${API_ZIBVIEW_URL}"
+    url: "http://localhost:8080"
   v-world:
-    url: "${API_VWORLD_URL}"
+    search-url: "https://api.vworld.kr"
     key: "${API_VWORLD_KEY}"
   juso: # 도로명주소 검색 API 개발 ( 사용기간 : 2024-05-12 ~ 2024-08-10 )
     key: "${API_JUSO_KEY}"

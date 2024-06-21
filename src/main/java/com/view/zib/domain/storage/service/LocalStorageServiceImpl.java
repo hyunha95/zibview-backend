@@ -5,6 +5,7 @@ import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.exception.exceptions.StorageFileNotFoundException;
 import com.view.zib.global.utils.NumberUtils;
+import io.micrometer.common.util.StringUtils;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,12 +93,30 @@ public class LocalStorageServiceImpl implements StorageService {
     }
 
     @Override
+    public String generateImageUrl(String path, String storedFilename) {
+        if (StringUtils.isBlank(path) || StringUtils.isBlank(storedFilename)) {
+            return null;
+        }
+
+        return String.format("%s/api/%s/%s", zibViewUrl, path, storedFilename);
+    }
+
+    @Override
     public String generateImageUrn(Image image) {
         if (image == null) {
             return null;
         }
 
         return String.format("/api/%s/%s", image.getPath(), image.getStoredFilename());
+    }
+
+    @Override
+    public String generateImageUrn(String path, String storedFilename) {
+        if (StringUtils.isBlank(path) || StringUtils.isBlank(storedFilename)) {
+            return null;
+        }
+
+        return String.format("/api/%s/%s", path, storedFilename);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.view.zib.domain.address.entity;
 
 import com.view.zib.domain.api.kako.domain.Document;
+import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.entity.Post;
@@ -14,6 +15,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 프론트에서 카카오 지도를 호출해서 리턴되는 값
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -74,7 +78,7 @@ public class Address extends BaseEntity {
     private double longitude; // X 좌표값, 경위도인 경우 경도(longitude)
     private double latitude;  // Y 좌표값, 경위도인 경우 위도(latitude)
 
-    public static Address of(PostRequest.Address addressRequest, List<Image> images, Document kakaoMapResponse) {
+    public static Address of(PostRequest.Address addressRequest, List<Image> images, KakaoAddressResponse kakaoAddressResponse) {
         Address address = Address.builder()
                 .images(images)
                 .zonecode(addressRequest.getZonecode())
@@ -112,13 +116,23 @@ public class Address extends BaseEntity {
                 .bname2English(addressRequest.getBname2English())
                 .hname(addressRequest.getHname())
                 .query(addressRequest.getQuery())
-                .longitude(kakaoMapResponse.getX())
-                .latitude(kakaoMapResponse.getY())
                 .build();
+
+        if (!kakaoAddressResponse.getDocuments().isEmpty()) {
+            Document document = kakaoAddressResponse.getDocuments().getFirst();
+            double longitude = document.getX();
+            double latitude = document.getY();
+            address.updateCoordinate(longitude, latitude);
+        }
 
         images.forEach(image -> image.addEntity(address));
 
         return address;
+    }
+
+    public void updateCoordinate(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public void addEntity(Post post) {

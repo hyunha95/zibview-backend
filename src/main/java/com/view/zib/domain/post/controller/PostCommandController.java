@@ -2,8 +2,7 @@ package com.view.zib.domain.post.controller;
 
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
-import com.view.zib.domain.post.facade.PostFacade;
-import com.view.zib.domain.post.service.PostCommandService;
+import com.view.zib.domain.post.facade.PostCommandFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PostCommandController {
 
-    private final PostFacade postFacade;
+    private final PostCommandFacade postCommandFacade;
 
     @PostMapping
     public ResponseEntity<PostResponse.Save> save(@RequestBody @Valid PostRequest.Save request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postFacade.save(request));
+                .body(postCommandFacade.save(request));
     }
 
 

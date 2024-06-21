@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.facade;
 
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
-import com.view.zib.domain.api.kako.service.KakaoAddressClient;
+import com.view.zib.domain.api.kako.client.KakaoAddressClient;
 import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.response.PostResponse;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class PostFacade {
+public class PostCommandFacade {
 
     private final PostCommandService postCommandService;
     private final KakaoAddressClient kakaoAddressClient;
@@ -23,10 +23,9 @@ public class PostFacade {
      */
     public PostResponse.Save save(PostRequest.Save request) {
         log.info("kakao Address API Call with {}", request.getAddress().getAddress());
-        KakaoAddressResponse kakaoAddressResponse = kakaoAddressClient.searchAddress(request.getAddress().getAddress(), "", 1, 10)
-                .orElse(new KakaoAddressResponse());
+        KakaoAddressResponse kakaoAddressResponse = kakaoAddressClient.searchAddress(request.getAddress().getAddress(), "", 1, 10);
 
-        Long postId = postCommandService.save(request, kakaoAddressResponse.getDocuments().getFirst());
+        Long postId = postCommandService.save(request, kakaoAddressResponse);
         return new PostResponse.Save(postId);
     }
 

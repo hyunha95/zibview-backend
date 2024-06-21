@@ -9,6 +9,10 @@ import java.util.Locale;
 public class P6spySqlFormatDevConfig implements MessageFormattingStrategy {
     @Override
     public String formatMessage(int connectionId, String now, long elapsed, String category, String prepared, String sql, String url) {
+        if ("commit".equals(category)) {
+            return "took " + elapsed + "ms|" + category + "|connection " + connectionId;
+        }
+
         return "took " + elapsed + "ms|" + category + "|connection " + connectionId + formatSql(category, sql);
     }
 

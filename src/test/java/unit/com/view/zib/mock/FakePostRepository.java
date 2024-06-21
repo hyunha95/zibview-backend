@@ -2,10 +2,8 @@ package com.view.zib.mock;
 
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
@@ -20,8 +18,8 @@ public class FakePostRepository implements PostRepository {
     private List<Post> posts = new CopyOnWriteArrayList<>();
 
     @Override
-    public List<Post> findByAddressIdIn(List<Integer> addressIds) {
-        return List.of();
+    public Slice<LatestResidentialPost> findAllLatestResidentialPosts(Pageable pageable) {
+        return null;
     }
 
     @Override

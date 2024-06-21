@@ -35,7 +35,7 @@ class PostQueryControllerTest {
      * 게시글을 가장 가까운 주소를 기준으로 조회한다.
      */
     @Test
-    void getPostByClosestAddress() throws Exception {
+    void getLatestPosts() throws Exception {
         mockMvc.perform(get("/api/posts"))
                 .andExpect(status().isOk())
                 .andDo(print())
