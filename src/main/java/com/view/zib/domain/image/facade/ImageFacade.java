@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,28 +30,24 @@ public class ImageFacade {
     private final ImageCommandService imageCommandService;
     private final ImageQueryService imageQueryService;
     private final AuthService authService;
-
     private final ClockHolder clockHolder;
 
     /**
      * 이미지 파일을 저장하는 기능을 트랜잭션에서 분리
+     *
      * @param saveImageRequest
      */
     public void saveImage(SaveImageRequest saveImageRequest) {
+        // 이미지 저장 어뷰징 방지
+        preventImageAbusing(saveImageRequest);
+
         // 스토리지에 이미지 파일 저장
         Map<String, Storage> storageByUuid = saveImageRequest.getImages().stream()
                 .map(image -> storageService.store(image.getImage(), image.getUuid(), clockHolder))
-                .collect(Collectors.toMap(Storage::uuid, Function.identity()));
+                .collect(toMap(Storage::uuid, Function.identity()));
 
         // 데이터베이스에 이미지 데이터 저장
-        try {
-            imageCommandService.saveImage(saveImageRequest, storageByUuid);
-        } catch (Exception e) {
-            log.error("Failed to save image", e);
-            // TODO 이미지 저장 실패 시 이미지 파일 삭제 로직 추가
-//            storageByUuid.values().forEach(storage -> this.deleteImage(storage));
-            throw e;
-        }
+        imageCommandService.saveImage(saveImageRequest, storageByUuid);
     }
 
     public void deleteImage(String imageUuid) {
@@ -64,12 +62,22 @@ public class ImageFacade {
         // 스토리지에서 이미지 파일 삭제
         storageService.deleteImage(image);
 
-        // 데이터베이스에서 이미지 데이터 삭제
-        imageCommandService.deleteImage(imageUuid);
+        // 이미지 데이터 삭제(삭제 컬럼 업데이트)
+        imageCommandService.delete(image);
     }
 
     public Resource getImage(String storedFilename) {
         Image image = imageQueryService.getByStoredFilename(storedFilename);
         return storageService.loadAsResource(image);
+    }
+
+    /**
+     * 이미지 저장 어뷰징 방지
+     * @param saveImageRequest
+     */
+    private void preventImageAbusing(SaveImageRequest saveImageRequest) {
+        List<Image> unassignedImages = imageQueryService.findByUserIdAndSubPostIdIsNullAndDeletedFalse(authService.getCurrentUser().getId());
+        List<Image> imagesToDelete = imageCommandService.preventAbusing(saveImageRequest.getImages(), unassignedImages);
+        imagesToDelete.forEach(storageService::deleteImage);
     }
 }

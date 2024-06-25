@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -37,5 +38,21 @@ public class ImageQueryServiceImpl implements ImageQueryService {
     @Override
     public Optional<Image> findMostRecentImageByPostIdIn(Long postId) {
         return imageRepository.findMostRecentImageByPostId(postId);
+    }
+
+    @Transactional
+    @Override
+    public List<Image> findByUuidIn(List<String> imageUuids) {
+        return imageRepository.findByUuidIn(imageUuids);
+    }
+
+    @Override
+    public List<Image> findByPostIdInOrderByCreatedAtDesc(List<Long> postIds) {
+        return imageRepository.findByPostIdInOrderByCreatedAtDesc(postIds);
+    }
+
+    @Override
+    public List<Image> findByUserIdAndSubPostIdIsNullAndDeletedFalse(Long currentUserId) {
+        return imageRepository.findByUserIdAndSubPostIdIsNullAndDeletedFalse(currentUserId);
     }
 }

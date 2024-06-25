@@ -28,4 +28,10 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
                 "ORDER BY i.createdAt DESC " +
                 "LIMIT 1")
     Optional<Image> findMostRecentImageByPostId(Long postId);
+
+    @Query("SELECT i FROM Image i WHERE i.post.id IN :postIds ORDER BY i.createdAt")
+    List<Image> findByPostIdInOrderByCreatedAtDesc(List<Long> postIds);
+
+    @Query("SELECT i FROM Image i WHERE i.user.id = :currentUserId AND i.subPost IS NULL AND i.deleted = false")
+    List<Image> findByUserIdAndSubPostIdIsNullAndDeletedFalse(Long currentUserId);
 }

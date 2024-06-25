@@ -2,6 +2,7 @@ package com.view.zib.domain.image.entity;
 
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
+import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.domain.user.entity.User;
@@ -31,6 +32,10 @@ public class Image extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_post_id")
     private SubPost subPost;
 
@@ -56,6 +61,9 @@ public class Image extends BaseEntity {
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean representative;
+
+    @Column(length = 1, columnDefinition = "tinyint(1)")
+    private boolean deleted;
 
     public static Image from(SaveImageRequest.Image image, Storage storage, User currentUser) {
         return Image.builder()
@@ -90,5 +98,13 @@ public class Image extends BaseEntity {
 
     public void updateRepresentative(boolean bool) {
         this.representative = bool;
+    }
+
+    public void addEntity(Post post) {
+        this.post = post;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }
