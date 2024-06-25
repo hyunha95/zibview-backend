@@ -87,6 +87,9 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'commons-collections:commons-collections:3.2.2'
+
+
 }
 
 sourceSets{
