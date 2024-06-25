@@ -13,14 +13,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface StorageService {
 
     Storage store(MultipartFile file, String uuid, ClockHolder clockHolder);
     String generateImageUrl(Image image);
+    List<String> generateImageUrls(List<Image> images);
     String generateImageUrl(String path, String storedFilename);
     String generateImageUrn(Image image);
     String generateImageUrn(String path, String storedFilename);
+    List<String> generateImageUrns(List<Image> images);
     void deleteImage(Image image);
     Resource loadAsResource(Image image);
 

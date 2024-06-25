@@ -5,6 +5,7 @@ import com.view.zib.domain.storage.domain.Storage;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.exception.exceptions.StorageFileNotFoundException;
 import com.view.zib.global.utils.NumberUtils;
+import io.jsonwebtoken.lang.Collections;
 import io.micrometer.common.util.StringUtils;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -93,6 +95,12 @@ public class LocalStorageServiceImpl implements StorageService {
     }
 
     @Override
+    public List<String> generateImageUrls(List<Image> images) {
+        if (Collections.isEmpty(images)) return List.of();
+        return images.stream().map(this::generateImageUrl).toList();
+    }
+
+    @Override
     public String generateImageUrl(String path, String storedFilename) {
         if (StringUtils.isBlank(path) || StringUtils.isBlank(storedFilename)) {
             return null;
@@ -117,6 +125,12 @@ public class LocalStorageServiceImpl implements StorageService {
         }
 
         return String.format("/api/%s/%s", path, storedFilename);
+    }
+
+    @Override
+    public List<String> generateImageUrns(List<Image> images) {
+        if (Collections.isEmpty(images)) return List.of();
+        return images.stream().map(this::generateImageUrn).toList();
     }
 
     /**

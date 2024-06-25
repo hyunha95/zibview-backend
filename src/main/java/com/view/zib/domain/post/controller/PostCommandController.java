@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.controller;
 
 import com.view.zib.domain.post.controller.request.PostRequest;
-import com.view.zib.domain.post.controller.response.PostResponse;
+import com.view.zib.domain.post.controller.request.SubPostRequest;
 import com.view.zib.domain.post.facade.PostCommandFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,17 @@ public class PostCommandController {
     private final PostCommandFacade postCommandFacade;
 
     @PostMapping
-    public ResponseEntity<PostResponse.Save> save(@RequestBody @Valid PostRequest.Save request) {
+    public ResponseEntity<PostId> create(@RequestBody @Valid PostRequest.Save request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postCommandFacade.save(request));
+                .body(new PostId(postCommandFacade.create(request)));
     }
 
+    @PostMapping("/sub-post")
+    public ResponseEntity<SubPostId> saveSubPost(@RequestBody @Valid SubPostRequest.Save request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new SubPostId(postCommandFacade.createSubPost(request)));
+    }
 
+    public record PostId (Long postId) {}
+    public record SubPostId (Long subPostId) {}
 }

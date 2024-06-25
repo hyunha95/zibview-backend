@@ -42,9 +42,6 @@ public class UserAddress extends BaseEntity {
                 .contractEndDate(contractInfo.getContractEndDate())
                 .build();
 
-        // 연관관계 세팅
-        user.getUserAddresses().add(userAddress);
-
         return userAddress;
     }
 }

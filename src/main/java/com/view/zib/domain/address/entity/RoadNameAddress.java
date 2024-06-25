@@ -1,5 +1,7 @@
 package com.view.zib.domain.address.entity;
 
+import com.view.zib.domain.api.kako.domain.Coordinate;
+import com.view.zib.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -8,13 +10,17 @@ import lombok.Getter;
 @Table(name = "road_name_address")
 public class RoadNameAddress {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "road_name_address_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "road_name_code_id")
     private RoadNameCode roadNameCode;
+
+    @OneToOne(mappedBy = "roadNameAddress")
+    private Post post;
 
     @OneToOne
     @JoinColumn(name = "additional_info_id")
@@ -60,4 +66,22 @@ public class RoadNameAddress {
     private String buildingPurposeCodeName;
     private String detailPurposeCode;
     private String detailPurposeCodeName;
+
+    private Double latitude;
+    private Double longitude;
+
+    public String getFullAddress() {
+        return String.format("%s %s %s %s-%s",
+                roadNameCode.getSidoName(),
+                roadNameCode.getSigunguName(),
+                roadNameCode.getRoadName(),
+                buildingNum,
+                buildingSubNum
+        );
+    }
+
+    public void updateCoordinate(Coordinate coordinate) {
+        this.latitude = coordinate.latitude();
+        this.longitude = coordinate.longitude();
+    }
 }

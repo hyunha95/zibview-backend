@@ -3,6 +3,7 @@ package com.view.zib.domain.post.entity;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.controller.request.PostRequest;
+import com.view.zib.domain.post.controller.request.SubPostRequest;
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -55,6 +58,7 @@ public class SubPost extends BaseEntity {
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean deleted;
     private Long commentCount;
+    private Long likeCount;
 
     private LocalDate contractStartDate;
     private LocalDate contractEndDate;
@@ -67,14 +71,25 @@ public class SubPost extends BaseEntity {
                 .contractInfo(contractInfo)
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .contractStartDate(request.getContractInfo().getContractStartDate())
-                .contractEndDate(request.getContractInfo().getContractEndDate())
                 .build();
 
         images.forEach(image -> image.addEntity(subPost));
         post.getSubPosts().add(subPost);
         contractInfo.addEntity(subPost);
         return subPost;
+    }
+
+    public static SubPost of(SubPostRequest.Save request, Post post, List<Image> images, User currentUser) {
+        return SubPost.builder()
+                .post(post)
+                .images(images)
+                .user(currentUser)
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .deleted(false)
+                .commentCount(0L)
+                .likeCount(0L)
+                .build();
     }
 
     public Optional<Comment> getLatestComment() {

@@ -5,5 +5,5 @@ import com.view.zib.domain.post.controller.request.PostRequest;
 
 public interface PostCommandService {
 
-    Long save(PostRequest.Save request, KakaoAddressResponse kakaoAddressResponse);
+    Long create(PostRequest.Save request, KakaoAddressResponse kakaoAddressResponse);
 }

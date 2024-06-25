@@ -1,7 +1,5 @@
 package com.view.zib.domain.post.controller.request;
 
-import com.view.zib.domain.building.enums.BuildingType;
-import com.view.zib.domain.post.enums.RentType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,16 +14,12 @@ import java.util.List;
 @Data
 public class PostRequest {
 
-    @NotBlank
-    @Size(max = 200)
+    @NotBlank @Size(max = 100)
     private String title;
 
     @NotBlank @Size(max = 1000)
     private String description;
     private List<String> imageUuids;
-
-    @NotNull
-    private BuildingType buildingType;
 
     @Valid
     private Address address;
@@ -33,14 +27,13 @@ public class PostRequest {
     @Valid
     private ContractInfo contractInfo;
 
-
     @NoArgsConstructor
     @Getter
     public static class Save extends PostRequest {
 
         @Builder
-        public Save(String title, String description, List<String> imageUuids, BuildingType buildingType, Address address, ContractInfo contractInfo) {
-            super(title, description, imageUuids, buildingType, address, contractInfo);
+        public Save(String title, String description, List<String> imageUuids, Address address, ContractInfo contractInfo) {
+            super(title, description, imageUuids, address, contractInfo);
         }
     }
 
@@ -101,17 +94,5 @@ public class PostRequest {
 
         @NotNull
         private LocalDate contractEndDate;
-        private ContractPrice contractPrice;
-    }
-
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class ContractPrice {
-        private RentType rentType;        // 전세, 월세, 반전세
-        private double deposit;        // 보증금
-        private double monthlyFee;        // 월세
-        private double maintenanceFee;     // 관리비
     }
 }

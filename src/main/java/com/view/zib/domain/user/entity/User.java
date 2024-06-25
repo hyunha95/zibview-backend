@@ -6,6 +6,7 @@ import com.view.zib.domain.location.entity.Location;
 import com.view.zib.domain.user.enums.Role;
 import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.jpa.BaseEntity;
+import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,10 +31,6 @@ public class User extends BaseEntity implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-
-    @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<UserAddress> userAddresses = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Location location;
@@ -70,7 +66,13 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public boolean isMyImage(Image image) {
-        return image.getUser().equals(this);
+        return image.getUser() == this;
+    }
+
+    public boolean isMyImages(List<Image> images) {
+        if (Collections.isEmpty(images)) return true;
+
+        return images.stream().allMatch(this::isMyImage);
     }
 
     // ===============
@@ -119,4 +121,6 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
+
+
 }

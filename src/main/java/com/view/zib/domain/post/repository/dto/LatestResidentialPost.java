@@ -1,16 +1,24 @@
 package com.view.zib.domain.post.repository.dto;
 
-public record LatestResidentialPost (
-        Long postId,
-        String sidoName,
-        String sigunguName,
-        String roadName,
-        String buildingNum,
-        String buildingSubNum,
-        String buildingName,
-        int likeCount,
-        int commentCount,
-        String imagePath,
-        String imageStoredFilename
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class LatestResidentialPost {
+    private Long postId;
+    private String sidoName;
+    private String sigunguName;
+    private String roadName;
+    private String buildingNum;
+    private String buildingSubNum;
+    private String buildingName;
+    private int likeCount;
+    private int commentCount;
+    private String imagePath;
+    private String imageStoredFilename;
 }

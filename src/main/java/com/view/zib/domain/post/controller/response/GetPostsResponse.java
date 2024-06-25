@@ -1,35 +1,36 @@
 package com.view.zib.domain.post.controller.response;
 
-import com.view.zib.domain.post.entity.ContractInfo;
+import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
 import com.view.zib.domain.storage.service.StorageService;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public record GetPostsResponse(
         Long postId,
         String address,
         String buildingName,
-        String imageUrl,
-        String imageUrn,
+        List<String> imageUrl,
+        List<String> imageUrn,
         int likeCount,
         int commentCount
 ) {
-    public GetPostsResponse(LatestResidentialPost response, StorageService storageService) {
+    public GetPostsResponse(LatestResidentialPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
-                response.postId(),
+                response.getPostId(),
                 String.format("%s %s %s %s-%s",
-                        response.sidoName(),
-                        response.sigunguName(),
-                        response.roadName(),
-                        response.buildingNum(),
-                        response.buildingSubNum()
+                        response.getSidoName(),
+                        response.getSigunguName(),
+                        response.getRoadName(),
+                        response.getBuildingNum(),
+                        response.getBuildingSubNum()
                 ),
-                response.buildingName(),
-                storageService.generateImageUrl(response.imagePath(), response.imageStoredFilename()),
-                storageService.generateImageUrn(response.imagePath(), response.imageStoredFilename()),
-                response.likeCount(),
-                response.commentCount()
+                response.getBuildingName(),
+                storageService.generateImageUrls(imagesByPost.get(response.getPostId())),
+                storageService.generateImageUrns(imagesByPost.get(response.getPostId())),
+                response.getLikeCount(),
+                response.getCommentCount()
         );
     }
 }

@@ -42,7 +42,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "road_name_address_id")
     private RoadNameAddress roadNameAddress;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToOne(mappedBy = "post")
     private Address address;
 
     private double rating;

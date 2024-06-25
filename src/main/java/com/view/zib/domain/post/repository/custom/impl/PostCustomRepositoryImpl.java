@@ -15,7 +15,6 @@ import java.util.List;
 import static com.view.zib.domain.address.entity.QAdditionalInfo.additionalInfo;
 import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
 import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
-import static com.view.zib.domain.image.entity.QImage.image;
 import static com.view.zib.domain.post.entity.QPost.post;
 
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     public Slice<LatestResidentialPost> findAllLatestResidentialPosts(Pageable pageable) {
         int pageSize = pageable.getPageSize();
         List<LatestResidentialPost> responses = jpaQueryFactory.select(
-                        Projections.constructor(LatestResidentialPost.class,
+                        Projections.fields(LatestResidentialPost.class,
                                 post.id.as("postId"),
                                 roadNameCode.sidoName,
                                 roadNameCode.sigunguName,
@@ -37,13 +36,10 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                                 roadNameAddress.buildingSubNum,
                                 additionalInfo.buildingName,
                                 post.likeCount,
-                                post.commentCount,
-                                image.path.as("imagePath"),
-                                image.storedFilename.as("imageStoredFilename")
+                                post.commentCount
                         )
                 )
                 .from(post)
-                .leftJoin(post.mostRecentImage, image)
                 .join(post.roadNameAddress, roadNameAddress)
                 .join(roadNameAddress.roadNameCode, roadNameCode)
                 .join(roadNameAddress.additionalInfo, additionalInfo)

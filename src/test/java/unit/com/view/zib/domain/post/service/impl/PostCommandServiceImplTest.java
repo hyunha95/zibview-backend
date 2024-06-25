@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
 class PostCommandServiceImplTest {
@@ -36,7 +35,7 @@ class PostCommandServiceImplTest {
     }
 
     @Test
-    void testSaveShouldSuccess() {
+    void testCreateShouldSuccess() {
         // given
         fakeImageRepository.save(Image.builder()
                 .uuid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
@@ -56,7 +55,6 @@ class PostCommandServiceImplTest {
             .title("Your Title")
             .description("Your Description")
             .imageUuids(List.of("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))
-            .buildingType(BuildingType.APARTMENT)
             .address(new PostRequest.Address("서울 서초구 강남대로 27", "27, Gangnam-daero, Seocho-gu, Seoul, Korea", "R", "N", "",
                                                 "", "", "", "1165010200", "양재동", "", "", "양재동", "Yangjae-dong", "Yangjae-dong",
                                                 "1165010200102320000000001", "AT센터", "", "", "서울 서초구 양재동 232",
@@ -69,7 +67,7 @@ class PostCommandServiceImplTest {
             .build();
 
         // when
-        postCommandService.save(postRequestSave, null);
+        postCommandService.create(postRequestSave, null);
 
         // then
         Image image = fakeImageRepository.findById(1L).get();

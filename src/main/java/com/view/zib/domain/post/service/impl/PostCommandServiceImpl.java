@@ -55,7 +55,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
-    public Long save(PostRequest.Save request, KakaoAddressResponse kakaoAddressResponse) {
+    public Long create(PostRequest.Save request, KakaoAddressResponse kakaoAddressResponse) {
         // user
         User user = userService.getByEmail(authService.getEmail());
 
@@ -79,6 +79,8 @@ public class PostCommandServiceImpl implements PostCommandService {
         Post post = postRepository
                 .findByAddressAndAddressType(address.getAddress(), address.getAddressType())
                 .orElseGet(newPost(address));
+
+        images.forEach(image -> image.addEntity(post));
 
         // contractInfo
         ContractInfo contractInfo = ContractInfo.of(request.getContractInfo(), post);
