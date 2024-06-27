@@ -1,12 +1,9 @@
 package com.view.zib.domain.post.service.impl;
 
-import com.view.zib.domain.address.domain.Coordinate;
-import com.view.zib.domain.post.controller.response.GetPostResponse;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
 import com.view.zib.domain.post.service.PostQueryService;
-import com.view.zib.domain.storage.service.StorageService;
 import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,21 +28,6 @@ public class PostQueryServiceImpl implements PostQueryService {
     @Override
     public Slice<LatestResidentialPost> getLatestPosts(Pageable pageable) {
         return postRepository.findAllLatestResidentialPosts(pageable);
-    }
-
-    @Override
-    public GetPostResponse getPostDetails(Long postId, StorageService storageService) {
-        Post post = getById(postId);
-        return GetPostResponse.from(post, storageService);
-    }
-
-    @Override
-    public Coordinate getCoordinateByPostId(Long postId) {
-        Post post = getById(postId);
-        return Coordinate.builder()
-                .latitude(post.getAddress().getLatitude())
-                .longitude(post.getAddress().getLongitude())
-                .build();
     }
 }
 

@@ -3,7 +3,6 @@ package com.view.zib.domain.post.entity;
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.address.entity.RoadNameAddress;
 import com.view.zib.domain.image.entity.Image;
-import com.view.zib.domain.post.enums.RentType;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,10 +12,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -64,16 +61,16 @@ public class Post extends BaseEntity {
      * RentType 별로 마지막 SubPost를 반환한다.
      * @return
      */
-    public Map<RentType, SubPost> getLatestSubPosts() {
-        return subPosts.stream()
-                .collect(groupingBy(
-                        subPost -> subPost.getContractInfo().getRentType(),
-                        collectingAndThen(
-                                toList(),
-                                list -> list.stream().sorted(comparing(SubPost::getCreatedAt)).toList().getLast()
-                        )
-                ));
-    }
+//    public Map<RentType, SubPost> getLatestSubPosts() {
+//        return subPosts.stream()
+//                .collect(groupingBy(
+//                        subPost -> subPost.getContractInfo().getRentType(),
+//                        collectingAndThen(
+//                                toList(),
+//                                list -> list.stream().sorted(comparing(SubPost::getCreatedAt)).toList().getLast()
+//                        )
+//                ));
+//    }
 
     public List<SubPost> getSubPostsNotDeletedOrderByIdDesc() {
         return subPosts.stream()

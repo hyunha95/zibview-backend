@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,9 +43,6 @@ public class SubPost extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subPost")
     private List<Image> images = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subPost")
-    private ContractInfo contractInfo;
-
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subPost")
     private List<Comment> comments = new ArrayList<>();
@@ -57,18 +53,15 @@ public class SubPost extends BaseEntity {
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean deleted;
-    private Long commentCount;
-    private Long likeCount;
-
-    private LocalDate contractStartDate;
-    private LocalDate contractEndDate;
+    private long commentCount;
+    private long likeCount;
+    private long dislikeCount;
 
     public static SubPost of(User user, PostRequest.Save request, List<Image> images, Post post, ContractInfo contractInfo) {
         SubPost subPost = SubPost.builder()
                 .post(post)
                 .user(user)
                 .images(images)
-                .contractInfo(contractInfo)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .build();
@@ -97,5 +90,17 @@ public class SubPost extends BaseEntity {
                 .filter(comment -> !comment.isDeleted())
                 .sorted(comparing(Comment::getCreatedAt).reversed())
                 .findAny();
+    }
+
+    public void like(boolean liked) {
+        if (liked) {
+            likeCount++;
+        } else {
+            likeCount--;
+        }
+    }
+
+    public void dislike() {
+        likeCount--;
     }
 }

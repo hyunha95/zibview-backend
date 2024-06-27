@@ -12,7 +12,7 @@ import com.view.zib.domain.comment.repository.CommentRepository;
 import com.view.zib.domain.comment.service.CommentCommandService;
 import com.view.zib.domain.log.service.CommentLikeLogService;
 import com.view.zib.domain.post.entity.SubPost;
-import com.view.zib.domain.post.service.SubPostService;
+import com.view.zib.domain.post.service.SubPostQueryService;
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 public class CommentCommandServiceImpl implements CommentCommandService {
 
     private final AuthService authService;
-    private final SubPostService subPostService;
+    private final SubPostQueryService subPostQueryService;
     private final CommentLikeLogService commentLikeLogService;
 
     private final CommentRepository commentRepository;
@@ -37,7 +37,7 @@ public class CommentCommandServiceImpl implements CommentCommandService {
 
     @Override
     public Long createComment(CreateCommentRequest request) {
-        SubPost subPost = subPostService.getById(request.subPostId());
+        SubPost subPost = subPostQueryService.getById(request.subPostId());
         Comment parentComment = this.getById(request.parentCommentId());
         Comment newComment = Comment.of(request.comment(), authService.getCurrentUser(), subPost, parentComment);
         commentRepository.save(newComment);

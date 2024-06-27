@@ -5,10 +5,12 @@ import com.view.zib.domain.api.kako.domain.Coordinate;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
+import com.view.zib.domain.post.entity.SubPostLike;
 import com.view.zib.domain.storage.service.StorageService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -21,15 +23,16 @@ public record GetPostResponse(
 ) {
 
     public record SubPostDto(
-            Long subPostId,
-            Long userId,
-            String userName,
-            String profileImageUrl,
+            long subPostId,
             LocalDateTime createdAt,
             String title,
             String description,
             List<String> imageUrls,
-            Long commentCount,
+            boolean liked,
+            long likeCount,
+            boolean disliked,
+            long dislikeCount,
+            long commentCount,
             CommentDto latestComment
     ) {
     }
@@ -57,10 +60,10 @@ public record GetPostResponse(
         return latitude != 0.0 && longitude != 0.0;
     }
 
-    public static GetPostResponse from(Post post, StorageService storageService) {
+    public static GetPostResponse of(Post post, List<SubPost> subPosts, List<SubPostLike> subPostLikes, StorageService storageService) {
         RoadNameAddress roadNameAddress = post.getRoadNameAddress();
-        List<SubPostDto> subPostDtos = post.getSubPostsNotDeletedOrderByIdDesc().stream()
-                .map(mapToSubPostDtos(storageService))
+        List<SubPostDto> subPostDtos = subPosts.stream()
+                .map(mapToSubPostDtos(subPostLikes, storageService))
                 .toList();
 
         return new GetPostResponse(
@@ -73,7 +76,7 @@ public record GetPostResponse(
     }
 
     // SubPost Entity를 SubPostDto로 변환
-    private static Function<SubPost, SubPostDto> mapToSubPostDtos(StorageService storageService) {
+    private static Function<SubPost, SubPostDto> mapToSubPostDtos(List<SubPostLike> subPostLikes, StorageService storageService) {
         return subPost -> {
             List<String> imageUrls = subPost.getImages().stream()
                     .map(storageService::generateImageUrl)
@@ -85,13 +88,14 @@ public record GetPostResponse(
 
             return new SubPostDto(
                     subPost.getId(),
-                    subPost.getUser().getId(),
-                    subPost.getUser().getName(),
-                    subPost.getUser().getPictureUrl(),
                     subPost.getCreatedAt(),
                     subPost.getTitle(),
                     subPost.getDescription(),
                     imageUrls,
+                    subPostLikes.stream().anyMatch(subPostLike -> Objects.equals(subPostLike.getSubPost(), subPost) && subPostLike.isLiked()),
+                    subPost.getLikeCount(),
+                    subPostLikes.stream().anyMatch(subPostLike -> Objects.equals(subPostLike.getSubPost(), subPost) && !subPostLike.isLiked()),
+                    subPost.getDislikeCount(),
                     subPost.getCommentCount(),
                     latestComment
             );

@@ -43,7 +43,8 @@ public class Comment extends BaseEntity {
 
     @Column(length = 1, columnDefinition = "tinyint(1)")
     private boolean deleted;
-    private Long likeCount;
+    private long likeCount;
+    private long dislikeCount;
 
     public static Comment of(String comment, User user, SubPost subPost, Comment parentComment) {
         return Comment.builder()

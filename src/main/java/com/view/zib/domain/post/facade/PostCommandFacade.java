@@ -3,15 +3,14 @@ package com.view.zib.domain.post.facade;
 import com.view.zib.domain.api.kako.client.KakaoAddressClient;
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.auth.service.AuthService;
-import com.view.zib.domain.comment.controller.request.CreateCommentRequest;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageQueryService;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.request.SubPostRequest;
 import com.view.zib.domain.post.entity.Post;
-import com.view.zib.domain.post.service.PostCommandService;
-import com.view.zib.domain.post.service.PostQueryService;
-import com.view.zib.domain.post.service.SubPostCommandService;
+import com.view.zib.domain.post.entity.SubPost;
+import com.view.zib.domain.post.entity.SubPostLike;
+import com.view.zib.domain.post.service.*;
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,10 +26,13 @@ import java.util.List;
 public class PostCommandFacade {
 
     private final PostQueryService postQueryService;
+    private final SubPostQueryService subPostQueryService;
     private final ImageQueryService imageQueryService;
+    private final SubPostLikeQueryService subPostLikeQueryService;
 
     private final PostCommandService postCommandService;
     private final SubPostCommandService subPostCommandService;
+    private final SubPostLikeCommandService subPostLikeCommandService;
     private final AuthService authService;
 
     private final KakaoAddressClient kakaoAddressClient;
@@ -58,8 +61,31 @@ public class PostCommandFacade {
         return subPostCommandService.create(request, post, images, currentUser);
     }
 
-    public Long createComment(CreateCommentRequest request) {
-        return null;
+    /**
+     * 좋아요 토글
+     *
+     * @param subPostId
+     */
+    public void toggleLikeSubPost(Long subPostId) {
+        User currentUser = authService.getCurrentUser();
+
+        SubPost subPost = subPostQueryService.getByIdForUpdate(subPostId);
+
+        subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
+                .ifPresentOrElse(dislikeSubPost(subPost), likeSubPost(subPost, currentUser));
     }
 
+    private Consumer<SubPostLike> dislikeSubPost(SubPost subPost) {
+        return subPostLike -> {
+            subPostLikeCommandService.delete(subPostLike);
+            subPost.like(false);
+        };
+    }
+
+    private Runnable likeSubPost(SubPost subPost, User currentUser) {
+        return () -> {
+            subPostLikeQueryService.create(subPost, currentUser);
+            subPost.like(true);
+        };
+    }
 }
