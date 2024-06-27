@@ -6,7 +6,11 @@ import com.view.zib.domain.user.entity.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface AuthService {
+    boolean isLoggedIn();
+
     User getCurrentUser();
+
+    Long getCurrentUserId();
 
     Jwt getJwt();
 

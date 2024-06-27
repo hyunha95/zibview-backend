@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -24,9 +25,19 @@ public class AuthServiceImpl implements AuthService {
     private final ClockHolder clockHolder;
 
     @Override
+    public boolean isLoggedIn() {
+        return !Objects.equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), "anonymousUser");
+    }
+
+    @Override
     public User getCurrentUser() {
         return userRepository.findByEmail(this.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", this.getEmail()));
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return this.getCurrentUser().getId();
     }
 
     /**
