@@ -103,4 +103,12 @@ public class SubPost extends BaseEntity {
     public void dislike() {
         likeCount--;
     }
+
+    public void increaseLikeCount() {
+        likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        likeCount--;
+    }
 }

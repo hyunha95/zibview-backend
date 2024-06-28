@@ -27,6 +27,14 @@ public class RestControllerExceptionHandler {
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSize;
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Error> illegalStateExceptionHandler(IllegalStateException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new Error(e.getMessage(), LocalDateTime.now(), new ArrayList<>()));
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Error> maxUploadSizeExceededExceptionHandler(MaxUploadSizeExceededException e) {
         log.error(e.getMessage(), e);

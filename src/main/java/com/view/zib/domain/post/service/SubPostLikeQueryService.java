@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubPostLikeQueryService {
+    SubPostLike getBySubPostIdAndUserId(Long subPostId, Long userId);
+
     Optional<SubPostLike> findBySubPostIdAndUserId(Long subPostId, Long currentUserId);
 
     void create(SubPost subPost, User currentUser);

@@ -8,10 +8,7 @@ import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.jpa.BaseEntity;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,9 +17,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder // @VisibleForTesting
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "users")
 @Entity
@@ -121,6 +118,4 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
-
-
 }

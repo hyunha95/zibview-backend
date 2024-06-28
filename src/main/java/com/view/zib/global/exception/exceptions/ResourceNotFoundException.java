@@ -16,4 +16,9 @@ public class ResourceNotFoundException extends CustomException {
     public ResourceNotFoundException(String datasource, String column, String value) {
         super(String.format("Resource not found in %s with %s: %s", datasource, column, value));
     }
+
+    public ResourceNotFoundException(String datasource, Long id1, Long id2, String message) {
+        super("Resource not found in " + datasource + " with id: [" + id1 + ", " + id2 + "] message: " + message, HttpStatus.NOT_FOUND);
+    }
+
 }

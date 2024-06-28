@@ -28,9 +28,15 @@ public class PostCommandController {
                 .body(new SubPostId(postCommandFacade.createSubPost(request)));
     }
 
-    @PostMapping("/sub-post/{subPostId}/toggle-like")
-    public ResponseEntity<Void> toggleLikeSubPost(@PathVariable Long subPostId) {
-        postCommandFacade.toggleLikeSubPost(subPostId);
+    @PostMapping("/sub-post/{subPostId}/like")
+    public ResponseEntity<Void> likeSubPost(@PathVariable Long subPostId) {
+        postCommandFacade.likeSubPost(subPostId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/sub-post/{subPostId}/removelike")
+    public ResponseEntity<Void> removeSubPostLike(@PathVariable Long subPostId) {
+        postCommandFacade.removeSubPostLike(subPostId);
         return ResponseEntity.ok().build();
     }
 

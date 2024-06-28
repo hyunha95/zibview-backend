@@ -22,6 +22,21 @@ public class FakeImageRepository implements ImageRepository {
     List<Image> images = new CopyOnWriteArrayList<>();
 
     @Override
+    public Optional<Image> findMostRecentImageByPostId(Long postId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Image> findByPostIdInOrderByCreatedAtDesc(List<Long> postIds) {
+        return List.of();
+    }
+
+    @Override
+    public List<Image> findByUserIdAndSubPostIdIsNullAndDeletedFalse(Long currentUserId) {
+        return List.of();
+    }
+
+    @Override
     public Optional<Image> findByStoredFilename(String storedFileName) {
         return Optional.empty();
     }

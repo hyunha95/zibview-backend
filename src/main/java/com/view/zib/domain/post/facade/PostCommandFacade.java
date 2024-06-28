@@ -13,14 +13,17 @@ import com.view.zib.domain.post.entity.SubPostLike;
 import com.view.zib.domain.post.service.*;
 import com.view.zib.domain.user.entity.User;
 import com.view.zib.global.exception.exceptions.ForbiddenException;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 @Slf4j
+@Builder
 @RequiredArgsConstructor
 @Component
 public class PostCommandFacade {
@@ -61,31 +64,54 @@ public class PostCommandFacade {
         return subPostCommandService.create(request, post, images, currentUser);
     }
 
-    /**
-     * 좋아요 토글
-     *
-     * @param subPostId
-     */
-    public void toggleLikeSubPost(Long subPostId) {
+    @Transactional
+    public void likeSubPost(Long subPostId) {
         User currentUser = authService.getCurrentUser();
-
         SubPost subPost = subPostQueryService.getByIdForUpdate(subPostId);
 
         subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
-                .ifPresentOrElse(dislikeSubPost(subPost), likeSubPost(subPost, currentUser));
+                .ifPresentOrElse(
+                        likeSubPost(subPost),
+                        createSubPostLike(subPost, currentUser)
+                );
+    }
+
+    @Transactional
+    public void removeSubPostLike(Long subPostId) {
+        User currentUser = authService.getCurrentUser();
+        SubPost subPost = subPostQueryService.getByIdForUpdate(subPostId);
+
+        subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
+                .ifPresentOrElse(
+                        dislikeSubPost(subPost),
+                        () -> { throw new IllegalStateException("좋아요 상태가 아닙니다."); }
+                );
     }
 
     private Consumer<SubPostLike> dislikeSubPost(SubPost subPost) {
         return subPostLike -> {
-            subPostLikeCommandService.delete(subPostLike);
-            subPost.like(false);
+            if (!subPostLike.isLiked()) {
+                throw new IllegalStateException("이미 좋아요 취소 상태입니다.");
+            }
+            subPost.decreaseLikeCount();
+            subPostLike.dislike();
         };
     }
 
-    private Runnable likeSubPost(SubPost subPost, User currentUser) {
+    private Consumer<SubPostLike> likeSubPost(SubPost subPost) {
+        return subPostLike -> {
+            if (subPostLike.isLiked()) {
+                throw new IllegalStateException("이미 좋아요 상태입니다.");
+            }
+            subPost.increaseLikeCount();
+            subPostLike.like();
+        };
+    }
+
+    private Runnable createSubPostLike(SubPost subPost, User currentUser) {
         return () -> {
             subPostLikeQueryService.create(subPost, currentUser);
-            subPost.like(true);
+            subPost.increaseLikeCount();
         };
     }
 }

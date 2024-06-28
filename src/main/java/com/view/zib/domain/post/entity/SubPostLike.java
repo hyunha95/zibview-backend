@@ -34,4 +34,16 @@ public class SubPostLike {
                 .user(currentUser)
                 .build();
     }
+
+    public void changeLikeStatus(boolean liked) {
+        this.liked = liked;
+    }
+
+    public void like() {
+        this.liked = true;
+    }
+
+    public void dislike() {
+        this.liked = false;
+    }
 }

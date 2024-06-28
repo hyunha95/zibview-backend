@@ -11,6 +11,16 @@ import java.time.LocalDateTime;
 public class FakeAuthService implements AuthService {
 
     @Override
+    public boolean isLoggedIn() {
+        return false;
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return 0L;
+    }
+
+    @Override
     public Jwt getJwt() {
         return null;
     }
