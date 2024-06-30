@@ -56,18 +56,18 @@ okta:
     audience: "${OKTA_AUDIENCE}"
 
 storage:
-  root-path: "${STORAGE_ROOT_PATH}"
+  root-path: "/Users/nohyunha/Documents/projects/zibview"
 
 api:
   zibview:
-    url: "${API_ZIBVIEW_URL}"
+    url: "http://localhost:8080"
   v-world:
-    url: "${API_VWORLD_URL}"
-    key: "${API_VWORLD_KEY}"
+    url: "https://api.vworld.kr/ned/data/getBuildingUse"
+    key: "${API_VWORLD_KEY:default-vworld-key}"
   juso: # 도로명주소 검색 API 개발 ( 사용기간 : 2024-05-12 ~ 2024-08-10 )
-    key: "${API_JUSO_KEY}"
+    key: "${API_JUSO_KEY:default-juso-key}"
   kakao-address:
-    key: "${API_KAKAO_ADDRESS_KEY}"
-    url: "${API_KAKAO_ADDRESS_URL}"
+    key: "${API_KAKAO_ADDRESS_KEY:default-kakao-address-key}"
+    url: "https://dapi.kakao.com/v2/local"
   kakao-map:
-    key: "${API_KAKAO_MAP_KEY}"
+    key: "${API_KAKAO_MAP_KEY:default-kakao-map-key}"

@@ -42,7 +42,7 @@ public class PostCommandController {
 
     @PostMapping("/sub-post/{subPostId}/dislike")
     public ResponseEntity<Void> dislikeSubPost(@PathVariable Long subPostId) {
-//        postCommandFacade.dislikeSubPost(subPostId);
+        postCommandFacade.dislikeSubPost(subPostId);
         return ResponseEntity.ok().build();
     }
 

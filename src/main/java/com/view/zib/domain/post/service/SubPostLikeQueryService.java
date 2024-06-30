@@ -12,7 +12,7 @@ public interface SubPostLikeQueryService {
 
     Optional<SubPostLike> findBySubPostIdAndUserId(Long subPostId, Long currentUserId);
 
-    void create(SubPost subPost, User currentUser);
+    void create(SubPost subPost, User currentUser, boolean liked);
 
     List<SubPostLike> findBySubPostIdInAndUserId(List<Long> subPostIds, Long userId);
 }

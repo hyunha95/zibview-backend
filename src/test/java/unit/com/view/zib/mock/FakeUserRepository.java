@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +18,15 @@ import java.util.function.Function;
 
 public class FakeUserRepository implements UserRepository {
 
-    private AtomicLong atomicLong = new AtomicLong();
-    private static List<User> users = new CopyOnWriteArrayList<>();
+    private AtomicLong atomicLong = new AtomicLong(1);
+    private static List<User> data = new CopyOnWriteArrayList<>();
+
+    @Override
+    public <S extends User> S save(S entity) {
+        ReflectionTestUtils.setField(entity, "id", atomicLong.incrementAndGet());
+        data.add(entity);
+        return entity;
+    }
 
     @Override
     public Optional<User> findBySubject(String subject) {
@@ -101,13 +109,8 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public <S extends User> S save(S entity) {
-        return null;
-    }
-
-    @Override
     public Optional<User> findById(Long aLong) {
-        return users.stream().filter(user -> Objects.equals(user.getId(), aLong)).findAny();
+        return data.stream().filter(user -> Objects.equals(user.getId(), aLong)).findAny();
     }
 
     @Override

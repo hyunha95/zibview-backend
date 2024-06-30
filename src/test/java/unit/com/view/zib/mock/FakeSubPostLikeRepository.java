@@ -47,6 +47,7 @@ public class FakeSubPostLikeRepository implements SubPostLikeRepository {
                     .id(atomicLong.getAndIncrement())
                     .subPost(entity.getSubPost())
                     .user(entity.getUser())
+                    .liked(entity.isLiked())
                     .build();
             data.add(newSubPostLike);
             return (S) newSubPostLike;

@@ -13,12 +13,12 @@ import java.util.Optional;
 @Configuration
 public class JpaAuditConfig implements AuditorAware<String> {
 
-
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new IllegalStateException("No JWT token found in security context");
+            return Optional.empty();
+//            throw new IllegalStateException("No JWT token found in security context");
         }
         return Optional.ofNullable((String) jwt.getClaims().get("email"));
     }

@@ -24,6 +24,7 @@ import static java.util.Comparator.comparing;
 @NoArgsConstructor
 @Builder
 @Getter
+@Table(name = "sub_post")
 @Entity
 public class SubPost extends BaseEntity {
     @Id
@@ -110,5 +111,13 @@ public class SubPost extends BaseEntity {
 
     public void decreaseLikeCount() {
         likeCount--;
+    }
+
+    public void increaseDislikeCount() {
+        dislikeCount++;
+    }
+
+    public void decreaseDislikeCount() {
+        dislikeCount--;
     }
 }

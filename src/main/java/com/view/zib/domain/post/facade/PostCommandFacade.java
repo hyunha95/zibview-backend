@@ -72,7 +72,19 @@ public class PostCommandFacade {
         subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
                 .ifPresentOrElse(
                         likeSubPost(subPost),
-                        createSubPostLike(subPost, currentUser)
+                        createSubPostLike(subPost, currentUser, true)
+                );
+    }
+
+    @Transactional
+    public void dislikeSubPost(Long subPostId) {
+        User currentUser = authService.getCurrentUser();
+        SubPost subPost = subPostQueryService.getByIdForUpdate(subPostId);
+
+        subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
+                .ifPresentOrElse(
+                        dislikeSubPost(subPost),
+                        createSubPostLike(subPost, currentUser, false)
                 );
     }
 
@@ -94,6 +106,7 @@ public class PostCommandFacade {
                 throw new IllegalStateException("이미 좋아요 취소 상태입니다.");
             }
             subPost.decreaseLikeCount();
+            subPost.increaseDislikeCount();
             subPostLike.dislike();
         };
     }
@@ -104,14 +117,19 @@ public class PostCommandFacade {
                 throw new IllegalStateException("이미 좋아요 상태입니다.");
             }
             subPost.increaseLikeCount();
+            subPost.decreaseDislikeCount();
             subPostLike.like();
         };
     }
 
-    private Runnable createSubPostLike(SubPost subPost, User currentUser) {
+    private Runnable createSubPostLike(SubPost subPost, User currentUser, boolean liked) {
         return () -> {
-            subPostLikeQueryService.create(subPost, currentUser);
-            subPost.increaseLikeCount();
+            subPostLikeQueryService.create(subPost, currentUser, liked);
+            if (liked) {
+                subPost.increaseLikeCount();
+            } else {
+                subPost.increaseDislikeCount();
+            }
         };
     }
 }

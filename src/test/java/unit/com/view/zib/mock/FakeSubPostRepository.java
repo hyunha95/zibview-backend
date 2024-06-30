@@ -21,7 +21,7 @@ public class FakeSubPostRepository implements SubPostRepository {
     private List<SubPost> data = new CopyOnWriteArrayList<>();
 
     @Override
-    public Optional<SubPost> findByIdForUpdate(Long subPostId) {
+    public synchronized Optional<SubPost> findByIdForUpdate(Long subPostId) {
         return data.stream().filter(item -> item.getId().equals(subPostId)).findAny();
     }
 

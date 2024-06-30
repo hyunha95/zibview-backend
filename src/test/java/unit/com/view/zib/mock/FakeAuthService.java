@@ -6,9 +6,17 @@ import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.user.entity.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.time.LocalDateTime;
-
 public class FakeAuthService implements AuthService {
+
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public boolean isLoggedIn() {
@@ -37,19 +45,7 @@ public class FakeAuthService implements AuthService {
 
     @Override
     public User getCurrentUser() {
-        return User.builder()
-                .id(1L)
-                .subject("subject")
-                .pictureUrl("pictureUrl")
-                .email("email")
-                .password(null)
-                .name("name")
-                .givenName("givenName")
-                .familyName("familyName")
-                .lastLoginAt(LocalDateTime.now())
-                .enabled(true)
-                .authorities("ROLE_USER,ROLE_ADMIN")
-                .build();
+        return user;
     }
 
     @Override

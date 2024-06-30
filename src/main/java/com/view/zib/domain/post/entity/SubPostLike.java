@@ -2,15 +2,14 @@ package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.util.Assert;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Table(name = "sub_post_like")
 @Entity
 public class SubPostLike {
 
@@ -28,15 +27,15 @@ public class SubPostLike {
 
     private boolean liked;
 
-    public static SubPostLike of(SubPost subPost, User currentUser) {
+    public static SubPostLike of(SubPost subPost, User currentUser, boolean liked) {
+        Assert.notNull(subPost, "SubPost must not be null");
+        Assert.notNull(currentUser, "User must not be null");
+
         return SubPostLike.builder()
                 .subPost(subPost)
                 .user(currentUser)
+                .liked(liked)
                 .build();
-    }
-
-    public void changeLikeStatus(boolean liked) {
-        this.liked = liked;
     }
 
     public void like() {
