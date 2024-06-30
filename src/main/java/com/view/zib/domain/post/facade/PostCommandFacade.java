@@ -95,9 +95,21 @@ public class PostCommandFacade {
 
         subPostLikeQueryService.findBySubPostIdAndUserId(subPostId, currentUser.getId())
                 .ifPresentOrElse(
-                        dislikeSubPost(subPost),
-                        () -> { throw new IllegalStateException("좋아요 상태가 아닙니다."); }
+                        removeSubPostLike(subPost),
+                        () -> { throw new IllegalStateException("좋아요 또는 싫어요 상태가 아닙니다."); }
                 );
+    }
+
+    private Consumer<SubPostLike> removeSubPostLike(SubPost subPost) {
+        return subPostLike -> {
+            if (subPostLike.isLiked()) {
+                subPost.decreaseLikeCount();
+            } else {
+                subPost.decreaseDislikeCount();
+            }
+            subPostLikeQueryService.delete(subPostLike);
+
+        };
     }
 
     private Consumer<SubPostLike> dislikeSubPost(SubPost subPost) {

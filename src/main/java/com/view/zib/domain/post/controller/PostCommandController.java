@@ -23,9 +23,8 @@ public class PostCommandController {
     }
 
     @PostMapping("/sub-post")
-    public ResponseEntity<SubPostId> saveSubPost(@RequestBody @Valid SubPostRequest.Save request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new SubPostId(postCommandFacade.createSubPost(request)));
+    public SubPostId saveSubPost(@RequestBody @Valid SubPostRequest.Save request) {
+        return new SubPostId(postCommandFacade.createSubPost(request));
     }
 
     @PostMapping("/sub-post/{subPostId}/like")
@@ -34,7 +33,7 @@ public class PostCommandController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/sub-post/{subPostId}/removelike")
+    @DeleteMapping("/sub-post/{subPostId}/removelike")
     public ResponseEntity<Void> removeSubPostLike(@PathVariable Long subPostId) {
         postCommandFacade.removeSubPostLike(subPostId);
         return ResponseEntity.ok().build();

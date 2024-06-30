@@ -59,6 +59,11 @@ public class FakeSubPostLikeRepository implements SubPostLikeRepository {
     }
 
     @Override
+    public void delete(SubPostLike entity) {
+        data.removeIf(item -> item.getId().equals(entity.getId()));
+    }
+
+    @Override
     public void flush() {
 
     }
@@ -140,11 +145,6 @@ public class FakeSubPostLikeRepository implements SubPostLikeRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
-    }
-
-    @Override
-    public void delete(SubPostLike entity) {
 
     }
 

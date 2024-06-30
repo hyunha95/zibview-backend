@@ -15,4 +15,6 @@ public interface SubPostLikeQueryService {
     void create(SubPost subPost, User currentUser, boolean liked);
 
     List<SubPostLike> findBySubPostIdInAndUserId(List<Long> subPostIds, Long userId);
+
+    void delete(SubPostLike subPostLike);
 }

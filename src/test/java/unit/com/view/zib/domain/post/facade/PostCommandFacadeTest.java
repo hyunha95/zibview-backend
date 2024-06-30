@@ -9,6 +9,8 @@ import com.view.zib.mock.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -25,6 +27,8 @@ class PostCommandFacadeTest {
     @BeforeEach
     void beforeEach() {
         User user = TestEntityFactory.createUser();
+        authService.setUser(user);
+
         subPost = SubPost.builder()
                 .user(user)
                 .title("title")
@@ -132,5 +136,20 @@ class PostCommandFacadeTest {
         // when
         // then
         assertThat(subPost.getDislikeCount()).isEqualTo(100);
+    }
+
+    @Test
+    void 좋아요_상태에서_removeLike를_요청하면_subPost의_likeCount가_감소한다() {
+        // given
+        postCommandFacade.likeSubPost(1L);
+
+        // when
+        postCommandFacade.removeSubPostLike(1L);
+
+        // then
+        Optional<SubPostLike> subPostLike = subPostLikeRepository.findById(1L);
+
+        assertThat(subPostLike).isEmpty();
+        assertThat(subPost.getLikeCount()).isZero();
     }
 }

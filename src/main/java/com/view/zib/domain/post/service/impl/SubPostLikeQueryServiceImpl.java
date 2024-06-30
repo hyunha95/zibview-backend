@@ -39,4 +39,9 @@ public class SubPostLikeQueryServiceImpl implements SubPostLikeQueryService {
         SubPostLike subPostLike = SubPostLike.of(subPost, currentUser, liked);
         subPostLikeRepository.save(subPostLike);
     }
+
+    @Override
+    public void delete(SubPostLike subPostLike) {
+        subPostLikeRepository.delete(subPostLike);
+    }
 }
