@@ -1,9 +1,10 @@
 package com.view.zib.domain.post.repository.custom.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.view.zib.domain.post.repository.custom.PostCustomRepository;
-import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import com.view.zib.domain.post.repository.dto.LatestPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,10 +25,10 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Slice<LatestResidentialPost> findAllLatestResidentialPosts(Pageable pageable) {
+    public Slice<LatestPost> findAllLatestPosts(Pageable pageable) {
         int pageSize = pageable.getPageSize();
-        List<LatestResidentialPost> responses = jpaQueryFactory.select(
-                        Projections.fields(LatestResidentialPost.class,
+        List<LatestPost> responses = jpaQueryFactory.select(
+                        Projections.fields(LatestPost.class,
                                 post.id.as("postId"),
                                 roadNameCode.sidoName,
                                 roadNameCode.sigunguName,
@@ -43,8 +44,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .join(post.roadNameAddress, roadNameAddress)
                 .join(roadNameAddress.roadNameCode, roadNameCode)
                 .join(roadNameAddress.additionalInfo, additionalInfo)
-                .where(roadNameAddress.buildingPurposeCode.eq("1")) // 1 : 주거용 // TODO: change it to enum
-                .orderBy(post.updatedAt.desc())
+                .orderBy(post.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1L) // // limit보다 데이터를 1개 더 들고와서, 해당 데이터가 있다면 hasNext 변수에 true를 넣어 알림
                 .fetch();

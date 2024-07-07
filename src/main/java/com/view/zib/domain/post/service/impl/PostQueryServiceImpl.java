@@ -2,7 +2,7 @@ package com.view.zib.domain.post.service.impl;
 
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.repository.PostRepository;
-import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import com.view.zib.domain.post.repository.dto.LatestPost;
 import com.view.zib.domain.post.service.PostQueryService;
 import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class PostQueryServiceImpl implements PostQueryService {
     }
 
     @Override
-    public Slice<LatestResidentialPost> getLatestPosts(Pageable pageable) {
-        return postRepository.findAllLatestResidentialPosts(pageable);
+    public Slice<LatestPost> getLatestPosts(Pageable pageable) {
+        return postRepository.findAllLatestPosts(pageable);
     }
 }
 

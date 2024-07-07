@@ -4,6 +4,8 @@ import com.view.zib.domain.address.service.RoadNameAddressCommandService;
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.api.kako.service.KakaoService;
 import com.view.zib.domain.auth.service.AuthService;
+import com.view.zib.domain.elasticsearch.document.PostSearchAsYouType;
+import com.view.zib.domain.elasticsearch.service.PostElasticSearchService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageQueryService;
 import com.view.zib.domain.post.controller.response.GetPostResponse;
@@ -11,7 +13,7 @@ import com.view.zib.domain.post.controller.response.GetPostsResponse;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.post.entity.SubPostLike;
-import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import com.view.zib.domain.post.repository.dto.LatestPost;
 import com.view.zib.domain.post.service.PostQueryService;
 import com.view.zib.domain.post.service.SubPostLikeQueryService;
 import com.view.zib.domain.post.service.SubPostQueryService;
@@ -38,21 +40,21 @@ public class PostQueryFacade {
     private final SubPostQueryService subPostQueryService;
     private final SubPostLikeQueryService subPostLikeQueryService;
     private final AuthService authService;
+    private final PostElasticSearchService postElasticSearchService;
 
     public Slice<GetPostsResponse> getLatestPosts(Pageable pageable) {
-        Slice<LatestResidentialPost> latestPosts = postQueryService.getLatestPosts(pageable);
+        Slice<LatestPost> latestPosts = postQueryService.getLatestPosts(pageable);
 
         // make collectionUtils
         List<Long> postIds = latestPosts.getContent().stream()
-                .map(LatestResidentialPost::getPostId)
+                .map(LatestPost::getPostId)
                 .toList();
 
         Map<Long, List<Image>> imagesByPostId = imageQueryService.findByPostIdInOrderByCreatedAtDesc(postIds).stream()
                 .collect(Collectors.groupingBy(image -> image.getPost().getId()));
 
 
-        return postQueryService.getLatestPosts(pageable)
-                .map(response -> new GetPostsResponse(response, imagesByPostId, storageService));
+        return latestPosts.map(response -> new GetPostsResponse(response, imagesByPostId, storageService));
     }
 
     public GetPostResponse getPostDetails(Long postId) {
@@ -78,5 +80,9 @@ public class PostQueryFacade {
         }
 
         return postDetails;
+    }
+
+    public List<PostSearchAsYouType> searchAsYouTypeAddressAndBuildingName(String query) {
+        return postElasticSearchService.searchAsYouTypeAddressAndBuildingName(query);
     }
 }

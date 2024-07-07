@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.controller.response;
 
 import com.view.zib.domain.image.entity.Image;
-import com.view.zib.domain.post.repository.dto.LatestResidentialPost;
+import com.view.zib.domain.post.repository.dto.LatestPost;
 import com.view.zib.domain.storage.service.StorageService;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public record GetPostsResponse(
         int likeCount,
         int commentCount
 ) {
-    public GetPostsResponse(LatestResidentialPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
+    public GetPostsResponse(LatestPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
                 response.getPostId(),
                 String.format("%s %s %s %s-%s",
