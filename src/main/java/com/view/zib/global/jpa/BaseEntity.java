@@ -19,4 +19,8 @@ public abstract class BaseEntity extends UnmodifiableEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    protected void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

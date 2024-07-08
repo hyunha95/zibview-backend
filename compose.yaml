@@ -16,6 +16,7 @@ services:
       - '9200:9200'
       - '9300:9300'
     restart: always
+    # 플러그인이 설치되어 있지 않다면 플러그인 설치
     command: >
       sh -c "if ! bin/elasticsearch-plugin list | grep -q 'analysis-nori'; then bin/elasticsearch-plugin install analysis-nori; fi && bin/elasticsearch"
 

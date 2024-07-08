@@ -20,6 +20,7 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     private final PostRepository postRepository;
 
+    @Transactional
     @Override
     public Post getById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", id));

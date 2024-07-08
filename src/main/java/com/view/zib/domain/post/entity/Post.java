@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,5 +78,9 @@ public class Post extends BaseEntity {
                 .filter(subPost -> !subPost.isDeleted())
                 .sorted(comparing(SubPost::getId).reversed())
                 .toList();
+    }
+
+    public void updateTime() {
+        setUpdatedAt(LocalDateTime.now());
     }
 }

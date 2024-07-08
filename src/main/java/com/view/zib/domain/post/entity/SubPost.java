@@ -69,11 +69,13 @@ public class SubPost extends BaseEntity {
 
         images.forEach(image -> image.addEntity(subPost));
         post.getSubPosts().add(subPost);
+        post.updateTime();
         contractInfo.addEntity(subPost);
         return subPost;
     }
 
     public static SubPost of(SubPostRequest.Save request, Post post, List<Image> images, User currentUser) {
+        post.updateTime();
         return SubPost.builder()
                 .post(post)
                 .images(images)

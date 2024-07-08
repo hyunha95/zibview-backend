@@ -1,7 +1,6 @@
 package com.view.zib.domain.post.repository.custom.impl;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.view.zib.domain.post.repository.custom.PostCustomRepository;
 import com.view.zib.domain.post.repository.dto.LatestPost;
@@ -44,7 +43,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .join(post.roadNameAddress, roadNameAddress)
                 .join(roadNameAddress.roadNameCode, roadNameCode)
                 .join(roadNameAddress.additionalInfo, additionalInfo)
-                .orderBy(post.id.desc())
+                .orderBy(post.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1L) // // limit보다 데이터를 1개 더 들고와서, 해당 데이터가 있다면 hasNext 변수에 true를 넣어 알림
                 .fetch();
