@@ -12,9 +12,24 @@ import com.view.zib.global.common.ClockHolder;
 import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -66,18 +81,105 @@ public class ImageFacade {
         imageCommandService.delete(image);
     }
 
-    public Resource getImage(String storedFilename) {
+    public Resource getImage(String storedFilename) throws IOException {
+        long start = System.currentTimeMillis();
+
+        // 이미지 정보 가져오기
         Image image = imageQueryService.getByStoredFilename(storedFilename);
-        return storageService.loadAsResource(image);
+        Resource resource = storageService.loadAsResource(image);
+
+        // 이미지 읽기
+        BufferedImage bufferedImage;
+        try (InputStream inputStream = resource.getInputStream()) {
+            bufferedImage = ImageIO.read(inputStream);
+        }
+
+        // 이미지 회전
+        int orientation = getOrientation(resource);
+        bufferedImage = rotateImage(bufferedImage, orientation);
+
+        // 이미지 크기 조정
+        int originHeight = bufferedImage.getHeight();
+        int originWidth = bufferedImage.getWidth();
+        int targetHeight = Math.min(originHeight, 300);
+        int targetWidth = Math.min(originWidth, 720);
+        BufferedImage resizedBufferedImage = Thumbnails.of(bufferedImage)
+//                .size(targetWidth, targetHeight)
+                .width(targetWidth)
+                .outputQuality(1)
+//                .keepAspectRatio(true)
+                .asBufferedImage();
+
+        // 이미지 바이트 배열로 변환
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (baos) {
+            ImageIO.write(resizedBufferedImage, image.getExtension(), baos);
+        }
+        byte[] bytes = baos.toByteArray();
+
+        // 로깅
+        log.info("Image({}kb) converting took {} ms", (double) bytes.length / 1024,  System.currentTimeMillis() - start);
+
+        // 리소스 반환
+        return new ByteArrayResource(bytes);
     }
 
     /**
      * 이미지 저장 어뷰징 방지
+     *
      * @param saveImageRequest
      */
     private void preventImageAbusing(SaveImageRequest saveImageRequest) {
         List<Image> unassignedImages = imageQueryService.findByUserIdAndSubPostIdIsNullAndDeletedFalse(authService.getCurrentUser().getId());
         List<Image> imagesToDelete = imageCommandService.preventAbusing(saveImageRequest.getImages(), unassignedImages);
         imagesToDelete.forEach(storageService::deleteImage);
+    }
+
+    /**
+     * EXIF 데이터를 읽어 이미지의 회전 정보를 얻는다.
+     */
+    private int getOrientation(Resource resource) {
+        try (InputStream inputStream = resource.getInputStream()) {
+            ImageMetadata metadata = Imaging.getMetadata(inputStream.readAllBytes());
+            if (metadata instanceof JpegImageMetadata jpegMetadata) {
+                TiffField orientationField = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION);
+                if (orientationField != null) {
+                    return orientationField.getIntValue();
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to read EXIF metadata", e);
+        }
+        return 1; // Default orientation
+    }
+
+    /**
+     * 회전 정보를 기반으로 이미지를 회전시킨다.
+     */
+    private BufferedImage rotateImage(BufferedImage bufferedImage, int orientation) {
+        int angle = 0;
+        switch (orientation) {
+            case 3:
+                angle = 180;
+                break;
+            case 6:
+                angle = 90;
+                break;
+            case 8:
+                angle = 270;
+                break;
+            default:
+                return bufferedImage;
+        }
+
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(Math.toRadians(angle), bufferedImage.getWidth() / 2.0, bufferedImage.getHeight() / 2.0);
+        AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+        BufferedImage rotatedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getType());
+        Graphics2D g = rotatedImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(bufferedImage, op, 0, 0);
+        g.dispose();
+        return rotatedImage;
     }
 }

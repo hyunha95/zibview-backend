@@ -3,7 +3,6 @@ package com.view.zib.domain.image.controller;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
 import com.view.zib.domain.image.facade.ImageFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +25,5 @@ public class ImageCommandController {
     public ResponseEntity<Void> deleteImage(@PathVariable(name = "imageUuid") String imageUuid) {
         imageFacade.deleteImage(imageUuid);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{path}/{storedFilename}")
-    public Resource getImage(
-            @PathVariable(name = "path") String path,
-            @PathVariable(name = "storedFilename") String storedFilename
-    ) {
-        return imageFacade.getImage(storedFilename);
     }
 }

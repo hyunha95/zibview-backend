@@ -91,7 +91,7 @@ dependencies {
 
     implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2' // 4.1.x 중 최신 버전을 선택
 
-
+    implementation 'net.coobird:thumbnailator:0.4.20'
 }
 
 sourceSets{
