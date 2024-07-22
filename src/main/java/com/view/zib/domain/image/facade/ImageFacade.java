@@ -13,11 +13,6 @@ import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.ImageMetadata;
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
-import org.apache.commons.imaging.formats.tiff.TiffField;
-import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -140,13 +135,14 @@ public class ImageFacade {
      */
     private int getOrientation(Resource resource) {
         try (InputStream inputStream = resource.getInputStream()) {
-            ImageMetadata metadata = Imaging.getMetadata(inputStream.readAllBytes());
-            if (metadata instanceof JpegImageMetadata jpegMetadata) {
-                TiffField orientationField = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION);
-                if (orientationField != null) {
-                    return orientationField.getIntValue();
-                }
-            }
+//            ImageMetadata metadata = Imaging.getMetadata(inputStream.readAllBytes());
+//            if (metadata instanceof JpegImageMetadata jpegMetadata) {
+//                TiffField orientationField = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION);
+//                if (orientationField != null) {
+//                    return orientationField.getIntValue();
+//                }
+//            }
+
         } catch (Exception e) {
             log.warn("Failed to read EXIF metadata", e);
         }

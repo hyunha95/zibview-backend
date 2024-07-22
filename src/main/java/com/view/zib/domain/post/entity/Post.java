@@ -1,8 +1,6 @@
 package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.address.entity.Address;
-import com.view.zib.domain.address.entity.RoadNameAddress;
-import com.view.zib.domain.image.entity.Image;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,8 +11,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Comparator.comparing;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,14 +29,7 @@ public class Post extends BaseEntity {
     private List<SubPost> subPosts = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image mostRecentImage;
-
-    @OneToOne
-    @JoinColumn(name = "road_name_address_id")
-    private RoadNameAddress roadNameAddress;
-
-    @OneToOne(mappedBy = "post")
+    @JoinColumn(name = "address_id")
     private Address address;
 
     private double rating;
@@ -49,35 +38,9 @@ public class Post extends BaseEntity {
     private int commentCount;
 
     public static Post from(Address address) {
-        Post post = Post.builder()
+        return Post.builder()
                 .address(address)
                 .build();
-
-        address.addEntity(post);
-
-        return post;
-    }
-
-    /**
-     * RentType 별로 마지막 SubPost를 반환한다.
-     * @return
-     */
-//    public Map<RentType, SubPost> getLatestSubPosts() {
-//        return subPosts.stream()
-//                .collect(groupingBy(
-//                        subPost -> subPost.getContractInfo().getRentType(),
-//                        collectingAndThen(
-//                                toList(),
-//                                list -> list.stream().sorted(comparing(SubPost::getCreatedAt)).toList().getLast()
-//                        )
-//                ));
-//    }
-
-    public List<SubPost> getSubPostsNotDeletedOrderByIdDesc() {
-        return subPosts.stream()
-                .filter(subPost -> !subPost.isDeleted())
-                .sorted(comparing(SubPost::getId).reversed())
-                .toList();
     }
 
     public void updateTime() {

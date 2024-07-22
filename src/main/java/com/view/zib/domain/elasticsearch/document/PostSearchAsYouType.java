@@ -21,8 +21,14 @@ public class PostSearchAsYouType {
     private Long id;
 
     @Field(type = FieldType.Text)
-    private String address;
+    private String roadNameAddress;
+
+    @Field(type = FieldType.Text)
+    private String jibunAddress;
 
     @Field(type = FieldType.Text)
     private String buildingName;
+
+    @Field(type = FieldType.Text)
+    private String sigunguBuildingName;
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @ToString
@@ -15,10 +16,10 @@ public class KakaoAddressResponse {
 
     public Coordinate getCoordinate() {
         if (documents.isEmpty()) {
-            return new Coordinate(0, 0);
+            return new Coordinate(BigDecimal.ZERO, BigDecimal.ZERO);
         }
 
         Document document = documents.getFirst();
-        return new Coordinate(document.getY(), document.getX());
+        return new Coordinate(BigDecimal.valueOf(document.getY()), BigDecimal.valueOf(document.getX()));
     }
 }

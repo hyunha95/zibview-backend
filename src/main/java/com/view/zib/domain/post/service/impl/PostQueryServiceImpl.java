@@ -31,23 +31,3 @@ public class PostQueryServiceImpl implements PostQueryService {
         return postRepository.findAllLatestPosts(pageable);
     }
 }
-
-/*
-        String sql = """
-            SELECT p.post_id
-            FROM post p
-                join building_info bi
-                    on p.building_info_id = bi.building_info_id
-            WHERE ST_Distance_Sphere(POINT(:longitude, :latitude), POINT(bi.longitude, bi.latitude)) <= :distance
-                AND p.post_id NOT IN (:postIds)
-        """;
-
-        List<Integer> postIds = jdbcClient.sql(sql)
-                .param("longitude", request.longitude() != null ? request.longitude() : "127.028361548")
-                .param("latitude", request.latitude() != null ? request.latitude() : "37.496486063")
-                .param("distance", request.maxDistance() != null ? request.maxDistance() : 10000)
-                .param("postIds", request.postIds() != null ? request.postIds() : 0)
-                .query(Integer.class)
-                .list();
-
- */

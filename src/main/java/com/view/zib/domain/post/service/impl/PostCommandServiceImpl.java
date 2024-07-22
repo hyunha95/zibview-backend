@@ -68,17 +68,17 @@ public class PostCommandServiceImpl implements PostCommandService {
         // TODO: 신규 등록 시 카카오 API 호출 결과를 BUILDING_IFNO에 저장해야 함
 
 //        // address
-        Address address = Address.of(request.getAddress(), images, kakaoAddressResponse);
-        addressRepository.save(address);
+//        Address address = Address.of(request.getAddress(), images, kakaoAddressResponse);
+        addressRepository.save(null);
 
         // userAddress
 //        UserAddress userAddress = UserAddress.of(user, address, request.getContractInfo());
 //        userAddressRepository.save(userAddress);
 
         // post
-        Post post = postRepository
-                .findByAddressAndAddressType(address.getAddress(), address.getAddressType())
-                .orElseGet(newPost(address));
+        Post post = null; // postRepository
+//                .findByAddressAndAddressType(address.getAddress(), address.getAddressType())
+//                .orElseGet(newPost(address));
 
         images.forEach(image -> image.addEntity(post));
 

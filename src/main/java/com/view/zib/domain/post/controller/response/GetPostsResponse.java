@@ -9,8 +9,10 @@ import java.util.Map;
 
 public record GetPostsResponse(
         Long postId,
-        String address,
+        String roadNameAddress,
+        String jibunAddress,
         String buildingName,
+        String sigunguBuildingName,
         List<String> imageUrl,
         List<String> imageUrn,
         int likeCount,
@@ -19,14 +21,10 @@ public record GetPostsResponse(
     public GetPostsResponse(LatestPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
                 response.getPostId(),
-                String.format("%s %s %s %s-%s",
-                        response.getSidoName(),
-                        response.getSigunguName(),
-                        response.getRoadName(),
-                        response.getBuildingNum(),
-                        response.getBuildingSubNum()
-                ),
+                response.getRoadNameAddress(),
+                response.getJibunAddress(),
                 response.getBuildingName(),
+                response.getSigunguBuildingName(),
                 storageService.generateImageUrls(imagesByPost.get(response.getPostId())),
                 storageService.generateImageUrns(imagesByPost.get(response.getPostId())),
                 response.getLikeCount(),

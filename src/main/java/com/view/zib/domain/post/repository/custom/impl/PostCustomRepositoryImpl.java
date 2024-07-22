@@ -12,9 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.view.zib.domain.address.entity.QAdditionalInfo.additionalInfo;
-import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
-import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
+import static com.view.zib.domain.address.entity.QAddress.address;
 import static com.view.zib.domain.post.entity.QPost.post;
 
 @RequiredArgsConstructor
@@ -29,20 +27,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         List<LatestPost> responses = jpaQueryFactory.select(
                         Projections.fields(LatestPost.class,
                                 post.id.as("postId"),
-                                roadNameCode.sidoName,
-                                roadNameCode.sigunguName,
-                                roadNameCode.roadName,
-                                roadNameAddress.buildingNum,
-                                roadNameAddress.buildingSubNum,
-                                additionalInfo.buildingName,
+                                address.roadNameAddress,
+                                address.jibunAddress,
+                                address.buildingName,
+                                address.sigunguBuildingName,
                                 post.likeCount,
                                 post.commentCount
                         )
                 )
                 .from(post)
-                .join(post.roadNameAddress, roadNameAddress)
-                .join(roadNameAddress.roadNameCode, roadNameCode)
-                .join(roadNameAddress.additionalInfo, additionalInfo)
+                .join(post.address, address)
                 .orderBy(post.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1L) // // limit보다 데이터를 1개 더 들고와서, 해당 데이터가 있다면 hasNext 변수에 true를 넣어 알림

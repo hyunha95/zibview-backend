@@ -1,6 +1,6 @@
 package com.view.zib.domain.post.facade;
 
-import com.view.zib.domain.address.service.RoadNameAddressCommandService;
+import com.view.zib.domain.address.service.AddressCommandService;
 import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.api.kako.service.KakaoService;
 import com.view.zib.domain.auth.service.AuthService;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Component
 public class PostQueryFacade {
 
-    private final RoadNameAddressCommandService roadNameAddressCommandService;
+    private final AddressCommandService addressCommandService;
 
     private final PostQueryService postQueryService;
     private final StorageService storageService;
@@ -53,7 +53,6 @@ public class PostQueryFacade {
         Map<Long, List<Image>> imagesByPostId = imageQueryService.findByPostIdInOrderByCreatedAtDesc(postIds).stream()
                 .collect(Collectors.groupingBy(image -> image.getPost().getId()));
 
-
         return latestPosts.map(response -> new GetPostsResponse(response, imagesByPostId, storageService));
     }
 
@@ -72,10 +71,10 @@ public class PostQueryFacade {
         // 좌표가 없는 데이터라면
         if (!postDetails.hasCoordinate()) {
             // 카카오 API를 통해 주소로 좌표 검색
-            KakaoAddressResponse kakaoAddressResponse = kakaoService.searchAddress(postDetails.address());
+            KakaoAddressResponse kakaoAddressResponse = kakaoService.searchAddress(postDetails.roadNameAddress());
 
             // 좌표 업데이트
-            roadNameAddressCommandService.updateCoordinate(post, kakaoAddressResponse.getCoordinate());
+            addressCommandService.updateCoordinate(post, kakaoAddressResponse.getCoordinate());
             postDetails = postDetails.setNewCoordinate(kakaoAddressResponse.getCoordinate());
         }
 

@@ -1,6 +1,5 @@
 package com.view.zib.domain.image.entity;
 
-import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.image.controller.request.SaveImageRequest;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
@@ -38,10 +37,6 @@ public class Image extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_post_id")
     private SubPost subPost;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
 
     private String uuid;
     private String mimeType;
@@ -90,10 +85,6 @@ public class Image extends BaseEntity {
 
     public void addEntity(SubPost subPost) {
         this.subPost = subPost;
-    }
-
-    public void addEntity(Address address) {
-        this.address = address;
     }
 
     public void updateRepresentative(boolean bool) {

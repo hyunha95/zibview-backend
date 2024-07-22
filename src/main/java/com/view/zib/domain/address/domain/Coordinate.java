@@ -2,9 +2,11 @@ package com.view.zib.domain.address.domain;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 public record Coordinate(
-        double latitude,
-        double longitude
+        BigDecimal latitude,
+        BigDecimal longitude
 ) {
 
     @Builder

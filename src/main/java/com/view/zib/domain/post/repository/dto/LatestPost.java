@@ -13,12 +13,10 @@ import lombok.Setter;
 @Setter
 public class LatestPost {
     private Long postId;
-    private String sidoName;
-    private String sigunguName;
-    private String roadName;
-    private String buildingNum;
-    private String buildingSubNum;
+    private String roadNameAddress;
+    private String jibunAddress;
     private String buildingName;
+    private String sigunguBuildingName;
     private int likeCount;
     private int commentCount;
     private String imagePath;
@@ -27,16 +25,20 @@ public class LatestPost {
     public PostDocument toPostDocument() {
         return PostDocument.builder()
                 .id(postId)
-                .address(sidoName + " " + sigunguName + " " + roadName + " " + buildingNum + "-" + buildingSubNum)
+                .roadNameAddress(roadNameAddress)
+                .jibunAddress(jibunAddress)
                 .buildingName(buildingName)
+                .sigunguBuildingName(sigunguBuildingName)
                 .build();
     }
 
     public PostSearchAsYouType toPostSearchAsYouType() {
         return PostSearchAsYouType.builder()
                 .id(postId)
-                .address(sidoName + " " + sigunguName + " " + roadName + " " + buildingNum + "-" + buildingSubNum)
+                .roadNameAddress(roadNameAddress)
+                .jibunAddress(jibunAddress)
                 .buildingName(buildingName)
+                .sigunguBuildingName(sigunguBuildingName)
                 .build();
     }
 }

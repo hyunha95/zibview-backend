@@ -1,6 +1,6 @@
 package com.view.zib.domain.post.controller.response;
 
-import com.view.zib.domain.address.entity.RoadNameAddress;
+import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.api.kako.domain.Coordinate;
 import com.view.zib.domain.comment.entity.Comment;
 import com.view.zib.domain.post.entity.Post;
@@ -8,6 +8,7 @@ import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.post.entity.SubPostLike;
 import com.view.zib.domain.storage.service.StorageService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -15,10 +16,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public record GetPostResponse(
-        double latitude,
-        double longitude,
+        BigDecimal latitude,
+        BigDecimal longitude,
         String buildingName,
-        String address,
+        String sigunguBuildingName,
+        String roadNameAddress,
+        String jibunAddress,
         List<SubPostDto> subPosts
 ) {
 
@@ -57,20 +60,23 @@ public record GetPostResponse(
     }
 
     public boolean hasCoordinate() {
-        return latitude != 0.0 && longitude != 0.0;
+        return BigDecimal.ZERO.compareTo(latitude) > 0 && BigDecimal.ZERO.compareTo(longitude) > 0;
     }
 
     public static GetPostResponse of(Post post, List<SubPost> subPosts, List<SubPostLike> subPostLikes, StorageService storageService) {
-        RoadNameAddress roadNameAddress = post.getRoadNameAddress();
+        Address address = post.getAddress();
+
         List<SubPostDto> subPostDtos = subPosts.stream()
                 .map(mapToSubPostDtos(subPostLikes, storageService))
                 .toList();
 
         return new GetPostResponse(
-                Optional.ofNullable(roadNameAddress.getLatitude()).orElse(0.0),
-                Optional.ofNullable(roadNameAddress.getLongitude()).orElse(0.0),
-                roadNameAddress.getAdditionalInfo().getBuildingName(),
-                roadNameAddress.getFullAddress(),
+                Optional.ofNullable(address.getLatitude()).orElse(BigDecimal.ZERO),
+                Optional.ofNullable(address.getLongitude()).orElse(BigDecimal.ZERO),
+                address.getBuildingName(),
+                address.getSigunguBuildingName(),
+                address.getRoadNameAddress(),
+                address.getJibunAddress(),
                 subPostDtos
         );
     }
@@ -103,6 +109,6 @@ public record GetPostResponse(
     }
 
     public GetPostResponse setNewCoordinate(Coordinate coordinate) {
-        return new GetPostResponse(coordinate.latitude(), coordinate.longitude(), buildingName, address, subPosts);
+        return new GetPostResponse(coordinate.latitude(), coordinate.longitude(), buildingName, sigunguBuildingName, roadNameAddress, jibunAddress, subPosts);
     }
 }

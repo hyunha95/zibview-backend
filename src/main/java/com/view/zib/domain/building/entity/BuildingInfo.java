@@ -5,6 +5,8 @@ import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Entity
 public class BuildingInfo extends BaseEntity {
@@ -14,8 +16,8 @@ public class BuildingInfo extends BaseEntity {
     @Column(name = "building_info_id")
     private Long id;
 
-    private Double longitude;
-    private Double latitude;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
 
     private String gisIdntfcNo;             // 	GIS건물통합식별번호	2005197355104560323100000000
     private String pnu;             // 	고유번호	1111018300101970001
