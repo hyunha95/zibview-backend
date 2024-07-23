@@ -1,5 +1,7 @@
 package com.view.zib.domain.elasticsearch.service.impl;
 
+import com.view.zib.domain.elasticsearch.controller.response.AddressDocumentResponse;
+import com.view.zib.domain.elasticsearch.document.AddressDocument;
 import com.view.zib.domain.elasticsearch.document.PostDocument;
 import com.view.zib.domain.elasticsearch.document.PostSearchAsYouType;
 import com.view.zib.domain.elasticsearch.repository.PostElasticSearchRepository;
@@ -7,7 +9,9 @@ import com.view.zib.domain.elasticsearch.service.PostElasticSearchService;
 import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.dto.LatestPost;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostElasticSearchServiceImpl implements PostElasticSearchService {
@@ -53,6 +59,28 @@ public class PostElasticSearchServiceImpl implements PostElasticSearchService {
         return elasticsearchOperations.search(nativeSearchQuery, PostSearchAsYouType.class)
                 .map(SearchHit::getContent)
                 .toList();
+    }
+
+    @Override
+    public List<AddressDocumentResponse> matchPhrasePrefix(String query) {
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withPageable(PageRequest.of(0, 10))
+                .withQuery(QueryBuilders.matchPhrasePrefixQuery("roadNameAddress", query))
+                .withHighlightFields(new HighlightBuilder.Field("roadNameAddress").preTags("<strong>").postTags("</strong>"))
+                .build();
+
+        SearchHits<AddressDocument> searchHits = elasticsearchOperations.search(nativeSearchQuery, AddressDocument.class);
+
+        searchHits.getSearchHits().forEach(searchHit -> log.info("{}", searchHit.getHighlightFields()));
+
+        return searchHits.getSearchHits().stream()
+                .map(hit -> {
+                    AddressDocument addressDocument = hit.getContent();
+                    String highlightedAddress = hit.getHighlightFields().get("roadNameAddress").getFirst();
+                    return new AddressDocumentResponse(addressDocument, highlightedAddress);
+                })
+                .toList();
+
     }
 
     @Override

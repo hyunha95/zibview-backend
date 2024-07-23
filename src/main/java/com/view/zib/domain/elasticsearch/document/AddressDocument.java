@@ -1,6 +1,5 @@
 package com.view.zib.domain.elasticsearch.document;
 
-
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -12,13 +11,12 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
-@Document(indexName = "post")
-public class PostSearchAsYouType {
+@Document(indexName = "address")
+public class AddressDocument {
 
     @Id
     @Field(type = FieldType.Long)
-    private Long id;
+    private Long postId;
 
     @Field(type = FieldType.Text)
     private String roadNameAddress;

@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteList).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/es/posts", "/api/posts/*", "/api/images/*/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/es/**", "/api/posts/*", "/api/images/*/*").permitAll()
                         .requestMatchers("/api/private-scoped").hasAuthority("SCOPE_read:messages")
                         .anyRequest().authenticated()
                 )
