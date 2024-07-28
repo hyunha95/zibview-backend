@@ -4,6 +4,7 @@ import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.post.repository.dto.LatestPost;
 import com.view.zib.domain.storage.service.StorageService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,8 @@ public record GetPostsResponse(
         List<String> imageUrn,
         long likeCount,
         long commentCount,
-        long viewCount
+        long viewCount,
+        LocalDateTime updatedAt
 ) {
     public GetPostsResponse(LatestPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
@@ -30,7 +32,8 @@ public record GetPostsResponse(
                 storageService.generateImageUrns(imagesByPost.get(response.getPostId())),
                 response.getLikeCount(),
                 response.getCommentCount(),
-                response.getViewCount()
+                response.getViewCount(),
+                response.getUpdatedAt()
         );
     }
 }

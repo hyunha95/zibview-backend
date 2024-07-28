@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,16 +24,7 @@ public class LatestPost {
     private Long viewCount;
     private String imagePath;
     private String imageStoredFilename;
-
-    public PostDocument toPostDocument() {
-        return PostDocument.builder()
-                .id(postId)
-                .roadNameAddress(roadNameAddress)
-                .jibunAddress(jibunAddress)
-                .buildingName(buildingName)
-                .sigunguBuildingName(sigunguBuildingName)
-                .build();
-    }
+    private LocalDateTime updatedAt;
 
     public PostSearchAsYouType toPostSearchAsYouType() {
         return PostSearchAsYouType.builder()

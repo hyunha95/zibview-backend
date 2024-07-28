@@ -151,6 +151,7 @@ public class PostCommandFacade {
         };
     }
 
+    @Transactional
     public void increaseViewCount(Long postId, String ipAddress) {
         Post post = postQueryService.getByIdForUpdate(postId);
         boolean empty = logViewCountQueryService.findByPostIdAndIpAddressAndCreatedAt(postId, ipAddress, LocalDate.now()).isEmpty();
