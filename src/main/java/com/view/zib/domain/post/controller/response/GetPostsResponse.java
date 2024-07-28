@@ -15,8 +15,9 @@ public record GetPostsResponse(
         String sigunguBuildingName,
         List<String> imageUrl,
         List<String> imageUrn,
-        int likeCount,
-        int commentCount
+        long likeCount,
+        long commentCount,
+        long viewCount
 ) {
     public GetPostsResponse(LatestPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
@@ -28,7 +29,8 @@ public record GetPostsResponse(
                 storageService.generateImageUrls(imagesByPost.get(response.getPostId())),
                 storageService.generateImageUrns(imagesByPost.get(response.getPostId())),
                 response.getLikeCount(),
-                response.getCommentCount()
+                response.getCommentCount(),
+                response.getViewCount()
         );
     }
 }

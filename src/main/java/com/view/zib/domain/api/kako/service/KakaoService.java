@@ -1,8 +1,7 @@
 package com.view.zib.domain.api.kako.service;
 
-import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
+import com.view.zib.domain.api.kako.domain.Coordinate;
 
 public interface KakaoService {
-
-    KakaoAddressResponse searchAddress(String query);
+    Coordinate searchCoordinateByRoadAddress(String roadAddress);
 }

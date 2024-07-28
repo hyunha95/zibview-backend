@@ -5,6 +5,9 @@ import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageQueryService;
+import com.view.zib.domain.log.entity.LogViewCount;
+import com.view.zib.domain.log.service.LogViewCountCommandService;
+import com.view.zib.domain.log.service.LogViewCountQueryService;
 import com.view.zib.domain.post.controller.request.PostRequest;
 import com.view.zib.domain.post.controller.request.SubPostRequest;
 import com.view.zib.domain.post.entity.Post;
@@ -19,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -32,11 +36,13 @@ public class PostCommandFacade {
     private final SubPostQueryService subPostQueryService;
     private final ImageQueryService imageQueryService;
     private final SubPostLikeQueryService subPostLikeQueryService;
+    private final LogViewCountQueryService logViewCountQueryService;
 
+    private final AuthService authService;
     private final PostCommandService postCommandService;
     private final SubPostCommandService subPostCommandService;
     private final SubPostLikeCommandService subPostLikeCommandService;
-    private final AuthService authService;
+    private final LogViewCountCommandService logViewCountCommandService;
 
     private final KakaoAddressClient kakaoAddressClient;
 
@@ -143,5 +149,15 @@ public class PostCommandFacade {
                 subPost.increaseDislikeCount();
             }
         };
+    }
+
+    public void increaseViewCount(Long postId, String ipAddress) {
+        Post post = postQueryService.getByIdForUpdate(postId);
+        boolean empty = logViewCountQueryService.findByPostIdAndIpAddressAndCreatedAt(postId, ipAddress, LocalDate.now()).isEmpty();
+
+        if (empty) {
+            post.increaseViewCount();
+            logViewCountCommandService.create(LogViewCount.of(postId, ipAddress));
+        }
     }
 }

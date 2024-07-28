@@ -34,8 +34,9 @@ public class Post extends BaseEntity {
 
     private double rating;
 
-    private int likeCount;
-    private int commentCount;
+    private long likeCount;
+    private long commentCount;
+    private long viewCount;
 
     public static Post from(Address address) {
         return Post.builder()
@@ -45,5 +46,9 @@ public class Post extends BaseEntity {
 
     public void updateTime() {
         setUpdatedAt(LocalDateTime.now());
+    }
+
+    public void increaseViewCount() {
+        viewCount++;
     }
 }

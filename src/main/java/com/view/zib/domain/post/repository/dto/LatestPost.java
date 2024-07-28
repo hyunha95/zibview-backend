@@ -17,8 +17,9 @@ public class LatestPost {
     private String jibunAddress;
     private String buildingName;
     private String sigunguBuildingName;
-    private int likeCount;
-    private int commentCount;
+    private Long likeCount;
+    private Long commentCount;
+    private Long viewCount;
     private String imagePath;
     private String imageStoredFilename;
 

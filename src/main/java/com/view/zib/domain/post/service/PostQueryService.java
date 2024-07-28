@@ -8,6 +8,7 @@ import org.springframework.data.domain.Slice;
 public interface PostQueryService {
 
     Post getById(Long postId);
+    Post getByIdForUpdate(Long postId);
 
     Slice<LatestPost> getLatestPosts(Pageable pageable);
 }

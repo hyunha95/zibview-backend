@@ -23,11 +23,6 @@ public class FakePostRepository implements PostRepository {
     }
 
     @Override
-    public Optional<Post> findByAddressAndAddressType(String address, String addressType) {
-        return Optional.empty();
-    }
-
-    @Override
     public void flush() {
 
     }

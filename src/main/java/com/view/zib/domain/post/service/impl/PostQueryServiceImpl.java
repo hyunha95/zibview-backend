@@ -27,6 +27,11 @@ public class PostQueryServiceImpl implements PostQueryService {
     }
 
     @Override
+    public Post getByIdForUpdate(Long postId) {
+        return postRepository.findByIdForUpdate(postId).orElseThrow(() -> new ResourceNotFoundException("Post", postId));
+    }
+
+    @Override
     public Slice<LatestPost> getLatestPosts(Pageable pageable) {
         return postRepository.findAllLatestPosts(pageable);
     }

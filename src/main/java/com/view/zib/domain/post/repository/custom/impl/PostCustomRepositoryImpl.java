@@ -32,7 +32,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                                 address.buildingName,
                                 address.sigunguBuildingName,
                                 post.likeCount,
-                                post.commentCount
+                                post.commentCount,
+                                post.viewCount
                         )
                 )
                 .from(post)

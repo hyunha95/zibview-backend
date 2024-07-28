@@ -1,7 +1,6 @@
 package com.view.zib.domain.post.facade;
 
-import com.view.zib.domain.address.service.AddressCommandService;
-import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
+import com.view.zib.domain.api.kako.domain.Coordinate;
 import com.view.zib.domain.api.kako.service.KakaoService;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.elasticsearch.document.PostSearchAsYouType;
@@ -18,11 +17,16 @@ import com.view.zib.domain.post.service.PostQueryService;
 import com.view.zib.domain.post.service.SubPostLikeQueryService;
 import com.view.zib.domain.post.service.SubPostQueryService;
 import com.view.zib.domain.storage.service.StorageService;
+import com.view.zib.global.event.PostEventPublisher;
+import com.view.zib.global.event.PostEventType;
+import com.view.zib.global.utils.IpAddressUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,7 +35,7 @@ import java.util.stream.Collectors;
 @Component
 public class PostQueryFacade {
 
-    private final AddressCommandService addressCommandService;
+    private final PostEventPublisher postEventPublisher;
 
     private final PostQueryService postQueryService;
     private final StorageService storageService;
@@ -41,6 +45,8 @@ public class PostQueryFacade {
     private final SubPostLikeQueryService subPostLikeQueryService;
     private final AuthService authService;
     private final PostElasticSearchService postElasticSearchService;
+
+    private final HttpServletRequest httpServletRequest;
 
     public Slice<GetPostsResponse> getLatestPosts(Pageable pageable) {
         Slice<LatestPost> latestPosts = postQueryService.getLatestPosts(pageable);
@@ -57,6 +63,7 @@ public class PostQueryFacade {
     }
 
     public GetPostResponse getPostDetails(Long postId) {
+7        // 로그인 여부 체크
         Long userId = authService.isLoggedIn() ? authService.getCurrentUser().getId() : null;
 
         Post post = postQueryService.getById(postId);
@@ -71,13 +78,12 @@ public class PostQueryFacade {
         // 좌표가 없는 데이터라면
         if (!postDetails.hasCoordinate()) {
             // 카카오 API를 통해 주소로 좌표 검색
-            KakaoAddressResponse kakaoAddressResponse = kakaoService.searchAddress(postDetails.roadNameAddress());
-
-            // 좌표 업데이트
-            addressCommandService.updateCoordinate(post, kakaoAddressResponse.getCoordinate());
-            postDetails = postDetails.setNewCoordinate(kakaoAddressResponse.getCoordinate());
+            Coordinate coordinate = kakaoService.searchCoordinateByRoadAddress(postDetails.roadNameAddress());
+            postDetails = postDetails.setNewCoordinate(coordinate);
+            postEventPublisher.publishEvent(post.getId(), coordinate, PostEventType.POST_COORDINATE_UPDATED, LocalDateTime.now());
         }
 
+        postEventPublisher.publishEvent(post.getId(), IpAddressUtil.getClientIp(httpServletRequest), PostEventType.POST_VIEWED, LocalDateTime.now());
         return postDetails;
     }
 
