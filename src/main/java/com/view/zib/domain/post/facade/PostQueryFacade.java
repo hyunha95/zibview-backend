@@ -63,7 +63,7 @@ public class PostQueryFacade {
     }
 
     public GetPostResponse getPostDetails(Long postId) {
-7        // 로그인 여부 체크
+        // 로그인 여부 체크
         Long userId = authService.isLoggedIn() ? authService.getCurrentUser().getId() : null;
 
         Post post = postQueryService.getById(postId);
