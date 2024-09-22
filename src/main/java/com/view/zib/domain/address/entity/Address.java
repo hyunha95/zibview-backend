@@ -1,7 +1,7 @@
 package com.view.zib.domain.address.entity;
 
-import com.view.zib.domain.api.kako.domain.Coordinate;
-import com.view.zib.domain.post.entity.Post;
+import com.view.zib.domain.client.kako.domain.Coordinate;
+import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,15 +13,17 @@ import java.math.BigDecimal;
 
 @Getter
 @Entity
-public class Address {
+public class Address extends BaseEntity {
 
     @Id
     @Size(max = 36)
     @Column(name = "address_id", nullable = false, length = 36)
-    private String addressId;
+    private String id;
 
     @OneToOne(mappedBy = "address")
-    private Post post;
+    private AddressDetail addressDetail;
+
+
 
     @Size(max = 26)
     @Column(name = "management_number", length = 26)
@@ -62,11 +64,11 @@ public class Address {
     @Column(name = "mountain")
     private Character mountain;
 
-    @Column(name = "jibun_number")
-    private Integer jibunNumber;
+    @Column(name = "jibun")
+    private Integer jibun;
 
-    @Column(name = "sub_jibun_number")
-    private Integer subJibunNumber;
+    @Column(name = "sub_jibun")
+    private Integer subJibun;
 
     @Size(max = 12)
     @Column(name = "road_name_code", length = 12)
@@ -133,5 +135,9 @@ public class Address {
     public void updateCoordinate(Coordinate coordinate) {
         this.latitude = coordinate.latitude();
         this.longitude = coordinate.longitude();
+    }
+
+    public void addEntity(AddressDetail addressDetail) {
+        this.addressDetail = addressDetail;
     }
 }

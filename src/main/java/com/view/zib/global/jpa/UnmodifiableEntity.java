@@ -17,9 +17,9 @@ public abstract class UnmodifiableEntity {
 
     @Column(updatable = false)
     @CreatedBy
-    private String createdBy;
+    protected String createdBy;
 
     @Column(updatable = false)
     @CreatedDate
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 }

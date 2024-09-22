@@ -1,10 +1,23 @@
 package com.view.zib.domain.address.repository;
 
 import com.view.zib.domain.address.entity.Address;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.view.zib.domain.address.repository.jpa.AddressJpaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface AddressRepository extends JpaRepository<Address, String> {
-    Optional<Address> findByPostId(Long postId);
+@RequiredArgsConstructor
+@Repository
+public class AddressRepository  {
+
+    private final AddressJpaRepository addressJpaRepository;
+
+    public Optional<Address> findById(String addressId) {
+        return addressJpaRepository.findById(addressId);
+    }
+
+    public Optional<Address> findByLegalDongCodeStartsWithAndSsgAndEmdAndJibunAndSubJibun(String sggCd, String sggNm, String umdNm, String jibun, String subJibun) {
+        return addressJpaRepository.findByLegalDongCodeStartsWithAndSsgAndEmdAndJibunAndSubJibun(sggCd, sggNm, umdNm, jibun, subJibun);
+    }
 }

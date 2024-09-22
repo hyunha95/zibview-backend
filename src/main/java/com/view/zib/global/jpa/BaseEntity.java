@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity extends UnmodifiableEntity {
 
     @LastModifiedBy
-    private String updatedBy;
+    protected String updatedBy;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     protected void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;

@@ -18,6 +18,11 @@ public class FakePostRepository implements PostRepository {
     private List<Post> posts = new CopyOnWriteArrayList<>();
 
     @Override
+    public Optional<Post> findByIdForUpdate(Long postId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Slice<LatestPost> findAllLatestPosts(Pageable pageable) {
         return null;
     }

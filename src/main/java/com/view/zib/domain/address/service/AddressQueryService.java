@@ -1,8 +1,13 @@
 package com.view.zib.domain.address.service;
 
-import com.view.zib.domain.address.domain.Coordinate;
+import com.view.zib.domain.address.entity.Address;
+
+import java.util.Optional;
 
 public interface AddressQueryService {
 
-    Coordinate getCoordinateByPostId(Long postId);
+    Address getById(String addressId);
+    Address getByIdForUpdateSkipLocked(String addressId);
+
+    Optional<Address> findByLegalDongCodeStartsWithAndSsgAndEmdAndJibunAndSubJibun(String sggCd, String sggNm, String umdNm, String jibun, String subJibun);
 }

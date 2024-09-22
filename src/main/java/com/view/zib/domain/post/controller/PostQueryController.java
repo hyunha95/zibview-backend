@@ -29,8 +29,8 @@ public class PostQueryController {
     }
 
     @GetMapping("/{postId}")
-    public GetPostResponse getPostDetails(@PathVariable("postId") Long postId) {
-        return postQueryFacade.getPostDetails(postId);
+    public GetPostResponse findByPostId(@PathVariable("postId") Long postId) {
+        return postQueryFacade.findByPostId(postId);
     }
 
     @GetMapping("/search-as-you-type")

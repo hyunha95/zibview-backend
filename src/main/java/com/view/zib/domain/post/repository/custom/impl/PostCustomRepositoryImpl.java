@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.view.zib.domain.address.entity.QAddress.address;
+import static com.view.zib.domain.address.entity.QAddressAdditionalInfo.addressAdditionalInfo;
+import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
+import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
 import static com.view.zib.domain.post.entity.QPost.post;
 
 @RequiredArgsConstructor
@@ -27,10 +29,10 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         List<LatestPost> responses = jpaQueryFactory.select(
                         Projections.fields(LatestPost.class,
                                 post.id.as("postId"),
-                                address.roadNameAddress,
-                                address.jibunAddress,
-                                address.buildingName,
-                                address.sigunguBuildingName,
+                                roadNameCode.sggName,
+                                roadNameCode.emdName,
+                                addressAdditionalInfo.buildingName,
+                                addressAdditionalInfo.sggBuildingName,
                                 post.likeCount,
                                 post.commentCount,
                                 post.viewCount,
@@ -38,7 +40,10 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         )
                 )
                 .from(post)
-                .join(post.address, address)
+                .join(post.roadNameAddress, roadNameAddress)
+                .join(roadNameAddress.roadNameCode, roadNameCode)
+                .join(roadNameAddress.addressAdditionalInfo, addressAdditionalInfo)
+                .where(addressAdditionalInfo.apartmentYn.eq("1"))
                 .orderBy(post.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1L) // // limit보다 데이터를 1개 더 들고와서, 해당 데이터가 있다면 hasNext 변수에 true를 넣어 알림

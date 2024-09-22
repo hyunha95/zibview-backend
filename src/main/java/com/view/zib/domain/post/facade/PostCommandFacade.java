@@ -1,7 +1,7 @@
 package com.view.zib.domain.post.facade;
 
-import com.view.zib.domain.api.kako.client.KakaoAddressClient;
-import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
+import com.view.zib.domain.client.kako.client.KakaoAddressClient;
+import com.view.zib.domain.client.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageQueryService;

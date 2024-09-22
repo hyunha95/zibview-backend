@@ -1,6 +1,6 @@
 package com.view.zib.domain.building.entity;
 
-import com.view.zib.domain.api.kako.domain.Coordinate;
+import com.view.zib.domain.client.kako.domain.Coordinate;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;

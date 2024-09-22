@@ -1,6 +1,7 @@
 package com.view.zib.domain.post.entity;
 
 import com.view.zib.domain.address.entity.Address;
+import com.view.zib.domain.address.entity.RoadNameAddress;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,18 +30,17 @@ public class Post extends BaseEntity {
     private List<SubPost> subPosts = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @JoinColumn(name = "management_no")
+    private RoadNameAddress roadNameAddress;
 
     private double rating;
-
     private long likeCount;
     private long commentCount;
     private long viewCount;
 
     public static Post from(Address address) {
         return Post.builder()
-                .address(address)
+//                .address(address)
                 .build();
     }
 

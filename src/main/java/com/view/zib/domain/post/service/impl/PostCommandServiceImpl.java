@@ -2,7 +2,7 @@ package com.view.zib.domain.post.service.impl;
 
 import com.view.zib.domain.address.entity.Address;
 import com.view.zib.domain.address.repository.AddressRepository;
-import com.view.zib.domain.api.kako.domain.KakaoAddressResponse;
+import com.view.zib.domain.client.kako.domain.KakaoAddressResponse;
 import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.repository.ImageRepository;
@@ -69,7 +69,7 @@ public class PostCommandServiceImpl implements PostCommandService {
 
 //        // address
 //        Address address = Address.of(request.getAddress(), images, kakaoAddressResponse);
-        addressRepository.save(null);
+//        addressRepository.save(null);
 
         // userAddress
 //        UserAddress userAddress = UserAddress.of(user, address, request.getContractInfo());

@@ -10,30 +10,30 @@ import java.util.Map;
 
 public record GetPostsResponse(
         Long postId,
-        String roadNameAddress,
-        String jibunAddress,
+        String sggName,
+        String emdName,
         String buildingName,
-        String sigunguBuildingName,
-        List<String> imageUrl,
-        List<String> imageUrn,
-        long likeCount,
-        long commentCount,
-        long viewCount,
+        String sggBuildingName,
+        Long likeCount,
+        Long commentCount,
+        Long viewCount,
+        List<String> imagePaths,
+        List<String> imageStoredFilename,
         LocalDateTime updatedAt
 ) {
-    public GetPostsResponse(LatestPost response, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
+    public GetPostsResponse(LatestPost latestPost, Map<Long, List<Image>> imagesByPost, StorageService storageService) {
         this(
-                response.getPostId(),
-                response.getRoadNameAddress(),
-                response.getJibunAddress(),
-                response.getBuildingName(),
-                response.getSigunguBuildingName(),
-                storageService.generateImageUrls(imagesByPost.get(response.getPostId())),
-                storageService.generateImageUrns(imagesByPost.get(response.getPostId())),
-                response.getLikeCount(),
-                response.getCommentCount(),
-                response.getViewCount(),
-                response.getUpdatedAt()
+                latestPost.getPostId(),
+                latestPost.getSggName(),
+                latestPost.getEmdName(),
+                latestPost.getBuildingName(),
+                latestPost.getSggBuildingName(),
+                latestPost.getLikeCount(),
+                latestPost.getCommentCount(),
+                latestPost.getViewCount(),
+                storageService.generateImageUrls(imagesByPost.get(latestPost.getPostId())),
+                storageService.generateImageUrns(imagesByPost.get(latestPost.getPostId())),
+                latestPost.getUpdatedAt()
         );
     }
 }

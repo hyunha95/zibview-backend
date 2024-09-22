@@ -70,7 +70,8 @@ api:
   zibview:
     url: "http://localhost:8080"
   v-world:
-    search-url: "https://api.vworld.kr"
+    # 국토교통부_건축물대장정보 서비스
+    search-url: "http://apis.data.go.kr/1613000/BldRgstService_v2/getBrTitleInfo"
     key: "${API_VWORLD_KEY}"
   juso: # 도로명주소 검색 API 개발 ( 사용기간 : 2024-05-12 ~ 2024-08-10 )
     key: "${API_JUSO_KEY}"

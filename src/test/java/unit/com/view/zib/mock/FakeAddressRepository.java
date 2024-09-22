@@ -31,6 +31,16 @@ public class FakeAddressRepository implements AddressRepository {
     }
 
     @Override
+    public Optional<Address> getByIdForUpdate(String addressId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Address> getByIdForUpdateSkipLocked(String addressId) {
+        return Optional.empty();
+    }
+
+    @Override
     public <S extends Address> S saveAndFlush(S entity) {
         return null;
     }
@@ -46,28 +56,53 @@ public class FakeAddressRepository implements AddressRepository {
     }
 
     @Override
-    public void deleteAllByIdInBatch(Iterable<Long> longs) {
+    public void deleteAllByIdInBatch(Iterable<String> strings) {
+
+    }
+
+    @Override
+    public Address getOne(String s) {
+        return null;
+    }
+
+    @Override
+    public Address getById(String s) {
+        return null;
+    }
+
+    @Override
+    public Address getReferenceById(String s) {
+        return null;
+    }
+
+    @Override
+    public List<Address> findAllById(Iterable<String> strings) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Address> findById(String s) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(String s) {
+        return false;
+    }
+
+    @Override
+    public void deleteById(String s) {
+
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends String> strings) {
 
     }
 
     @Override
     public void deleteAllInBatch() {
 
-    }
-
-    @Override
-    public Address getOne(Long aLong) {
-        return null;
-    }
-
-    @Override
-    public Address getById(Long aLong) {
-        return null;
-    }
-
-    @Override
-    public Address getReferenceById(Long aLong) {
-        return null;
     }
 
     @Override
@@ -90,10 +125,6 @@ public class FakeAddressRepository implements AddressRepository {
         return List.of();
     }
 
-    @Override
-    public List<Address> findAllById(Iterable<Long> longs) {
-        return List.of();
-    }
 
     @Override
     public <S extends Address> S save(S entity) {
@@ -101,34 +132,12 @@ public class FakeAddressRepository implements AddressRepository {
         addresses.add(entity);
         return entity;
     }
-
-    @Override
-    public Optional<Address> findById(Long aLong) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return false;
-    }
-
     @Override
     public long count() {
         return 0;
     }
-
-    @Override
-    public void deleteById(Long aLong) {
-
-    }
-
     @Override
     public void delete(Address entity) {
-
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
 
     }
 

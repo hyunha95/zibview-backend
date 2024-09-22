@@ -1,6 +1,6 @@
 package com.view.zib.domain.building.service.impl;
 
-import com.view.zib.domain.api.kako.domain.Coordinate;
+import com.view.zib.domain.client.kako.domain.Coordinate;
 import com.view.zib.domain.building.entity.BuildingInfo;
 import com.view.zib.domain.building.repository.BuildingRepository;
 import com.view.zib.domain.building.service.BuildingCommandService;
