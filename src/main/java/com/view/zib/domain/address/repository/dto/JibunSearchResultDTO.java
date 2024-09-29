@@ -1,6 +1,6 @@
 package com.view.zib.domain.address.repository.dto;
 
-import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,9 +29,18 @@ public class JibunSearchResultDTO {
         return jibunMain + "-" + jibunSub;
     }
 
-    public boolean isSameJibun(ApartmentTransactionResponse.Item item) {
-        return this.legalDongCode.equals(item.sggCd() + item.umdCd()) && this.getJibunNo().equals(item.jibun());
+    public String getJibunAddress() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(sidoName).append(" ");
+        sb.append(sggName).append(" ");
+        if (StringUtils.isNotBlank(emdName)) {
+            sb.append(emdName).append(" ");
+        }
+        if (StringUtils.isNotBlank(riName)) {
+            sb.append(riName).append(" ");
+        }
+        sb.append(getJibunNo());
 
-
+        return sb.toString();
     }
 }

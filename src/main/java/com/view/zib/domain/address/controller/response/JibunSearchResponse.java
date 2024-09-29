@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Builder
 public record JibunSearchResponse(
         Long jibunId,
+        String jibunAddress,
         String sidoName,
         String sggName,
         String emdName,
@@ -34,6 +35,7 @@ public record JibunSearchResponse(
 
         return JibunSearchResponse.builder()
                 .jibunId(jibunSearchResultDTO.getJibunId())
+                .jibunAddress(jibunSearchResultDTO.getJibunAddress())
                 .sidoName(jibunSearchResultDTO.getSidoName())
                 .sggName(jibunSearchResultDTO.getSggName())
                 .emdName(jibunSearchResultDTO.getEmdName())
