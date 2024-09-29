@@ -2,6 +2,7 @@ package com.view.zib.domain.image.controller;
 
 import com.view.zib.domain.image.facade.ImageFacade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +25,11 @@ public class ImageQueryController {
             @PathVariable(name = "storedFilename") String storedFilename
     ) throws IOException {
         return imageFacade.getImage(storedFilename);
+    }
+
+    @GetMapping("/{imageName}")
+    public Resource findImage(@PathVariable String imageName) {
+        Resource resource = new ClassPathResource("static/images/" + imageName);
+        return resource;
     }
 }

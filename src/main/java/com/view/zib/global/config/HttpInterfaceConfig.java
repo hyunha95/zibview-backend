@@ -34,7 +34,7 @@ public class HttpInterfaceConfig {
 
     @Bean("vworldRestClient")
     public RestClient vworldRestClient(RestClient.Builder builder) {
-        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(apiProperties.getVWorld().getSearchUrl());
+        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory("http://apis.data.go.kr/1613000");
             uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
 
         return builder

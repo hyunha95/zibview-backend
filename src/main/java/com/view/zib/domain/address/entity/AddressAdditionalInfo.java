@@ -14,6 +14,9 @@ import lombok.Setter;
 @Table(name = "address_additional_info")
 public class AddressAdditionalInfo {
     @Id
+    @Column(name = "address_additional_info_id", nullable = false)
+    private Long id;
+
     @Size(max = 25)
     @Column(name = "management_no", nullable = false, length = 25)
     private String managementNo;

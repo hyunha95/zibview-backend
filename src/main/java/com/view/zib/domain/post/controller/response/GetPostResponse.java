@@ -1,6 +1,9 @@
 package com.view.zib.domain.post.controller.response;
 
-import com.view.zib.domain.address.entity.*;
+import com.view.zib.domain.address.entity.AddressAdditionalInfo;
+import com.view.zib.domain.address.entity.Jibun;
+import com.view.zib.domain.address.entity.RoadNameAddress;
+import com.view.zib.domain.address.entity.RoadNameCode;
 import com.view.zib.domain.client.kako.domain.Coordinate;
 import com.view.zib.domain.client.vworld.dto.VWorldResponseDto;
 import com.view.zib.domain.post.entity.Post;
@@ -14,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.view.zib.domain.post.controller.response.SubPostDTO.mapToSubPostDtos;
 
@@ -113,8 +115,9 @@ public record GetPostResponse(
         }
 
         return new GetPostResponse(
-                Optional.ofNullable(roadNameAddress.getLatitude()).orElse(BigDecimal.ZERO),
-                Optional.ofNullable(roadNameAddress.getLongitude()).orElse(BigDecimal.ZERO),
+                null, null,
+//                Optional.ofNullable(roadNameAddress.getLatitude()).orElse(BigDecimal.ZERO),
+//                Optional.ofNullable(roadNameAddress.getLongitude()).orElse(BigDecimal.ZERO),
                 addressAdditionalInfo.getBuildingName(),
                 addressAdditionalInfo.getSggBuildingName(),
                 roadNameAddress.getShortRoadNameAddress(),

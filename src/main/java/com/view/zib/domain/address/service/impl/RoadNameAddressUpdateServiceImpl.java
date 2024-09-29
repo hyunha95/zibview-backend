@@ -18,6 +18,6 @@ public class RoadNameAddressUpdateServiceImpl implements RoadNameAddressUpdateSe
     @Override
     public void updateCoordinate(String managementNo, Coordinate coordinate) {
         RoadNameAddress roadNameAddress = roadNameAddressRepository.getById(managementNo);
-        roadNameAddress.updateCoordinate(coordinate.latitude(), coordinate.longitude());
+//        roadNameAddress.updateCoordinate(coordinate.latitude(), coordinate.longitude());
     }
 }

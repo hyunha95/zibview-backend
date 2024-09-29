@@ -1,34 +1,39 @@
 package com.view.zib.domain.address.entity;
 
+import com.view.zib.domain.location.entity.LocationBuilding;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "road_name_address")
 public class RoadNameAddress {
+
     @Id
+    @Column(name = "road_name_address_id", nullable = false)
+    private Long id;
+
     @Size(max = 25)
     @Column(name = "management_no", nullable = false, length = 25)
     private String managementNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(updatable = false, insertable = false, name = "road_name_code", referencedColumnName = "road_name_code"),
-            @JoinColumn(updatable = false, insertable = false, name = "emd_serial_no", referencedColumnName = "emd_serial_no")
-    })
+    @JoinColumn(name = "road_name_code_id")
     private RoadNameCode roadNameCode;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_building_id")
+    private LocationBuilding locationBuilding;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "roadNameAddress")
     private List<Jibun> jibuns;
 
     @OneToOne
-    @JoinColumn(name = "management_no")
+    @JoinColumn(name = "address_additional_info_id")
     private AddressAdditionalInfo addressAdditionalInfo;
 
     @Size(max = 1)
@@ -64,12 +69,6 @@ public class RoadNameAddress {
     @Size(max = 2)
     @Column(name = "emd_serial_no", length = 2)
     private String emdSerialNo;
-
-    @Column(name = "latitude", precision = 13, scale = 10)
-    private BigDecimal latitude;
-
-    @Column(name = "longitude", precision = 13, scale = 10)
-    private BigDecimal longitude;
 
     public String getShortRoadNameAddress() {
         StringBuilder sb = new StringBuilder();
@@ -135,10 +134,5 @@ public class RoadNameAddress {
         }
 
         return sb.toString();
-    }
-
-    public void updateCoordinate(BigDecimal latitude, BigDecimal longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 }

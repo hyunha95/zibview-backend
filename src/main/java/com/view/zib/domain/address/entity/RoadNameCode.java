@@ -1,6 +1,5 @@
 package com.view.zib.domain.address.entity;
 
-import com.view.zib.domain.address.entity.id.RoadNameCodeId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,8 +11,19 @@ import java.util.List;
 @Entity
 @Table(name = "road_name_code")
 public class RoadNameCode {
-    @EmbeddedId
-    private RoadNameCodeId id;
+    @Id
+    @Column(name = "road_name_code_id", nullable = false)
+    private Long id;
+
+    @Size(max = 12)
+    @NotNull
+    @Column(name = "road_name_code", nullable = false, length = 12)
+    private String roadNameCd;
+
+    @Size(max = 2)
+    @NotNull
+    @Column(name = "emd_serial_no", nullable = false, length = 2)
+    private String emdSerialNo;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<RoadNameAddress> roadNameAddresses;

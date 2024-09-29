@@ -1,6 +1,7 @@
 package com.view.zib.domain.client.vworld.client;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.domain.client.vworld.dto.OfficeTelTransactionClientDTO;
 import com.view.zib.domain.client.vworld.dto.VWorldResponseDto;
 import com.view.zib.global.properties.ApiProperties;
@@ -83,6 +84,8 @@ public class VWorldClientImpl implements VWorldClient {
         log.info("[VWORLD] 국토교통부_오피스텔 전월세 실거래가 자료 조회 시작 legalDongCode: [{}], dealYmd: [{}]", legalDongCode, dealYmd);
         String lawdCd = legalDongCode.substring(0, 5);
 
+
+
         return officetelTransactionRestClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -97,6 +100,45 @@ public class VWorldClientImpl implements VWorldClient {
                     return getOfficeTelTransactionClientDTO(response);
                 });
     }
+
+    /**
+     * 국토교통부_아파트 매매 실거래가 상세 자료
+     * https://www.data.go.kr/data/15126468/openapi.do#/API%20%EB%AA%A9%EB%A1%9D/getRTMSDataSvcAptTradeDev
+     */
+    @Override
+    public Optional<ApartmentTransactionResponse> getRTMSDataSvcAptTradeDev(String sggCode, String dealYmd) {
+        log.info("[VWORLD] 국토교통부_오피스텔 전월세 실거래가 상세 자료 조회 시작 sggCode: [{}], dealYmd: [{}]", sggCode, dealYmd);
+
+        return vworldRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev")
+                        .queryParam("LAWD_CD", sggCode)
+                        .queryParam("DEAL_YMD", dealYmd)
+                        .queryParam("serviceKey", apiProperties.getVWorld().getKey())
+                        .queryParam("pageNo", "1")
+                        .queryParam("numOfRows", "1000")
+                        .build())
+                .exchange((request, response) -> {
+                    validateResponse(response);
+                    return getApartmentTransactionResponse(response);
+                });
+    }
+
+    private Optional<ApartmentTransactionResponse> getApartmentTransactionResponse(RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse response) throws IOException {
+        try {
+            String body = new String(response.getBody().readAllBytes());
+            ApartmentTransactionResponse apartmentTransactionResponse = new XmlMapper().readValue(body, ApartmentTransactionResponse.class);
+            if (CollectionUtils.isEmpty(apartmentTransactionResponse.body().items().item())) {
+                return Optional.empty();
+            }
+
+            return Optional.of(apartmentTransactionResponse);
+        } catch (RestClientException e) {
+            log.error("[VWORLD] 데이터 조회에 실패했습니다", e);
+            return Optional.empty();
+        }
+    }
+
 
     private Optional<OfficeTelTransactionClientDTO> getOfficeTelTransactionClientDTO(RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse response) throws IOException {
         try {

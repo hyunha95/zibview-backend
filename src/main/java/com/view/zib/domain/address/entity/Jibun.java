@@ -1,12 +1,12 @@
 package com.view.zib.domain.address.entity;
 
+import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.domain.transaction.entity.BuildingTransaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -18,8 +18,9 @@ public class Jibun {
     @Column(name = "jibun_id")
     private Long id;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "management_no")
+    @JoinColumn(name = "road_name_address_id")
     private RoadNameAddress roadNameAddress;
 
     @OneToOne(mappedBy = "jibun")
@@ -72,14 +73,15 @@ public class Jibun {
     @Column(name = "representative_yn", length = 1)
     private String representativeYn;
 
-    @Column(name = "latitude", precision = 13, scale = 10)
-    private BigDecimal latitude;
-
-    @Column(name = "longitude", precision = 13, scale = 10)
-    private BigDecimal longitude;
-
-    public void updateCoordinate(BigDecimal latitude, BigDecimal longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public String getJibunNumber() {
+        if (jibunSub == 0) {
+            return String.valueOf(jibunMain);
+        }
+        return jibunMain + "-" + jibunSub;
     }
+
+    public boolean isSameJibun(ApartmentTransactionResponse.Item item) {
+        return this.legalDongCode.equals(item.sggCd() + item.umdCd()) && this.getJibunNumber().equals(item.jibun());
+    }
+
 }
