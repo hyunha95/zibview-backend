@@ -76,7 +76,7 @@ dev-deploy:
   image: alpine:latest
   variables:
     UBUNTU_HOST: $UBUNTU_HOST
-    EC2_USER: $EC2_USER_DEV
+    UBUNTU_USER: $UBUNTU_USER
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:develop
     CONTAINER_NAME: zibview-backend-api
   before_script:
