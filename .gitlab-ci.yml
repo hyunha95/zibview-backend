@@ -71,7 +71,7 @@ deploy:
   stage: deploy
   image: alpine:latest
   variables:
-    EC2_HOST: $EC2_HOST_DEV
+    UBUNTU_HOST: $UBUNTU_HOST
     EC2_USER: $EC2_USER_DEV
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:develop
     CONTAINER_NAME: zibview-backend-api
@@ -91,13 +91,13 @@ deploy:
     ## Create the SSH directory and give it the right permissions
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+    - ssh-keyscan -H $UBUNTU_HOST >> ~/.ssh/known_hosts
 
   script:
-    - ssh $EC2_USER@$EC2_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    - ssh $EC2_USER@$EC2_HOST "docker pull $DOCKER_IMAGE_NAME"
-    - ssh $EC2_USER@$EC2_HOST "docker stop $CONTAINER_NAME || true"
-    - ssh $EC2_USER@$EC2_HOST "docker rm $CONTAINER_NAME || true"
-    - ssh $EC2_USER@$EC2_HOST "docker run -d --name $CONTAINER_NAME -p 8080:8080 $DOCKER_IMAGE_NAME"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker pull $DOCKER_IMAGE_NAME"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker stop $CONTAINER_NAME || true"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker rm $CONTAINER_NAME || true"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker run -d --name $CONTAINER_NAME -p 8080:8080 $DOCKER_IMAGE_NAME"
   after_script:
     - ssh-add -D
