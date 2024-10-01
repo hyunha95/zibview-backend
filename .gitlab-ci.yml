@@ -22,7 +22,7 @@ before_script:
   - GRADLE_USER_HOME="$(pwd)/.gradle"
   - export GRADLE_USER_HOME
 
-build:
+dev-build:
   only: 
     - develop
   stage: build
@@ -46,16 +46,15 @@ build:
 #       - build
 #       - .gradle
 
-containerize:
+dev-containerize:
   only:
     - develop
   stage: containerize
-  image: docker:stable
+  image: docker:cli
+  services:
+    - docker:dind
   variables:
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-    # Use the overlayfs driver for improved performance:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
@@ -65,7 +64,7 @@ containerize:
     - docker logout $CI_REGISTRY
 
 
-deploy:
+dev-deploy:
   only:
     - develop
   stage: deploy
