@@ -65,7 +65,7 @@ containerize:
     - docker logout $CI_REGISTRY
 
 
-dev-deploy:
+deploy:
   only:
     - develop
   stage: deploy
