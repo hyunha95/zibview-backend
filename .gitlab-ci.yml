@@ -53,6 +53,11 @@ dev-containerize:
   image: docker:cli
   services:
     - docker:dind
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
   variables:
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   before_script:
