@@ -1,0 +1,104 @@
+# This file is a template, and might need editing before it works on your project.
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Gradle.gitlab-ci.yml
+
+# This is the Gradle build system for JVM applications
+# https://gradle.org/
+# https://github.com/gradle/gradle
+
+stages:
+  - build
+  - test
+  - containerize
+  - deploy
+
+
+image: gradle:alpine
+
+before_script:
+  - GRADLE_USER_HOME="$(pwd)/.gradle"
+  - export GRADLE_USER_HOME
+
+build:
+  only: 
+    - develop
+  stage: build
+  script: gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+test:
+  only: 
+    - develop
+  stage: test
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+containerize:
+  only:
+    - develop
+  stage: containerize
+  image: docker:stable
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    # Use the overlayfs driver for improved performance:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$DOCKER_IMAGE_NAME" -f Dockerfile.dev .
+    - docker push "$DOCKER_IMAGE_NAME"
+  after_script:
+    - docker logout $CI_REGISTRY
+
+
+dev-deploy:
+  only:
+    - develop
+  stage: deploy
+  image: alpine:latest
+  variables:
+    EC2_HOST: $EC2_HOST_DEV
+    EC2_USER: $EC2_USER_DEV
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:develop
+    CONTAINER_NAME: zibview-backend-api
+  before_script:
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    - 'command -v ssh-agent >/dev/null || ( apk update && apk add --no-cache openssh-client )'
+
+    ## Run ssh-agent (inside the build environment)
+    - eval $(ssh-agent -s)
+
+    ## Give the right permissions, otherwise ssh-add will refuse to add files
+    ## Add the SSH key stored in SSH_PRIVATE_KEY file type CI/CD variable to the agent store
+    - chmod 400 "$SSH_PRIVATE_KEY"
+    - ssh-add "$SSH_PRIVATE_KEY"
+
+    ## Create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+
+  script:
+    - ssh $EC2_USER@$EC2_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - ssh $EC2_USER@$EC2_HOST "docker pull $DOCKER_IMAGE_NAME"
+    - ssh $EC2_USER@$EC2_HOST "docker stop $CONTAINER_NAME || true"
+    - ssh $EC2_USER@$EC2_HOST "docker rm $CONTAINER_NAME || true"
+    - ssh $EC2_USER@$EC2_HOST "docker run -d --name $CONTAINER_NAME -p 8080:8080 $DOCKER_IMAGE_NAME"
+  after_script:
+    - ssh-add -D
