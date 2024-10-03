@@ -5,6 +5,7 @@ import com.view.zib.domain.address.facade.JibunQueryFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -19,7 +20,13 @@ public class JibunQueryController {
 
 
     @GetMapping("/search-by-utmk")
-    public List<JibunSearchResponse> searchByUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan) {
-        return jibunQueryFacade.findAddressesInUtmk(utmkX, utmkY, utmkXSpan, utmkYSpan);
+    public List<JibunSearchResponse> searchByUtmk(
+            BigDecimal minX,
+            BigDecimal minY,
+            BigDecimal maxX,
+            BigDecimal maxY,
+            @RequestParam(required = false) List<Long> jibunIds
+    ) {
+        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, jibunIds);
     }
 }

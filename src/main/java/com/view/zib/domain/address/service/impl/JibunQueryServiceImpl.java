@@ -4,6 +4,7 @@ import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.repository.JibunRepository;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import com.view.zib.domain.address.service.JibunQueryService;
+import com.view.zib.global.utils.NumberUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +23,8 @@ public class JibunQueryServiceImpl implements JibunQueryService {
     }
 
     @Override
-    public List<JibunSearchResultDTO> findAddressesInUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan) {
-        return jibunRepository.findAddressesInUtmk(utmkX, utmkY, utmkXSpan, utmkYSpan);
+    public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
+        return jibunRepository.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
     }
 
     @Override
@@ -32,9 +33,18 @@ public class JibunQueryServiceImpl implements JibunQueryService {
         String jibunSub = "0";
         if (jibunNumber.contains("-")) {
             String[] jibunNumbers = jibunNumber.split("-");
+            if (jibunNumbers.length != 2) {
+                return List.of();
+            }
+
             jibunMain = jibunNumbers[0];
             jibunSub = jibunNumbers[1];
         }
+
+        if (!NumberUtils.isDigit(jibunMain) || !NumberUtils.isDigit(jibunSub)) {
+            return List.of();
+        }
+
         return jibunRepository.findByLegalDongCodeAndJibunMainAndJibunSub(legalDongCode, jibunMain, jibunSub);
     }
 }

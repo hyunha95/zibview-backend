@@ -21,8 +21,8 @@ public class JibunRepository {
                 .orElseThrow(() -> new ResourceNotFoundException("Jibun", jibunId));
     }
 
-    public List<JibunSearchResultDTO> findAddressesInUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan) {
-        return jibunJpaRepository.findAddressesInUtmk(utmkX, utmkY, utmkXSpan, utmkYSpan);
+    public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
+        return jibunJpaRepository.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
     }
 
     public List<Jibun> findByLegalDongCodeAndJibunMainAndJibunSub(String legalDongCode, String jibunMain, String jibunSub) {

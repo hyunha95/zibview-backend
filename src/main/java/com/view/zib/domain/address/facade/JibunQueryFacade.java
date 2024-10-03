@@ -11,7 +11,9 @@ import com.view.zib.domain.transaction.event.publisher.TransactionApartmentPubli
 import com.view.zib.domain.transaction.facade.TransactionApartmentQueryFacade;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JibunQueryFacade {
@@ -34,14 +37,14 @@ public class JibunQueryFacade {
 
     private final VWorldClient vWorldClient;
 
-    public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan) {
-        List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmk(utmkX, utmkY, utmkXSpan, utmkYSpan);
+    public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
+        List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
         Set<String> sggCodes = jibunSearchResultDTOS.stream()
                 .map(jibunSearchResultDTO -> jibunSearchResultDTO.getLegalDongCode().substring(0, 5))
                 .collect(Collectors.toSet());
 
-        String searchYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
-        String searchMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
+        final String searchYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
+        final String searchMonth = LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("MM"));
 
         // 이미 저장된 거래 정보가 있는지 확인
         List<DuplicateTransactionBuildingDTO> duplicatedTransactionApartments = transactionApartmentQueryFacade.findBySggCodesInAndDealYearAndDealMonthGroupBy(sggCodes, searchYear, searchMonth);
@@ -55,20 +58,24 @@ public class JibunQueryFacade {
         List<ApartmentTransactionResponse.Item> itemsToSave = new CopyOnWriteArrayList<>();
 
         sggCodes.forEach(legalDongCode -> {
-                    Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
-                            legalDongCode,
-                            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))
-                    );
-                    if (optional.isPresent()) {
-                        ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
-                        List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
-                        itemsToSave.addAll(items);
-                    }
-                });
+            try {
+                Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
+                        legalDongCode,
+                        searchYear + searchMonth
+                );
+                if (optional.isPresent()) {
+                    ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
+                    List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
+                    itemsToSave.addAll(items);
+                }
+            } catch (ResourceAccessException e) {
+                log.error("VWorld API 호출 중 에러 발생", e);
+            }
+        });
         transactionApartmentPublisher.publishEvent(itemsToSave);
 
-        List<Long> jibunIds = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).toList();
-        List<TransactionApartment> transactionApartments =  transactionApartmentQueryFacade.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIds);
+        List<Long> jibunIdList = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).toList();
+        List<TransactionApartment> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIdList);
         return JibunSearchResponse.of(jibunSearchResultDTOS, transactionApartments);
 
     }

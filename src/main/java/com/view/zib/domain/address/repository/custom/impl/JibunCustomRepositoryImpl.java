@@ -1,11 +1,13 @@
 package com.view.zib.domain.address.repository.custom.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.view.zib.domain.address.repository.custom.JibunCustomRepository;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +25,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<JibunSearchResultDTO> findAddressesInUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan) {
+    public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
         return jpaQueryFactory.select(Projections.fields(
                         JibunSearchResultDTO.class,
                         jibun.id.as("jibunId"),
@@ -47,11 +49,18 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                 .where(
                         addressAdditionalInfo.apartmentYn.eq("1"),
                         locationBuilding.buildingName.isNotEmpty(),
-                        locationBuilding.xCoordinate.goe(utmkX),
-                        locationBuilding.xCoordinate.loe(utmkX.add(utmkXSpan)),
-                        locationBuilding.yCoordinate.goe(utmkY),
-                        locationBuilding.yCoordinate.loe(utmkY.add(utmkYSpan))
+                        locationBuilding.xCoordinate.goe(minX),
+                        locationBuilding.xCoordinate.loe(maxX),
+                        locationBuilding.yCoordinate.goe(minY),
+                        locationBuilding.yCoordinate.loe(maxY),
+                        jibunIdsNotIn(jibunIds)
                 )
                 .fetch();
+    }
+
+    private BooleanExpression jibunIdsNotIn(List<Long> jibunIds) {
+        if (CollectionUtils.isEmpty(jibunIds)) return null;
+
+        return jibun.id.notIn(jibunIds);
     }
 }

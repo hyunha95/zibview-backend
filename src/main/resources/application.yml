@@ -2,23 +2,16 @@ server:
   port: 8080
 
 spring:
-  config:
-    activate:
-      on-profile: "${SPRING_PROFILES_ACTIVE}"
+  profiles:
+    active: dev
 
   threads:
     virtual:
       enabled: true
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: "${DATASOURCE_URL}"
-    username: "${DATASOURCE_USERNAME}"
-    password: "${DATASOURCE_PASSWORD}"
-
   jpa:
     hibernate:
-      ddl-auto: "${DDL_AUTO}"
+      ddl-auto: none
     properties:
       default_batch_fetch_size: 10
 
@@ -27,8 +20,8 @@ spring:
       client:
         registration:
           google:
-            client-id: "${SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
-            client-secret: "${SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+            client-id: "314851364329-cv8j0eaveudo1j8klchhfju37bbnv2do.apps.googleusercontent.com"
+            client-secret: "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"
   servlet:
     multipart:
       max-file-size: 10MB
@@ -58,13 +51,13 @@ management:
 
 okta:
   oauth2:
-    issuer: "${OKTA_ISSUER}"
-    client-id: "${OKTA_CLIENT_ID}"
-    client-secret: "${OKTA_CLIENT_SECRET}"
-    audience: "${OKTA_AUDIENCE}"
+    issuer: "https://dev-yqvrvh36brvqbhfs.jp.auth0.com/"
+    client-id: "QDbCe5lwg9082thCdd3UtGztaByOUvGW"
+    client-secret: "v4eI3Mfqh_PNgp3dAjx0senLINkBaqTpv1r0fiLrhwZMm9B9gSLlD-x7ZxEXiaHN"
+    audience: "http://172.30.1.11:8080"
 
 storage:
-  root-path: "${STORAGE_ROOT_PATH}"
+  root-path: "/home/hyunha/assets"
 
 api:
   zibview:
@@ -72,11 +65,11 @@ api:
   v-world:
     # 국토교통부_건축물대장정보 서비스
     search-url: "http://apis.data.go.kr/1613000/BldRgstService_v2/getBrTitleInfo"
-    key: "${API_VWORLD_KEY}"
+    key: "NCKyydWNoee4IfwdGytXuM0yQRz1qRX4XrAlIaQxZtntAsERmPPoQINfbRkP6wY3dlAxoJwKXDiML%2B9DSjizqQ%3D%3D"
   juso: # 도로명주소 검색 API 개발 ( 사용기간 : 2024-05-12 ~ 2024-08-10 )
-    key: "${API_JUSO_KEY}"
+    key: "devU01TX0FVVEgyMDI0MDUxMjIxNTMwNTExNDc2MDE="
   kakao-address:
-    key: "${API_KAKAO_ADDRESS_KEY}"
-    url: "${API_KAKAO_ADDRESS_URL}"
+    key: "621124221ea0da0251f6a56f3b07abc3"
+    url: "https://dapi.kakao.com/v2/local"
   kakao-map:
-    key: "${API_KAKAO_MAP_KEY}"
+    key: "2042098be1474377a755ca5d4c6e114d"

@@ -9,7 +9,7 @@ import java.util.List;
 public interface JibunQueryService {
     Jibun getById(Long jibunId);
 
-    List<JibunSearchResultDTO> findAddressesInUtmk(BigDecimal utmkX, BigDecimal utmkY, BigDecimal utmkXSpan, BigDecimal utmkYSpan);
+    List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds);
 
     List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber);
 }

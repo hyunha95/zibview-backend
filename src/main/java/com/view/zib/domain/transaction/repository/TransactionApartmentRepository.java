@@ -2,6 +2,7 @@ package com.view.zib.domain.transaction.repository;
 
 import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
+import com.view.zib.domain.transaction.repository.jdbc.TransactionApartmentJdbcTemplate;
 import com.view.zib.domain.transaction.repository.jpa.TransactionApartmentJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ import java.util.Set;
 public class TransactionApartmentRepository {
 
     private final TransactionApartmentJpaRepository transactionApartmentJpaRepository;
+    private final TransactionApartmentJdbcTemplate transactionApartmentJdbcTemplate;
 
     public List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, String searchYear, String searchMonth) {
         return transactionApartmentJpaRepository.findBySggCodesInAndDealYearAndDealMonthGroupBy(sggCodes, searchYear, searchMonth);
@@ -27,8 +29,8 @@ public class TransactionApartmentRepository {
         return transactionApartmentJpaRepository.findByJibunIdIn(jibunIds);
     }
 
-    public void saveAll(List<TransactionApartment> newTransactionApartments) {
-        transactionApartmentJpaRepository.saveAll(newTransactionApartments);
+    public void bulkInsert(List<TransactionApartment> newTransactionApartments) {
+        transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
     }
 
     public List<TransactionApartment> findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(List<Long> jibunIds) {

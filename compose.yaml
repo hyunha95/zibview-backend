@@ -1,35 +1,35 @@
 services:
-  elasticsearch:
-    container_name: elasticsearch
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.10.2'
-    environment:
-      - 'ELASTIC_PASSWORD=secret'
-      - 'discovery.type=single-node'
-      - 'xpack.security.enabled=false'
-#      - 'http.max_content_length=500mb'
-#      - 'indices.breaker.total.limit=80%'
-#      - 'ES_JAVA_OPTS=-Xms2g -Xmx4g'  # JVM 힙 메모리 설정 (최소 2GB, 최대 4GB)
-#      - 'thread_pool.write.queue_size=500'  # write thread pool queue size 증가
-#      - 'thread_pool.write.size=5'  # write thread pool 크기 증가
-    user: "1000:1000" # root 권한으로 es 명령어를 실행하지 않도록 사용자 설정
-    ports:
-      - '9200:9200'
-      - '9300:9300'
-    restart: always
-    # 플러그인이 설치되어 있지 않다면 플러그인 설치
-    command: >
-      sh -c "if ! bin/elasticsearch-plugin list | grep -q 'analysis-nori'; then bin/elasticsearch-plugin install analysis-nori; fi && bin/elasticsearch"
-
-  kibana:
-    container_name: kibana
-    image: 'docker.elastic.co/kibana/kibana:7.10.2'
-    environment:
-      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
-    ports:
-      - '5601:5601'
-    restart: always
-    depends_on:
-      - elasticsearch
+#  elasticsearch:
+#    container_name: elasticsearch
+#    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.10.2'
+#    environment:
+#      - 'ELASTIC_PASSWORD=secret'
+#      - 'discovery.type=single-node'
+#      - 'xpack.security.enabled=false'
+##      - 'http.max_content_length=500mb'
+##      - 'indices.breaker.total.limit=80%'
+##      - 'ES_JAVA_OPTS=-Xms2g -Xmx4g'  # JVM 힙 메모리 설정 (최소 2GB, 최대 4GB)
+##      - 'thread_pool.write.queue_size=500'  # write thread pool queue size 증가
+##      - 'thread_pool.write.size=5'  # write thread pool 크기 증가
+#    user: "1000:1000" # root 권한으로 es 명령어를 실행하지 않도록 사용자 설정
+#    ports:
+#      - '9200:9200'
+#      - '9300:9300'
+#    restart: always
+#    # 플러그인이 설치되어 있지 않다면 플러그인 설치
+#    command: >
+#      sh -c "if ! bin/elasticsearch-plugin list | grep -q 'analysis-nori'; then bin/elasticsearch-plugin install analysis-nori; fi && bin/elasticsearch"
+#
+#  kibana:
+#    container_name: kibana
+#    image: 'docker.elastic.co/kibana/kibana:7.10.2'
+#    environment:
+#      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
+#    ports:
+#      - '5601:5601'
+#    restart: always
+#    depends_on:
+#      - elasticsearch
 
   zipkin:
     image: openzipkin/zipkin:latest
