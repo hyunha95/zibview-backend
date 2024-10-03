@@ -1,7 +1,6 @@
 package com.view.zib.domain.post.service.impl;
 
 import com.view.zib.domain.post.repository.dto.LatestPost;
-import com.view.zib.domain.post.service.PostQueryService;
 import com.view.zib.domain.storage.service.StorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

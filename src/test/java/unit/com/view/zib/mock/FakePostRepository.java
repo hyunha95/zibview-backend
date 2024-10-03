@@ -1,7 +1,6 @@
 package com.view.zib.mock;
 
 import com.view.zib.domain.post.entity.Post;
-import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.dto.LatestPost;
 import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.FluentQuery;

@@ -24,7 +24,8 @@ public class PostCommandController {
 
     @PostMapping("/sub-post")
     public SubPostId saveSubPost(@RequestBody @Valid SubPostRequest.Save request) {
-        return new SubPostId(postCommandFacade.createSubPost(request));
+//        return new SubPostId(postCommandFacade.createSubPost(request));
+        return null;
     }
 
     @PostMapping("/sub-post/{subPostId}/like")

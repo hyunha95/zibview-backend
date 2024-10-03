@@ -1,21 +1,17 @@
 package com.view.zib.domain.post.facade;
 
+import com.view.zib.domain.auth.service.AuthService;
 import com.view.zib.domain.client.kako.client.KakaoAddressClient;
 import com.view.zib.domain.client.kako.domain.KakaoAddressResponse;
-import com.view.zib.domain.auth.service.AuthService;
-import com.view.zib.domain.image.entity.Image;
 import com.view.zib.domain.image.service.ImageQueryService;
 import com.view.zib.domain.log.entity.LogViewCount;
 import com.view.zib.domain.log.service.LogViewCountCommandService;
 import com.view.zib.domain.log.service.LogViewCountQueryService;
 import com.view.zib.domain.post.controller.request.PostRequest;
-import com.view.zib.domain.post.controller.request.SubPostRequest;
-import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.post.entity.SubPostLike;
 import com.view.zib.domain.post.service.*;
 import com.view.zib.domain.user.entity.User;
-import com.view.zib.global.exception.exceptions.ForbiddenException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -32,7 +27,6 @@ import java.util.function.Consumer;
 @Component
 public class PostCommandFacade {
 
-    private final PostQueryService postQueryService;
     private final SubPostQueryService subPostQueryService;
     private final ImageQueryService imageQueryService;
     private final SubPostLikeQueryService subPostLikeQueryService;
@@ -56,19 +50,6 @@ public class PostCommandFacade {
         return postCommandService.create(request, kakaoAddressResponse);
     }
 
-    public Long createSubPost(SubPostRequest.Save request) {
-        Post post = postQueryService.getById(request.getPostId());
-        List<Image> images = imageQueryService.findByUuidIn(request.getImageUuids());
-        images.forEach(image -> image.addEntity(post));
-
-        User currentUser = authService.getCurrentUser();
-
-        if (!currentUser.isMyImages(images)) {
-            throw new ForbiddenException("내가 등록한 이미지만 등록할 수 있습니다.");
-        }
-
-        return subPostCommandService.create(request, post, images, currentUser);
-    }
 
     @Transactional
     public void likeSubPost(Long subPostId) {
@@ -153,11 +134,11 @@ public class PostCommandFacade {
 
     @Transactional
     public void increaseViewCount(Long postId, String ipAddress) {
-        Post post = postQueryService.getByIdForUpdate(postId);
+//        Post post = postQueryService.getByIdForUpdate(postId);
         boolean empty = logViewCountQueryService.findByPostIdAndIpAddressAndCreatedAt(postId, ipAddress, LocalDate.now()).isEmpty();
 
         if (empty) {
-            post.increaseViewCount();
+//            post.increaseViewCount();
             logViewCountCommandService.create(LogViewCount.of(postId, ipAddress));
         }
     }

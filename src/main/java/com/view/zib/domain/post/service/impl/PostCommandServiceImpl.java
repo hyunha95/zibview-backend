@@ -11,7 +11,6 @@ import com.view.zib.domain.post.entity.ContractInfo;
 import com.view.zib.domain.post.entity.Post;
 import com.view.zib.domain.post.entity.SubPost;
 import com.view.zib.domain.post.repository.ContractInfoRepository;
-import com.view.zib.domain.post.repository.PostRepository;
 import com.view.zib.domain.post.repository.SubPostRepository;
 import com.view.zib.domain.post.service.PostCommandService;
 import com.view.zib.domain.user.entity.User;
@@ -32,7 +31,6 @@ import java.util.function.Supplier;
 public class PostCommandServiceImpl implements PostCommandService {
 
     private final UserService userService;
-    private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final UserAddressRepository userAddressRepository;
     private final AuthService authService;
@@ -42,9 +40,8 @@ public class PostCommandServiceImpl implements PostCommandService {
     private final ContractInfoRepository contractInfoRepository;
 
     @Builder
-    public PostCommandServiceImpl(UserService userService, PostRepository postRepository, ImageRepository imageRepository, UserAddressRepository userAddressRepository, AuthService authService, AddressRepository addressRepository, UserPostRepository userPostRepository, SubPostRepository subPostRepository, ContractInfoRepository contractInfoRepository) {
+    public PostCommandServiceImpl(UserService userService, ImageRepository imageRepository, UserAddressRepository userAddressRepository, AuthService authService, AddressRepository addressRepository, UserPostRepository userPostRepository, SubPostRepository subPostRepository, ContractInfoRepository contractInfoRepository) {
         this.userService = userService;
-        this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.userAddressRepository = userAddressRepository;
         this.authService = authService;
@@ -106,7 +103,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     private Supplier<Post> newPost(Address address) {
         return () -> {
             Post newPost = Post.from(address);
-            postRepository.save(newPost);
+//            postRepository.save(newPost);
             return newPost;
         };
     }
