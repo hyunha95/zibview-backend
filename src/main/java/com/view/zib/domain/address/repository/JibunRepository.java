@@ -1,6 +1,7 @@
 package com.view.zib.domain.address.repository;
 
 import com.view.zib.domain.address.entity.Jibun;
+import com.view.zib.domain.address.repository.dto.JibunMultipleConditionDTO;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import com.view.zib.domain.address.repository.jpa.JibunJpaRepository;
 import com.view.zib.global.exception.exceptions.ResourceNotFoundException;
@@ -27,5 +28,9 @@ public class JibunRepository {
 
     public List<Jibun> findByLegalDongCodeAndJibunMainAndJibunSub(String legalDongCode, String jibunMain, String jibunSub) {
         return jibunJpaRepository.findByLegalDongCodeAndJibunMainAndJibunSub(legalDongCode, jibunMain, jibunSub);
+    }
+
+    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<JibunMultipleConditionDTO> conditions) {
+        return jibunJpaRepository.findByMultipleLegalDongCodeAndJibunNumber(conditions);
     }
 }

@@ -1,5 +1,6 @@
 package com.view.zib.domain.address.facade;
 
+import com.view.zib.domain.address.controller.response.ApartmentResponse;
 import com.view.zib.domain.address.controller.response.JibunSearchResponse;
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
@@ -10,8 +11,11 @@ import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.event.publisher.TransactionApartmentPublisher;
 import com.view.zib.domain.transaction.facade.TransactionApartmentQueryFacade;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
+import com.view.zib.global.utils.DateUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -24,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -36,6 +41,8 @@ public class JibunQueryFacade {
     private final TransactionApartmentPublisher transactionApartmentPublisher;
 
     private final VWorldClient vWorldClient;
+
+    private final JibunDetailCommandFacade jibunDetailCommandFacade;
 
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
         List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
@@ -56,8 +63,7 @@ public class JibunQueryFacade {
         sggCodes.removeIf(registeredSggCodes::contains);
 
         List<ApartmentTransactionResponse.Item> itemsToSave = new CopyOnWriteArrayList<>();
-
-        sggCodes.forEach(legalDongCode -> {
+        sggCodes.parallelStream().forEach(legalDongCode -> {
             try {
                 Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
                         legalDongCode,
@@ -83,4 +89,79 @@ public class JibunQueryFacade {
     public List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber) {
         return jibunQueryService.findByLegalDongCodeAndJibunNumber(legalDongCode, jibunNumber);
     }
+
+    /**
+     * 실거래가는 2000년 이후의 데이터만 조회
+     */
+    public ApartmentResponse findJibunById(Long jibunId) {
+        Jibun jibun = jibunQueryService.getById(jibunId);
+
+        if (jibun.getJibunDetail() == null) {
+            jibunDetailCommandFacade.create(jibun);
+        }
+
+        List<TransactionApartment> transactionApartments = jibun.getTransactionApartments();
+        Set<String> registeredDealYearMonth = transactionApartments.stream()
+                .map(TransactionApartment::getDealYearMonth)
+                .collect(Collectors.toSet());
+
+        // 이미 저장된 거래 정보는 제외
+        Set<String> yearMonthRangeFrom2000 = DateUtils.generateYearMonthRangeFrom2000(LocalDate.now());
+        yearMonthRangeFrom2000.removeAll(registeredDealYearMonth);
+
+        // 실거래가 정보 조회
+        List<ApartmentTransactionResponse.Item> itemsToSave = new CopyOnWriteArrayList<>();
+        yearMonthRangeFrom2000.forEach(yearMonth -> {
+            try {
+                Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
+                        jibun.getSsgCode(),
+                        yearMonth
+                );
+                if (optional.isPresent()) {
+                    ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
+                    List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
+                    itemsToSave.addAll(items);
+                    // 이벤트 발행
+                    transactionApartmentPublisher.publishEvent(items);
+                }
+            } catch (ResourceAccessException e) {
+                log.error("VWorld API 호출 중 에러 발생", e);
+            }
+        });
+
+
+
+        // 실거래가 정보 저장 & 엔티티 관계 설정
+        if (CollectionUtils.isNotEmpty(itemsToSave)) {
+            List<TransactionApartment> newTransactionApartments = itemsToSave.stream()
+                    .map(item -> TransactionApartment.from(jibun, item))
+                    .toList();
+
+            jibun.addEntity(newTransactionApartments);
+        }
+
+        return ApartmentResponse.from(jibun);
+    }
+
+    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items) {
+        return jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

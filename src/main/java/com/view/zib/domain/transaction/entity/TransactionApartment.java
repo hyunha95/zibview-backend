@@ -3,6 +3,7 @@ package com.view.zib.domain.transaction.entity;
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.global.jpa.TimeEntity;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -94,7 +95,7 @@ public class TransactionApartment extends TimeEntity {
 
     @Size(max = 22)
     @Column(name = "exclusive_use_area", length = 22)
-    private String exclusiveUseArea;
+    private BigDecimal exclusiveUseArea;
 
     @Size(max = 4)
     @NotNull
@@ -184,7 +185,7 @@ public class TransactionApartment extends TimeEntity {
                 .legalDongName(item.umdNm())
                 .apartmentName(item.aptNm())
                 .jibunNumber(item.jibun())
-                .exclusiveUseArea(item.excluUseAr())
+                .exclusiveUseArea(StringUtils.isNotBlank(item.excluUseAr()) ? new BigDecimal(item.excluUseAr()) : null)
                 .dealYear(item.dealYear())
                 .dealMonth(item.dealMonth())
                 .dealDay(item.dealDay())
@@ -218,6 +219,10 @@ public class TransactionApartment extends TimeEntity {
      * @return
      */
     public BigDecimal getExclusiveUseAreaInPyung() {
-        return new BigDecimal(this.exclusiveUseArea).multiply(BigDecimal.valueOf(0.3025)).setScale(0, RoundingMode.FLOOR);
+        return this.exclusiveUseArea.multiply(BigDecimal.valueOf(0.3025)).setScale(0, RoundingMode.FLOOR);
+    }
+
+    public String getDealYearMonth() {
+        return this.dealYear + (this.dealMonth.length() < 2 ? "0" + this.dealMonth : this.dealMonth);
     }
 }

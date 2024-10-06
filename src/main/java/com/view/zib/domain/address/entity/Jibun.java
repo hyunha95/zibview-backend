@@ -1,12 +1,13 @@
 package com.view.zib.domain.address.entity;
 
 import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
-import com.view.zib.domain.transaction.entity.BuildingTransaction;
+import com.view.zib.domain.transaction.entity.TransactionApartment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,8 +27,8 @@ public class Jibun {
     @OneToOne(mappedBy = "jibun")
     private JibunDetail jibunDetail;
 
-    @OneToMany(mappedBy = "jibun")
-    private List<BuildingTransaction> buildingTransactions;
+    @OneToMany(mappedBy = "jibun", fetch = FetchType.LAZY)
+    private List<TransactionApartment> transactionApartments = new ArrayList<>();
 
     @Size(max = 25)
     @NotNull
@@ -73,6 +74,18 @@ public class Jibun {
     @Column(name = "representative_yn", length = 1)
     private String representativeYn;
 
+    /**
+     * 시군구 코드
+     * @return
+     */
+    public String getSsgCode() {
+        return legalDongCode.substring(0, 5);
+    }
+
+    public String getJibunAddress() {
+        return String.format("%s %s %s %s %s", sidoName, sggName, emdName, riName, getJibunNumber());
+    }
+
     public String getJibunNumber() {
         if (jibunSub == 0) {
             return String.valueOf(jibunMain);
@@ -84,4 +97,11 @@ public class Jibun {
         return this.legalDongCode.equals(item.sggCd() + item.umdCd()) && this.getJibunNumber().equals(item.jibun());
     }
 
+    public void addEntity(JibunDetail jibunDetail) {
+        this.jibunDetail = jibunDetail;
+    }
+
+    public void addEntity(List<TransactionApartment> newTransactionApartments) {
+        this.transactionApartments.addAll(newTransactionApartments);
+    }
 }

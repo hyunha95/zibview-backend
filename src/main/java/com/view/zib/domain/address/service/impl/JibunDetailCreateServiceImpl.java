@@ -22,4 +22,9 @@ public class JibunDetailCreateServiceImpl implements JibunDetailCreateService {
         JibunDetail jibunDetail = JibunDetail.of(jibun, item);
         jibunDetailRepository.save(jibunDetail);
     }
+
+    @Override
+    public void create(JibunDetail jibunDetail) {
+        jibunDetailRepository.save(jibunDetail);
+    }
 }

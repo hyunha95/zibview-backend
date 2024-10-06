@@ -1,12 +1,10 @@
 package com.view.zib.domain.address.controller;
 
+import com.view.zib.domain.address.controller.response.ApartmentResponse;
 import com.view.zib.domain.address.controller.response.JibunSearchResponse;
 import com.view.zib.domain.address.facade.JibunQueryFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,5 +26,10 @@ public class JibunQueryController {
             @RequestParam(required = false) List<Long> jibunIds
     ) {
         return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, jibunIds);
+    }
+
+    @GetMapping("/{jibunId}")
+    public ApartmentResponse findJibunById(@PathVariable Long jibunId) {
+        return jibunQueryFacade.findJibunById(jibunId);
     }
 }

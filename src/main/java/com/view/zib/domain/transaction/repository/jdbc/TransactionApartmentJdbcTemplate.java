@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.util.List;
 
@@ -18,24 +18,26 @@ public class TransactionApartmentJdbcTemplate {
     private final JdbcTemplate jdbcTemplate;
 
     public void bulkInsert(List<TransactionApartment> newTransactionApartments) {
+        if (CollectionUtils.isEmpty(newTransactionApartments)) return;
+
         long start = System.currentTimeMillis();
         log.info("[bulkInsert] TransactionApartment count: {}", newTransactionApartments.size());
         String sql = """
                 INSERT INTO transaction_apartment (
-                    jibun_id, sgg_code, emd_code, land_code, bonbun, 
-                    bubun, road_name, road_name_sgg_code, road_name_code, road_name_seq, 
-                    road_nameb_code, road_name_bonbun, road_name_bubun, legal_dong_name, apartment_name, 
-                    jibun, exclusive_use_area, deal_year, deal_month, deal_day, 
-                    deal_amount, floor, built_year, apartment_seq, cancel_deal_type, 
-                    cancel_deal_day, deal_gbn, estate_agent_sgg_name, registered_date, apartment_dong_name, 
+                    jibun_id, sgg_code, emd_code, land_code, bonbun,
+                    bubun, road_name, road_name_sgg_code, road_name_code, road_name_seq,
+                    road_nameb_code, road_name_bonbun, road_name_bubun, legal_dong_name, apartment_name,
+                    jibun, exclusive_use_area, deal_year, deal_month, deal_day,
+                    deal_amount, floor, built_year, apartment_seq, cancel_deal_type,
+                    cancel_deal_day, deal_gbn, estate_agent_sgg_name, registered_date, apartment_dong_name,
                     seller_gbn, buyer_gbn, land_leasehold_gbn, created_at, updated_at)
                 VALUES (
-                    ?, ?, ?, ?, ?, 
-                    ?, ?, ?, ?, ?, 
-                    ?, ?, ?, ?, ?, 
-                    ?, ?, ?, ?, ?, 
-                    ?, ?, ?, ?, ?, 
-                    ?, ?, ?, ?, ?, 
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
                     ?, ?, ?, now(), now())
                 """;
 
@@ -60,7 +62,7 @@ public class TransactionApartmentJdbcTemplate {
                     ps.setString(14, transactionApartment.getLegalDongName());
                     ps.setString(15, transactionApartment.getApartmentName());
                     ps.setString(16, transactionApartment.getJibunNumber());
-                    ps.setBigDecimal(17, new BigDecimal(transactionApartment.getExclusiveUseArea()));
+                    ps.setBigDecimal(17, transactionApartment.getExclusiveUseArea());
                     ps.setString(18, transactionApartment.getDealYear());
                     ps.setString(19, transactionApartment.getDealMonth());
                     ps.setString(20, transactionApartment.getDealDay());

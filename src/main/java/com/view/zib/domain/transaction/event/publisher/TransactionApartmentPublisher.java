@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ public class TransactionApartmentPublisher {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public void publishEvent(List<ApartmentTransactionResponse.Item> items) {
+        if (CollectionUtils.isEmpty(items)) {
+            return;
+        }
+
         log.info("Publishing transaction apartment event.");
         applicationEventPublisher.publishEvent(new TransactionApartmentSearchEvent(items));
     }

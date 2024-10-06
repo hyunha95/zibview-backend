@@ -1,9 +1,12 @@
 package com.view.zib.domain.address.repository.custom.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.repository.custom.JibunCustomRepository;
+import com.view.zib.domain.address.repository.dto.JibunMultipleConditionDTO;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,6 +17,7 @@ import java.util.List;
 
 import static com.view.zib.domain.address.entity.QAddressAdditionalInfo.addressAdditionalInfo;
 import static com.view.zib.domain.address.entity.QJibun.jibun;
+import static com.view.zib.domain.address.entity.QJibunDetail.jibunDetail;
 import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
 import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
 import static com.view.zib.domain.location.entity.QLocationBuilding.locationBuilding;
@@ -55,6 +59,24 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                         locationBuilding.yCoordinate.loe(maxY),
                         jibunIdsNotIn(jibunIds)
                 )
+                .fetch();
+    }
+
+    @Override
+    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<JibunMultipleConditionDTO> conditions) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        for (JibunMultipleConditionDTO condition : conditions) {
+            booleanBuilder.or(
+                    jibun.legalDongCode.eq(condition.legalDongCode())
+                            .and(jibun.jibunMain.eq(condition.jibunMain()))
+                            .and(jibun.jibunSub.eq(condition.jibunSub()))
+            );
+        }
+
+        return jpaQueryFactory.selectFrom(jibun)
+                .join(jibun.jibunDetail, jibunDetail).fetchJoin()
+                .where(booleanBuilder)
                 .fetch();
     }
 

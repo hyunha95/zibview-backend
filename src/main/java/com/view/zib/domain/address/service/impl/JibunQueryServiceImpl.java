@@ -2,13 +2,16 @@ package com.view.zib.domain.address.service.impl;
 
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.repository.JibunRepository;
+import com.view.zib.domain.address.repository.dto.JibunMultipleConditionDTO;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import com.view.zib.domain.address.service.JibunQueryService;
+import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.global.utils.NumberUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,5 +49,35 @@ public class JibunQueryServiceImpl implements JibunQueryService {
         }
 
         return jibunRepository.findByLegalDongCodeAndJibunMainAndJibunSub(legalDongCode, jibunMain, jibunSub);
+    }
+
+    @Override
+    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items) {
+        List<JibunMultipleConditionDTO> conditions = new ArrayList<>();
+        for (ApartmentTransactionResponse.Item item : items) {
+            String jibunNumber = item.jibun();
+            String jibunMain = jibunNumber;
+            String jibunSub = "0";
+            if (jibunNumber.contains("-")) {
+                String[] jibunNumbers = jibunNumber.split("-");
+                if (jibunNumbers.length != 2) {
+                    continue;
+                }
+                jibunMain = jibunNumbers[0];
+                jibunSub = jibunNumbers[1];
+            }
+            if (!NumberUtils.isDigit(jibunMain) || !NumberUtils.isDigit(jibunSub)) {
+                continue;
+            }
+
+            conditions.add(JibunMultipleConditionDTO.builder()
+                    .legalDongCode(item.legalDongCode())
+                    .jibunMain(Integer.parseInt(jibunMain))
+                    .jibunSub(Integer.parseInt(jibunSub))
+                    .build());
+        }
+
+
+        return jibunRepository.findByMultipleLegalDongCodeAndJibunNumber(conditions);
     }
 }

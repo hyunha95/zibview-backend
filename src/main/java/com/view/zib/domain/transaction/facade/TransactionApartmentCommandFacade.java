@@ -7,13 +7,12 @@ import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.service.TransactionApartmentCreateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,20 +24,13 @@ public class TransactionApartmentCommandFacade {
 
     private final TransactionApartmentCreateService transactionApartmentCreateService;
 
+    @Transactional
     public void create(List<ApartmentTransactionResponse.Item> items) {
-        List<Jibun> jibuns = new CopyOnWriteArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(items)) {
-            long start = System.currentTimeMillis();
-            log.info("[Query] Start to find jibuns by legalDongCode and jibun. items size: {}", items.size());
-            items.parallelStream().forEach(item -> {
-                        List<Jibun> foundJibuns = jibunQueryFacade.findByLegalDongCodeAndJibunNumber(item.legalDongCode(), item.jibun());
-                        if (CollectionUtils.isNotEmpty(foundJibuns)) {
-                            jibuns.addAll(foundJibuns);
-                        }
-                    });
-            log.info("[Query] End to find jibuns by legalDongCode and jibun. elapsed time: {} ms", System.currentTimeMillis() - start);
-        }
+        long start = System.currentTimeMillis();
+        log.info("[Query] Start to find jibuns by legalDongCode and jibun. items size: {}", items.size());
+        List<Jibun> jibuns = jibunQueryFacade.findByMultipleLegalDongCodeAndJibunNumber(items);
+        log.info("[Query] End to find jibuns by legalDongCode and jibun. elapsed time: {} ms", System.currentTimeMillis() - start);
 
         Map<Jibun, List<ApartmentTransactionResponse.Item>> itemsByJibunId = items.stream()
                 .filter(item -> jibuns.stream().anyMatch(j -> j.isSameJibun(item)))

@@ -45,12 +45,12 @@ public class JibunDetail extends BaseEntity {
     private String roofCode;
 
     @Size(max = 100)
-    @Column(name = "root_code_name", length = 100)
-    private String rootCodeName;
+    @Column(name = "roof_code_name", length = 100)
+    private String roofCodeName;
 
     @Size(max = 500)
-    @Column(name = "etc_root_name", length = 500)
-    private String etcRootName;
+    @Column(name = "etc_roof_name", length = 500)
+    private String etcRoofName;
 
     @Column(name = "house_hold_count")
     private Integer houseHoldCount;
@@ -113,8 +113,8 @@ public class JibunDetail extends BaseEntity {
                 .mainPurposeCode(item.mainPurposeCode())
                 .etcPurposeName(item.etcPurposeName())
                 .roofCode(item.roofCode())
-                .rootCodeName(item.rootCodeName())
-                .etcRootName(item.etcRootName())
+                .roofCodeName(item.rootCodeName())
+                .etcRoofName(item.etcRootName())
                 .houseHoldCount(item.houseHoldCount())
                 .familyCount(item.familyCount())
                 .height(item.height())
