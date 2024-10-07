@@ -22,6 +22,7 @@ import org.springframework.web.client.ResourceAccessException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -130,7 +131,6 @@ public class JibunQueryFacade {
         });
 
 
-
         // 실거래가 정보 저장 & 엔티티 관계 설정
         if (CollectionUtils.isNotEmpty(itemsToSave)) {
             List<TransactionApartment> newTransactionApartments = itemsToSave.stream()
@@ -140,7 +140,10 @@ public class JibunQueryFacade {
             jibun.addEntity(newTransactionApartments);
         }
 
-        return ApartmentResponse.from(jibun);
+        List<TransactionApartment> foundTransactionApartments = transactionApartmentQueryFacade.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
+        foundTransactionApartments.sort(Comparator.comparing(TransactionApartment::getExclusiveUseArea));
+
+        return ApartmentResponse.from(jibun, foundTransactionApartments);
     }
 
     public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items) {

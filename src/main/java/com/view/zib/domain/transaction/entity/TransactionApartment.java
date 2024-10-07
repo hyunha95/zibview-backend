@@ -117,9 +117,7 @@ public class TransactionApartment extends TimeEntity {
     @Column(name = "deal_amount", nullable = false, length = 40)
     private String dealAmount;
 
-    @Size(max = 10)
-    @Column(name = "floor", length = 10)
-    private String floor;
+    private Integer floor;
 
     @Size(max = 4)
     @Column(name = "built_year", length = 4)
@@ -190,7 +188,7 @@ public class TransactionApartment extends TimeEntity {
                 .dealMonth(item.dealMonth())
                 .dealDay(item.dealDay())
                 .dealAmount(item.dealAmount())
-                .floor(item.floor())
+                .floor(Integer.parseInt(item.floor()))
                 .builtYear(item.buildYear())
                 .apartmentSeq(item.aptSeq())
                 .cancelDealType(item.cdealType())

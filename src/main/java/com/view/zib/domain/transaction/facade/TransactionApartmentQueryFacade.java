@@ -30,4 +30,8 @@ public class TransactionApartmentQueryFacade {
     public List<TransactionApartment> findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(List<Long> jibunIds) {
         return transactionApartmentService.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIds);
     }
+
+    public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {
+        return transactionApartmentService.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
+    }
 }

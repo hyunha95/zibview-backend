@@ -14,4 +14,6 @@ public interface TransactionApartmentService {
     List<TransactionApartment> findByJibunIdIn(List<Long> jibunIds);
 
     List<TransactionApartment> findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(List<Long> jibunIds);
+
+    List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId);
 }

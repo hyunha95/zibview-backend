@@ -67,7 +67,7 @@ public class TransactionApartmentJdbcTemplate {
                     ps.setString(19, transactionApartment.getDealMonth());
                     ps.setString(20, transactionApartment.getDealDay());
                     ps.setString(21, transactionApartment.getDealAmount());
-                    ps.setString(22, transactionApartment.getFloor());
+                    ps.setInt(22, transactionApartment.getFloor());
                     ps.setString(23, transactionApartment.getBuiltYear());
                     ps.setString(24, transactionApartment.getApartmentSeq());
                     ps.setString(25, transactionApartment.getCancelDealType());

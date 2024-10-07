@@ -36,4 +36,8 @@ public class TransactionApartmentRepository {
     public List<TransactionApartment> findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(List<Long> jibunIds) {
         return transactionApartmentJpaRepository.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIds);
     }
+
+    public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {
+        return transactionApartmentJpaRepository.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
+    }
 }

@@ -32,11 +32,35 @@ public record ApartmentResponse (
         String etcStructureName, // 기타 구조명
         String earthquakeResistance, // 내진설계적용여부
         String earthquakeResistanceAbility, // 내진능력
-        List<TransactionApartmentDTO> transactionApartments
+        List<Pyung> pyungs
+//        List<TransactionApartmentDTO> transactionApartments
 ) {
 
-    public static ApartmentResponse from(Jibun jibun) {
-        List<TransactionApartmentDTO> transactionApartmentDTOS = TransactionApartmentDTO.from(jibun.getTransactionApartments());
+    @Builder
+    public record Pyung (
+        Long transactionApartmentId,
+        BigDecimal exclusiveUseArea,
+        BigDecimal exclusiveUseAreaInPyung,
+        BigDecimal dealAmountInOneHundredMillion,
+        Integer floor
+
+    ) {
+        public static List<Pyung> from(List<TransactionApartment> transactionApartments) {
+            return transactionApartments.stream()
+                    .map(transactionApartment -> new Pyung(
+                            transactionApartment.getId(),
+                            transactionApartment.getExclusiveUseArea(),
+                            transactionApartment.getExclusiveUseAreaInPyung(),
+                            transactionApartment.getDealAmountInOneHundredMillion(),
+                            transactionApartment.getFloor()
+                    ))
+                    .toList();
+        }
+    }
+
+    public static ApartmentResponse from(Jibun jibun, List<TransactionApartment> foundTransactionApartments) {
+//        List<TransactionApartmentDTO> transactionApartmentDTOS = TransactionApartmentDTO.from(jibun.getTransactionApartments());
+        List<Pyung> pyungs = Pyung.from(foundTransactionApartments);
         Optional<JibunDetail> jibunDetail = Optional.ofNullable(jibun.getJibunDetail());
 
         return ApartmentResponse.builder()
@@ -61,7 +85,8 @@ public record ApartmentResponse (
                 .etcStructureName(jibunDetail.map(JibunDetail::getEtcStructure).orElse(null))
                 .earthquakeResistance("")
                 .earthquakeResistanceAbility("")
-                .transactionApartments(transactionApartmentDTOS)
+                .pyungs(pyungs)
+//                .transactionApartments(transactionApartmentDTOS)
                 .build();
     }
 
@@ -99,7 +124,7 @@ public record ApartmentResponse (
                     .dealMonth(Integer.parseInt(transactionApartment.getDealMonth()))
                     .dealDay(Integer.parseInt(transactionApartment.getDealDay()))
                     .dealAmountInOneHundredMillion(transactionApartment.getDealAmountInOneHundredMillion())
-                    .floor(Integer.parseInt(transactionApartment.getFloor()))
+                    .floor(transactionApartment.getFloor())
                     .builtYear(transactionApartment.getBuiltYear())
                     .dealGbn(transactionApartment.getDealGbn())
                     .estateAgentSggName(transactionApartment.getEstateAgentSggName())
