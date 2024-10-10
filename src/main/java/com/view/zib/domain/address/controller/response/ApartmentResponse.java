@@ -14,7 +14,7 @@ public record ApartmentResponse (
         Long jibunId,
         String apartmentName,
         String jibunAddress,
-        int builtYear, // 건축년도
+        Integer builtYear, // 건축년도
         String roofName, // 지붕명
         String etcRoofName, // 건축물대장 지붕 정보
         Integer houseHoldCount, // 세대수
@@ -59,6 +59,9 @@ public record ApartmentResponse (
         }
     }
 
+    /**
+     * 정적 팩토리 메서드
+     */
     public static ApartmentResponse from(Jibun jibun, List<TransactionApartment> foundTransactionApartments) {
 //        List<TransactionApartmentDTO> transactionApartmentDTOS = TransactionApartmentDTO.from(jibun.getTransactionApartments());
         List<Pyung> pyungs = Pyung.from(foundTransactionApartments);
@@ -68,6 +71,7 @@ public record ApartmentResponse (
                 .jibunId(jibun.getId())
                 .apartmentName("")
                 .jibunAddress(jibun.getJibunAddress())
+                .builtYear(jibunDetail.map(JibunDetail::getBuiltYear).orElse(null))
                 .roofName(jibunDetail.map(JibunDetail::getRoofCodeName).orElse(null))
                 .etcRoofName(jibunDetail.map(JibunDetail::getEtcRoofName).orElse(null))
                 .houseHoldCount(jibunDetail.map(JibunDetail::getHouseHoldCount).orElse(null))

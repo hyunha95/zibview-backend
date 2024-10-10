@@ -1,6 +1,7 @@
 package com.view.zib.domain.address.entity;
 
 import com.view.zib.domain.client.vworld.dto.VWorldResponseDto;
+import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -27,6 +28,10 @@ public class JibunDetail extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "jibun_id")
     private Jibun jibun;
+
+    @Size(max = 100)
+    @Column(name = "apartment_name", length = 100)
+    private String apartmentName;
 
     @Size(max = 100)
     @Column(name = "main_purpose_code_name", length = 100)
@@ -140,5 +145,9 @@ public class JibunDetail extends BaseEntity {
 
     public void updateBuiltYear(int builtYear) {
         this.builtYear = builtYear;
+    }
+
+    public void updateAparmentName(String apartmentName) {
+        this.apartmentName = apartmentName;
     }
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -33,5 +34,8 @@ public class TransactionApartmentQueryFacade {
 
     public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {
         return transactionApartmentService.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
+    }
+
+    public Optional<TransactionApartment> findOneByJibunId(Long id) {
     }
 }

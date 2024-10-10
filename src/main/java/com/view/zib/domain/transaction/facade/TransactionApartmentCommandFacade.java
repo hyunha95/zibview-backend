@@ -27,7 +27,6 @@ public class TransactionApartmentCommandFacade {
 
     @Transactional
     public void create(List<ApartmentTransactionResponse.Item> items) {
-
         long start = System.currentTimeMillis();
         log.info("[Query] Start to find jibuns by legalDongCode and jibun. items size: {}", items.size());
         List<Jibun> jibuns = jibunQueryFacade.findByMultipleLegalDongCodeAndJibunNumber(items);
