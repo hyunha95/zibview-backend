@@ -106,6 +106,9 @@ public class JibunDetail extends BaseEntity {
     @Column(name = "earthquake_resistant_ability", length = 200)
     private String earthquakeResistantAbility;
 
+    @Column(name = "built_year")
+    private Integer builtYear;
+
     public static JibunDetail of(Jibun jibun, VWorldResponseDto.Item item) {
         return JibunDetail.builder()
                 .jibun(jibun)
@@ -133,5 +136,9 @@ public class JibunDetail extends BaseEntity {
                 .earthquakeResistant(item.earthquakeResistant())
                 .earthquakeResistantAbility(item.earthquakeResistantAbility())
                 .build();
+    }
+
+    public void updateBuiltYear(int builtYear) {
+        this.builtYear = builtYear;
     }
 }

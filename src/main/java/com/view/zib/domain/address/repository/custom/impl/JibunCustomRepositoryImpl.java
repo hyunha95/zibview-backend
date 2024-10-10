@@ -75,7 +75,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
         }
 
         return jpaQueryFactory.selectFrom(jibun)
-                .join(jibun.jibunDetail, jibunDetail).fetchJoin()
+                .leftJoin(jibun.jibunDetail).fetchJoin()
                 .where(booleanBuilder)
                 .fetch();
     }

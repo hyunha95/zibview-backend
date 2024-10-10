@@ -130,7 +130,6 @@ public class JibunQueryFacade {
             }
         });
 
-
         // 실거래가 정보 저장 & 엔티티 관계 설정
         if (CollectionUtils.isNotEmpty(itemsToSave)) {
             List<TransactionApartment> newTransactionApartments = itemsToSave.stream()

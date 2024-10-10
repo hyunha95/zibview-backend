@@ -14,6 +14,7 @@ public record ApartmentResponse (
         Long jibunId,
         String apartmentName,
         String jibunAddress,
+        int builtYear, // 건축년도
         String roofName, // 지붕명
         String etcRoofName, // 건축물대장 지붕 정보
         Integer houseHoldCount, // 세대수

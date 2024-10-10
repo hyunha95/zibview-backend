@@ -1,5 +1,6 @@
 package com.view.zib.domain.transaction.facade;
 
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.facade.JibunQueryFacade;
 import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
@@ -7,6 +8,7 @@ import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.service.TransactionApartmentCreateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,6 @@ import java.util.stream.Collectors;
 public class TransactionApartmentCommandFacade {
 
     private final JibunQueryFacade jibunQueryFacade;
-
     private final TransactionApartmentCreateService transactionApartmentCreateService;
 
     @Transactional
@@ -43,12 +44,13 @@ public class TransactionApartmentCommandFacade {
 
         List<TransactionApartment> newTransactionApartments = new ArrayList<>();
         itemsByJibunId.forEach((jibun, itemList) -> {
-            itemList.forEach(item -> {
-                TransactionApartment transactionApartment = TransactionApartment.from(jibun, item);
-                newTransactionApartments.add(transactionApartment);
-            });
+            if (CollectionUtils.isNotEmpty(itemList)) {
+                itemList.forEach(item -> {
+                    TransactionApartment transactionApartment = TransactionApartment.from(jibun, item);
+                    newTransactionApartments.add(transactionApartment);
+                });
+            }
         });
-
         transactionApartmentCreateService.create(newTransactionApartments);
     }
 }
