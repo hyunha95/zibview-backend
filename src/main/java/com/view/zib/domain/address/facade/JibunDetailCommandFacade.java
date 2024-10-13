@@ -42,7 +42,6 @@ public class JibunDetailCommandFacade {
                                 }
                             });
 
-            jibunDetailCreateService.create(jibunDetail);
             jibun.addEntity(jibunDetail);
         }
     }

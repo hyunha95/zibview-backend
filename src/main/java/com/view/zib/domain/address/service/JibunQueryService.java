@@ -15,4 +15,6 @@ public interface JibunQueryService {
     List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber);
 
     List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items);
+
+    List<Jibun> findByIdIn(List<Long> jibunIds);
 }

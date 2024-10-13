@@ -2,6 +2,7 @@ package com.view.zib.domain.address.controller;
 
 import com.view.zib.domain.address.controller.response.ApartmentResponse;
 import com.view.zib.domain.address.controller.response.JibunSearchResponse;
+import com.view.zib.domain.address.controller.response.TransactionApartmentResponse;
 import com.view.zib.domain.address.facade.JibunQueryFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,16 @@ public class JibunQueryController {
     @GetMapping("/{jibunId}")
     public ApartmentResponse findJibunById(@PathVariable Long jibunId) {
         return jibunQueryFacade.findJibunById(jibunId);
+    }
+
+    @GetMapping("/{jibunId}/transactions")
+    public List<TransactionApartmentResponse> pastYearsTransactions(
+            @PathVariable Long jibunId,
+            @RequestParam Integer fromYear,
+            @RequestParam BigDecimal exclusiveUseArea
+    ) {
+
+        // TODO validate from year
+        return jibunQueryFacade.fecthPastYearsTransactions(jibunId, fromYear, exclusiveUseArea);
     }
 }

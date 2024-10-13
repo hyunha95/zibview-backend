@@ -93,24 +93,20 @@ public class TransactionApartment extends TimeEntity {
     @Column(name = "jibun", length = 20)
     private String jibunNumber;
 
-    @Size(max = 22)
-    @Column(name = "exclusive_use_area", length = 22)
+    @Column(name = "exclusive_use_area")
     private BigDecimal exclusiveUseArea;
 
-    @Size(max = 4)
     @NotNull
-    @Column(name = "deal_year", nullable = false, length = 4)
-    private String dealYear;
+    @Column(name = "deal_year", nullable = false)
+    private Integer dealYear;
 
-    @Size(max = 2)
     @NotNull
-    @Column(name = "deal_month", nullable = false, length = 2)
-    private String dealMonth;
+    @Column(name = "deal_month", nullable = false)
+    private Integer dealMonth;
 
-    @Size(max = 2)
     @NotNull
-    @Column(name = "deal_day", nullable = false, length = 2)
-    private String dealDay;
+    @Column(name = "deal_day", nullable = false)
+    private Integer dealDay;
 
     @Size(max = 40)
     @NotNull
@@ -166,7 +162,7 @@ public class TransactionApartment extends TimeEntity {
 
 
     public static TransactionApartment from (Jibun jibun, ApartmentTransactionResponse.Item item) {
-        return TransactionApartment.builder()
+        TransactionApartment transactionApartment = TransactionApartment.builder()
                 .jibun(jibun)
                 .sggCode(item.sggCd())
                 .emdCode(item.umdCd())
@@ -184,9 +180,9 @@ public class TransactionApartment extends TimeEntity {
                 .apartmentName(item.aptNm())
                 .jibunNumber(item.jibun())
                 .exclusiveUseArea(StringUtils.isNotBlank(item.excluUseAr()) ? new BigDecimal(item.excluUseAr()) : null)
-                .dealYear(item.dealYear())
-                .dealMonth(item.dealMonth())
-                .dealDay(item.dealDay())
+                .dealYear(Integer.parseInt(item.dealYear()))
+                .dealMonth(Integer.parseInt(item.dealMonth()))
+                .dealDay(Integer.parseInt(item.dealDay()))
                 .dealAmount(item.dealAmount())
                 .floor(Integer.parseInt(item.floor()))
                 .builtYear(item.buildYear())
@@ -201,6 +197,14 @@ public class TransactionApartment extends TimeEntity {
                 .buyerGbn(item.buyerGbn())
                 .landLeaseholdGbn(item.landLeaseholdGbn())
                 .build();
+
+        jibun.addEntity(transactionApartment);
+
+        return transactionApartment;
+    }
+
+    public static TransactionApartment from (ApartmentTransactionResponse.Item item) {
+        return from(null, item);
     }
 
     /**
@@ -221,6 +225,6 @@ public class TransactionApartment extends TimeEntity {
     }
 
     public String getDealYearMonth() {
-        return this.dealYear + (this.dealMonth.length() < 2 ? "0" + this.dealMonth : this.dealMonth);
+        return this.dealYear.toString() + (this.dealMonth < 10 ? "0" + this.dealMonth : this.dealMonth);
     }
 }

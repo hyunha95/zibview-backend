@@ -6,6 +6,7 @@ import com.view.zib.domain.transaction.service.TransactionApartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -16,11 +17,11 @@ public class TransactionApartmentQueryFacade {
 
     private final TransactionApartmentService transactionApartmentService;
 
-    public List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, String searchYear, String searchMonth) {
+    public List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, int searchYear, int searchMonth) {
         return transactionApartmentService.findBySggCodesInAndDealYearAndDealMonthGroupBy(sggCodes, searchYear, searchMonth);
     }
 
-    public List<TransactionApartment> findBySggCodesInAndDealYearAndDealMonth(Set<String> sggCodes, String searchYear, String searchMonth) {
+    public List<TransactionApartment> findBySggCodesInAndDealYearAndDealMonth(Set<String> sggCodes, int searchYear, int searchMonth) {
         return transactionApartmentService.findBySggCodesInAndDealYearAndDealMonth(sggCodes, searchYear, searchMonth);
     }
 
@@ -36,6 +37,11 @@ public class TransactionApartmentQueryFacade {
         return transactionApartmentService.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
     }
 
-    public Optional<TransactionApartment> findOneByJibunId(Long id) {
+    public Optional<TransactionApartment> findOneByJibunId(Long jibunId) {
+        return transactionApartmentService.findOneByJibunId(jibunId);
+    }
+
+    public List<TransactionApartment> findByJibunIdAndDealYearAfterAndExclusiveUseArea(Long jibunId, Integer fromYear, BigDecimal exclusiveUseArea) {
+        return transactionApartmentService.findByJibunIdAndDealYearAfterAndExclusiveUseArea(jibunId, fromYear, exclusiveUseArea);
     }
 }

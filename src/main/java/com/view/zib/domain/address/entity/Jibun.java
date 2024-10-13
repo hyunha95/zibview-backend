@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,11 @@ public class Jibun {
     @Column(name = "jibun_id")
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "road_name_address_id")
     private RoadNameAddress roadNameAddress;
 
-    @OneToOne(mappedBy = "jibun")
+    @OneToOne(mappedBy = "jibun", cascade = CascadeType.ALL)
     private JibunDetail jibunDetail;
 
     @OneToMany(mappedBy = "jibun", fetch = FetchType.LAZY)
@@ -103,5 +103,9 @@ public class Jibun {
 
     public void addEntity(List<TransactionApartment> newTransactionApartments) {
         this.transactionApartments.addAll(newTransactionApartments);
+    }
+
+    public void addEntity(TransactionApartment transactionApartment) {
+        this.transactionApartments.add(transactionApartment);
     }
 }

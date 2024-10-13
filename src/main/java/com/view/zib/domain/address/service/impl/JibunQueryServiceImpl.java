@@ -80,4 +80,9 @@ public class JibunQueryServiceImpl implements JibunQueryService {
 
         return jibunRepository.findByMultipleLegalDongCodeAndJibunNumber(conditions);
     }
+
+    @Override
+    public List<Jibun> findByIdIn(List<Long> jibunIds) {
+        return jibunRepository.findByJibunIdIn(jibunIds);
+    }
 }

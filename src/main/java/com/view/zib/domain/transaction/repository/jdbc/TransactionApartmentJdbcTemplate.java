@@ -1,5 +1,6 @@
 package com.view.zib.domain.transaction.repository.jdbc;
 
+import com.view.zib.domain.address.repository.dto.TransactionApartmentDTO;
 import com.view.zib.domain.transaction.entity.TransactionApartment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +17,7 @@ import java.util.List;
 public class TransactionApartmentJdbcTemplate {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public void bulkInsert(List<TransactionApartment> newTransactionApartments) {
-        if (CollectionUtils.isEmpty(newTransactionApartments)) return;
-
-        long start = System.currentTimeMillis();
-        log.info("[bulkInsert] TransactionApartment count: {}", newTransactionApartments.size());
-        String sql = """
+    private static final String sql = """
                 INSERT INTO transaction_apartment (
                     jibun_id, sgg_code, emd_code, land_code, bonbun,
                     bubun, road_name, road_name_sgg_code, road_name_code, road_name_seq,
@@ -40,6 +35,12 @@ public class TransactionApartmentJdbcTemplate {
                     ?, ?, ?, ?, ?,
                     ?, ?, ?, now(), now())
                 """;
+
+    public void bulkInsert(List<TransactionApartment> newTransactionApartments) {
+        if (CollectionUtils.isEmpty(newTransactionApartments)) return;
+
+        long start = System.currentTimeMillis();
+        log.info("[bulkInsert] TransactionApartment count: {}", newTransactionApartments.size());
 
         jdbcTemplate.batchUpdate(
                 sql,
@@ -63,9 +64,9 @@ public class TransactionApartmentJdbcTemplate {
                     ps.setString(15, transactionApartment.getApartmentName());
                     ps.setString(16, transactionApartment.getJibunNumber());
                     ps.setBigDecimal(17, transactionApartment.getExclusiveUseArea());
-                    ps.setString(18, transactionApartment.getDealYear());
-                    ps.setString(19, transactionApartment.getDealMonth());
-                    ps.setString(20, transactionApartment.getDealDay());
+                    ps.setInt(18, transactionApartment.getDealYear());
+                    ps.setInt(19, transactionApartment.getDealMonth());
+                    ps.setInt(20, transactionApartment.getDealDay());
                     ps.setString(21, transactionApartment.getDealAmount());
                     ps.setInt(22, transactionApartment.getFloor());
                     ps.setString(23, transactionApartment.getBuiltYear());
@@ -79,6 +80,56 @@ public class TransactionApartmentJdbcTemplate {
                     ps.setString(31, transactionApartment.getSellerGbn());
                     ps.setString(32, transactionApartment.getBuyerGbn());
                     ps.setString(33, transactionApartment.getLandLeaseholdGbn());
+                });
+
+        long end = System.currentTimeMillis();
+        log.info("[bulkInsert] Elapsed time: {} ms", end - start);
+    }
+
+    public void bulkInsertDTO(List<TransactionApartmentDTO> transactionApartmentDTOs) {
+        if (CollectionUtils.isEmpty(transactionApartmentDTOs)) return;
+
+        long start = System.currentTimeMillis();
+        log.info("[bulkInsert] TransactionApartmentDTOs count: {}", transactionApartmentDTOs.size());
+
+        jdbcTemplate.batchUpdate(
+                sql,
+                transactionApartmentDTOs,
+                transactionApartmentDTOs.size(),
+                (PreparedStatement ps, TransactionApartmentDTO ta) -> {
+                    ps.setLong(1, ta.jibunId());
+                    ps.setString(2, ta.sggCode());
+                    ps.setString(3, ta.emdCode());
+                    ps.setString(4, ta.landCode());
+                    ps.setString(5, ta.bonbun());
+                    ps.setString(6, ta.bubun());
+                    ps.setString(7, ta.roadName());
+                    ps.setString(8, ta.roadNameSggCode());
+                    ps.setString(9, ta.roadNameCode());
+                    ps.setString(10, ta.roadNameSeq());
+                    ps.setString(11, ta.roadNamebCode());
+                    ps.setString(12, ta.roadNameBonbun());
+                    ps.setString(13, ta.roadNameBubun());
+                    ps.setString(14, ta.legalDongName());
+                    ps.setString(15, ta.apartmentName());
+                    ps.setString(16, ta.jibunNumber());
+                    ps.setBigDecimal(17, ta.exclusiveUseArea());
+                    ps.setInt(18, ta.dealYear());
+                    ps.setInt(19, ta.dealMonth());
+                    ps.setInt(20, ta.dealDay());
+                    ps.setString(21, ta.dealAmount());
+                    ps.setInt(22, ta.floor());
+                    ps.setString(23, ta.builtYear());
+                    ps.setString(24, ta.apartmentSeq());
+                    ps.setString(25, ta.cancelDealType());
+                    ps.setString(26, ta.cancelDealDay());
+                    ps.setString(27, ta.dealGbn());
+                    ps.setString(28, ta.estateAgentSggName());
+                    ps.setString(29, ta.registeredDate());
+                    ps.setString(30, ta.apartmentDongName());
+                    ps.setString(31, ta.sellerGbn());
+                    ps.setString(32, ta.buyerGbn());
+                    ps.setString(33, ta.landLeaseholdGbn());
                 });
 
         long end = System.currentTimeMillis();

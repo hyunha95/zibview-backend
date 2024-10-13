@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 public class DuplicateTransactionBuildingDTO {
     private String sggCode;
-    private String dealYear;
-    private String dealMonth;
+    private int dealYear;
+    private int dealMonth;
 }

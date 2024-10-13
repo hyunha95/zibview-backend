@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface TransactionApartmentCustomRepository {
-    List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, String searchYear, String searchMonth);
+    List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, int searchYear, int searchMonth);
 }

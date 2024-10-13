@@ -23,4 +23,10 @@ public abstract class DateUtils {
                 .collect(Collectors.toSet());
     }
 
+    public static Set<String> generateYearMonthRangeFrom(LocalDate now, int fromYear) {
+        return LocalDate.of(fromYear, 1, 1).datesUntil(now, Period.ofMonths(1))
+                .map(date -> date.format(DATE_FORMATTER_FOR_VWORLD))
+                .collect(Collectors.toSet());
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.view.zib.domain.transaction.service.impl;
 
 import com.view.zib.domain.address.entity.Jibun;
+import com.view.zib.domain.address.repository.dto.TransactionApartmentDTO;
 import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.repository.TransactionApartmentRepository;
@@ -28,7 +29,7 @@ public class TransactionApartmentCreateServiceImpl implements TransactionApartme
     }
 
     @Override
-    public void create(List<TransactionApartment> newTransactionApartments) {
-        transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
+    public void create(List<TransactionApartmentDTO> transactionApartmentDTOs) {
+        transactionApartmentJdbcTemplate.bulkInsertDTO(transactionApartmentDTOs);
     }
 }

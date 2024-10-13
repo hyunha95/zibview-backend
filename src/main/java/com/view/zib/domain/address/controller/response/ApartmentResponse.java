@@ -6,6 +6,8 @@ import com.view.zib.domain.transaction.entity.TransactionApartment;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ public record ApartmentResponse (
         String apartmentName,
         String jibunAddress,
         Integer builtYear, // 건축년도
+        Integer yearsSinceConstruction, // 건축년수
         String roofName, // 지붕명
         String etcRoofName, // 건축물대장 지붕 정보
         Integer houseHoldCount, // 세대수
@@ -34,7 +37,6 @@ public record ApartmentResponse (
         String earthquakeResistance, // 내진설계적용여부
         String earthquakeResistanceAbility, // 내진능력
         List<Pyung> pyungs
-//        List<TransactionApartmentDTO> transactionApartments
 ) {
 
     @Builder
@@ -63,15 +65,22 @@ public record ApartmentResponse (
      * 정적 팩토리 메서드
      */
     public static ApartmentResponse from(Jibun jibun, List<TransactionApartment> foundTransactionApartments) {
-//        List<TransactionApartmentDTO> transactionApartmentDTOS = TransactionApartmentDTO.from(jibun.getTransactionApartments());
+        foundTransactionApartments.sort(Comparator.comparing(TransactionApartment::getExclusiveUseArea));
         List<Pyung> pyungs = Pyung.from(foundTransactionApartments);
         Optional<JibunDetail> jibunDetail = Optional.ofNullable(jibun.getJibunDetail());
 
+        Integer builtYear = jibunDetail.map(JibunDetail::getBuiltYear).orElse(null);
+        Integer yearsSinceConstruction = null;
+        if (builtYear != null) {
+            yearsSinceConstruction = LocalDate.now().minusYears(builtYear).getYear();
+        }
+
         return ApartmentResponse.builder()
                 .jibunId(jibun.getId())
-                .apartmentName("")
+                .apartmentName(jibunDetail.map(JibunDetail::getApartmentName).orElse(null))
                 .jibunAddress(jibun.getJibunAddress())
-                .builtYear(jibunDetail.map(JibunDetail::getBuiltYear).orElse(null))
+                .builtYear(builtYear)
+                .yearsSinceConstruction(yearsSinceConstruction)
                 .roofName(jibunDetail.map(JibunDetail::getRoofCodeName).orElse(null))
                 .etcRoofName(jibunDetail.map(JibunDetail::getEtcRoofName).orElse(null))
                 .houseHoldCount(jibunDetail.map(JibunDetail::getHouseHoldCount).orElse(null))
@@ -88,61 +97,10 @@ public record ApartmentResponse (
                 .outdoorSelfParkingCount(jibunDetail.map(JibunDetail::getOutdoorSelfParkingCount).orElse(null))
                 .structureName(jibunDetail.map(JibunDetail::getStructureCodeName).orElse(null))
                 .etcStructureName(jibunDetail.map(JibunDetail::getEtcStructure).orElse(null))
+                .builtYear(jibunDetail.map(JibunDetail::getBuiltYear).orElse(null))
                 .earthquakeResistance("")
                 .earthquakeResistanceAbility("")
                 .pyungs(pyungs)
-//                .transactionApartments(transactionApartmentDTOS)
                 .build();
-    }
-
-    @Builder
-    public record TransactionApartmentDTO (
-            Long transactionApartmentId,
-            String roadName,
-            String legalDongName,
-            String apartmentName,
-            String jibunNumber,
-            BigDecimal exclusiveUseArea,
-            BigDecimal exclusiveUseAreaInPyung,
-            int dealYear,
-            int dealMonth,
-            int dealDay,
-            BigDecimal dealAmountInOneHundredMillion,
-            int floor,
-            String builtYear,
-            String dealGbn,
-            String estateAgentSggName,
-            String apartmentDongName,
-            String sellerGbn,
-            String buyerGbn
-    ) {
-        public static TransactionApartmentDTO from(TransactionApartment transactionApartment) {
-            return TransactionApartmentDTO.builder()
-                    .transactionApartmentId(transactionApartment.getId())
-                    .roadName(transactionApartment.getRoadName())
-                    .legalDongName(transactionApartment.getLegalDongName())
-                    .apartmentName(transactionApartment.getApartmentName())
-                    .jibunNumber(transactionApartment.getJibunNumber())
-                    .exclusiveUseArea(transactionApartment.getExclusiveUseArea())
-                    .exclusiveUseAreaInPyung(transactionApartment.getExclusiveUseAreaInPyung())
-                    .dealYear(Integer.parseInt(transactionApartment.getDealYear()))
-                    .dealMonth(Integer.parseInt(transactionApartment.getDealMonth()))
-                    .dealDay(Integer.parseInt(transactionApartment.getDealDay()))
-                    .dealAmountInOneHundredMillion(transactionApartment.getDealAmountInOneHundredMillion())
-                    .floor(transactionApartment.getFloor())
-                    .builtYear(transactionApartment.getBuiltYear())
-                    .dealGbn(transactionApartment.getDealGbn())
-                    .estateAgentSggName(transactionApartment.getEstateAgentSggName())
-                    .apartmentDongName(transactionApartment.getApartmentDongName())
-                    .sellerGbn(transactionApartment.getSellerGbn())
-                    .buyerGbn(transactionApartment.getBuyerGbn())
-                    .build();
-        }
-
-        public static List<TransactionApartmentDTO> from(List<TransactionApartment> transactionApartments) {
-            return transactionApartments.stream()
-                    .map(TransactionApartmentDTO::from)
-                    .toList();
-        }
     }
 }

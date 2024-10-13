@@ -11,4 +11,7 @@ public interface JibunJpaRepository extends JpaRepository<Jibun, Long>, JibunCus
 
     @Query("SELECT j FROM Jibun j WHERE j.legalDongCode = :legalDongCode AND j.jibunMain = :jibunMain AND j.jibunSub = :jibunSub")
     List<Jibun> findByLegalDongCodeAndJibunMainAndJibunSub(String legalDongCode, String jibunMain, String jibunSub);
+
+    @Query("SELECT j FROM Jibun j WHERE j.id IN :jibunIds")
+    List<Jibun> findByJibunIdIn(List<Long> jibunIds);
 }

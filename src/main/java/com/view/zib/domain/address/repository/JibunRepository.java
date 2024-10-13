@@ -33,4 +33,8 @@ public class JibunRepository {
     public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<JibunMultipleConditionDTO> conditions) {
         return jibunJpaRepository.findByMultipleLegalDongCodeAndJibunNumber(conditions);
     }
+
+    public List<Jibun> findByJibunIdIn(List<Long> jibunIds) {
+        return jibunJpaRepository.findByJibunIdIn(jibunIds);
+    }
 }

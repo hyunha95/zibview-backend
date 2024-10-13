@@ -19,7 +19,7 @@ public class TransactionApartmentCustomRepositoryImpl implements TransactionApar
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, String searchYear, String searchMonth) {
+    public List<DuplicateTransactionBuildingDTO> findBySggCodesInAndDealYearAndDealMonthGroupBy(Set<String> sggCodes, int searchYear, int searchMonth) {
         return queryFactory.select(Projections.fields(DuplicateTransactionBuildingDTO.class,
                         transactionApartment.sggCode,
                         transactionApartment.dealYear,
