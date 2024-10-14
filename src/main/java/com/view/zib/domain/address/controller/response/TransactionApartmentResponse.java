@@ -5,11 +5,13 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
 public record TransactionApartmentResponse (
         Long transactionApartmentId,
+        String dealDate,
         BigDecimal exclusiveUseArea,
         BigDecimal exclusiveUseAreaInPyung,
         LocalDate dealYMD,
@@ -27,10 +29,11 @@ public record TransactionApartmentResponse (
 ) {
 
     public static TransactionApartmentResponse from(TransactionApartment ta) {
-        LocalDate.of(ta.getDealYear(), ta.getDealMonth(), ta.getDealDay());
+        String dealDate = LocalDate.of(ta.getDealYear(), ta.getDealMonth(), ta.getDealDay()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         return TransactionApartmentResponse.builder()
                 .transactionApartmentId(ta.getId())
+                .dealDate(dealDate)
                 .exclusiveUseArea(ta.getExclusiveUseArea())
                 .exclusiveUseAreaInPyung(ta.getExclusiveUseAreaInPyung())
                 .dealYear(ta.getDealYear())

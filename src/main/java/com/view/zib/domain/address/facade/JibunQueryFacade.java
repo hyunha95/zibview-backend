@@ -163,16 +163,12 @@ public class JibunQueryFacade {
 
                     // 거래내역 저장
                     List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
-
-
                     for (Jibun jibunEntity : foundJibuns) {
                         newTransactionApartmentDTOs.addAll(items.stream()
                                 .filter(jibunEntity::isSameJibun)
                                 .map(item -> TransactionApartmentDTO.from(jibunEntity, item))
                                 .toList());
-
                     }
-
                 }
             } catch (ResourceAccessException e) {
                 log.error("VWorld API 호출 중 에러 발생", e);
