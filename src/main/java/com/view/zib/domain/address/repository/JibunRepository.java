@@ -37,4 +37,8 @@ public class JibunRepository {
     public List<Jibun> findByJibunIdIn(List<Long> jibunIds) {
         return jibunJpaRepository.findByJibunIdIn(jibunIds);
     }
+
+    public List<JibunSearchResultDTO> findAddressInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY) {
+        return jibunJpaRepository.findAddressInUtmk(minX, minY, maxX, maxY);
+    }
 }

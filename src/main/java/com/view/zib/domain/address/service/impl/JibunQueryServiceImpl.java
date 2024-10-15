@@ -85,4 +85,9 @@ public class JibunQueryServiceImpl implements JibunQueryService {
     public List<Jibun> findByIdIn(List<Long> jibunIds) {
         return jibunRepository.findByJibunIdIn(jibunIds);
     }
+
+    @Override
+    public List<JibunSearchResultDTO> findAddressInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY) {
+        return jibunRepository.findAddressInUtmk(minX, minY, maxX, maxY);
+    }
 }

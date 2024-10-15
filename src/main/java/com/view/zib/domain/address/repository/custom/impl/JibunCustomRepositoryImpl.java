@@ -80,6 +80,39 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                 .fetch();
     }
 
+    @Override
+    public List<JibunSearchResultDTO> findAddressInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY) {
+        return jpaQueryFactory.select(Projections.fields(
+                        JibunSearchResultDTO.class,
+                        jibun.id.as("jibunId"),
+                        jibun.sidoName,
+                        jibun.sggName,
+                        jibun.emdName,
+                        jibun.riName,
+                        jibun.mountainYn,
+                        jibun.jibunMain,
+                        jibun.jibunSub,
+                        locationBuilding.buildingName,
+                        jibun.legalDongCode,
+                        locationBuilding.xCoordinate,
+                        locationBuilding.yCoordinate)
+                )
+                .from(jibun)
+                .join(jibun.roadNameAddress, roadNameAddress)
+                .join(roadNameAddress.addressAdditionalInfo, addressAdditionalInfo)
+                .join(roadNameAddress.roadNameCode, roadNameCode)
+                .join(roadNameAddress.locationBuilding, locationBuilding)
+                .where(
+                        addressAdditionalInfo.apartmentYn.eq("1"),
+                        locationBuilding.buildingName.isNotEmpty(),
+                        locationBuilding.xCoordinate.goe(minX),
+                        locationBuilding.xCoordinate.loe(maxX),
+                        locationBuilding.yCoordinate.goe(minY),
+                        locationBuilding.yCoordinate.loe(maxY)
+                )
+                .fetch();
+    }
+
     private BooleanExpression jibunIdsNotIn(List<Long> jibunIds) {
         if (CollectionUtils.isEmpty(jibunIds)) return null;
 

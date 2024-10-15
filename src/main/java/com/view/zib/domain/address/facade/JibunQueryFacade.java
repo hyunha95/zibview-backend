@@ -50,7 +50,19 @@ public class JibunQueryFacade {
     private final TransactionApartmentCommandFacade transactionApartmentCommandFacade;
 
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
-        List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
+        List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
+
+        // 줌 레벨 별로 지번 정보 조회
+        // 27 인치 모니터 기준 첫 화면의 거리 X축의 차이(5800), Y축의 차이(3500)
+
+
+        // 동 별로 보여줘야할 X축의 차이(11000), Y축의 차이(6800)
+//        if (maxX.subtract(minX).compareTo(BigDecimal.valueOf(10000)) > 0 || maxY.subtract(minY).compareTo(BigDecimal.valueOf(6700)) > 0) {
+//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
+//        } else {
+            jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
+//        }
+
         Set<String> sggCodes = jibunSearchResultDTOS.stream()
                 .map(jibunSearchResultDTO -> jibunSearchResultDTO.getLegalDongCode().substring(0, 5))
                 .collect(Collectors.toSet());

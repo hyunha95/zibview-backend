@@ -17,4 +17,6 @@ public interface JibunQueryService {
     List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items);
 
     List<Jibun> findByIdIn(List<Long> jibunIds);
+
+    List<JibunSearchResultDTO> findAddressInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY);
 }
