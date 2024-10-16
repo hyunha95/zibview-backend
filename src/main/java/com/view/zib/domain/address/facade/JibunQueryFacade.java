@@ -49,6 +49,17 @@ public class JibunQueryFacade {
     private final JibunDetailCommandFacade jibunDetailCommandFacade;
     private final TransactionApartmentCommandFacade transactionApartmentCommandFacade;
 
+    /**
+     * 최근 한달 간의 실거래가 정보 조회
+     * 현재 10/01이라면 09/01 ~ 10/01까지의 실거래가 정보 조회
+     * 현재 10/31이라면 09/01 ~ 10/31까지의 실거래가 정보 조회
+     * @param minX
+     * @param minY
+     * @param maxX
+     * @param maxY
+     * @param jibunIds
+     * @return
+     */
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
         List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
 

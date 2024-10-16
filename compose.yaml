@@ -1,4 +1,10 @@
 services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - 9411:9411
+    restart: always
 #  elasticsearch:
 #    container_name: elasticsearch
 #    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.10.2'
@@ -31,9 +37,4 @@ services:
 #    depends_on:
 #      - elasticsearch
 
-  zipkin:
-    image: openzipkin/zipkin:latest
-    container_name: zipkin
-    ports:
-      - 9411:9411
-    restart: always
+
