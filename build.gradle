@@ -72,8 +72,8 @@ dependencies {
     // =============================
     // = zipkin
     // =============================
-//    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-//    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 
     // =============================
     // = queryDSL
@@ -84,7 +84,7 @@ dependencies {
    	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 
-//    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'commons-collections:commons-collections:3.2.2'
