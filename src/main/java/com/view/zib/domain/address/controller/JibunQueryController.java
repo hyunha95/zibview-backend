@@ -24,9 +24,10 @@ public class JibunQueryController {
             BigDecimal minY,
             BigDecimal maxX,
             BigDecimal maxY,
+            int zoomLevel,
             @RequestParam(required = false) List<Long> jibunIds
     ) {
-        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, jibunIds);
+        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, jibunIds);
     }
 
     @GetMapping("/{jibunId}")

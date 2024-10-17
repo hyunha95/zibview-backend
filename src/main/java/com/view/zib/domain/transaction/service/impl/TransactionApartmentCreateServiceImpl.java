@@ -29,7 +29,12 @@ public class TransactionApartmentCreateServiceImpl implements TransactionApartme
     }
 
     @Override
-    public void create(List<TransactionApartmentDTO> transactionApartmentDTOs) {
-        transactionApartmentJdbcTemplate.bulkInsertDTO(transactionApartmentDTOs);
+    public void create(List<TransactionApartment> transactionApartments) {
+        transactionApartmentRepository.saveAll(transactionApartments);
+    }
+
+    @Override
+    public void bulkInsert(List<TransactionApartmentDTO> newTransactionApartmentDTOs) {
+        transactionApartmentJdbcTemplate.bulkInsertDTO(newTransactionApartmentDTOs);
     }
 }

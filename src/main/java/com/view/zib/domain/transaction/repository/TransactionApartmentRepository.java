@@ -10,9 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -37,8 +35,12 @@ public class TransactionApartmentRepository {
         transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
     }
 
-    public List<TransactionApartment> findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(List<Long> jibunIds) {
-        return transactionApartmentJpaRepository.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIds);
+    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(List<Long> jibunIds, int year, int month) {
+        List<TransactionApartment> transactionApartments = transactionApartmentJpaRepository.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
+        transactionApartments
+                .sort(Comparator.comparing(TransactionApartment::getDealYear)
+                .thenComparing(TransactionApartment::getDealMonth));
+        return transactionApartments;
     }
 
     public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {
@@ -52,5 +54,9 @@ public class TransactionApartmentRepository {
 
     public List<TransactionApartment> findByJibunIdAndDealYearAfterAndExclusiveUseArea(Long jibunId, Integer fromYear, BigDecimal exclusiveUseArea) {
         return transactionApartmentJpaRepository.findByJibunIdAndDealYearAfterAndExclusiveUseArea(jibunId, fromYear, exclusiveUseArea);
+    }
+
+    public void saveAll(List<TransactionApartment> transactionApartments) {
+        transactionApartmentJpaRepository.saveAll(transactionApartments);
     }
 }

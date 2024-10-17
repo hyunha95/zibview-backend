@@ -15,7 +15,6 @@ import com.view.zib.domain.transaction.facade.TransactionApartmentCommandFacade;
 import com.view.zib.domain.transaction.facade.TransactionApartmentQueryFacade;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
 import com.view.zib.global.utils.DateUtils;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,19 +48,18 @@ public class JibunQueryFacade {
     private final JibunDetailCommandFacade jibunDetailCommandFacade;
     private final TransactionApartmentCommandFacade transactionApartmentCommandFacade;
 
-    public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
+    public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, int zoomLevel, List<Long> jibunIds) {
         List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
 
         // 줌 레벨 별로 지번 정보 조회
         // 27 인치 모니터 기준 첫 화면의 거리 X축의 차이(5800), Y축의 차이(3500)
 
-
         // 동 별로 보여줘야할 X축의 차이(11000), Y축의 차이(6800)
-//        if (maxX.subtract(minX).compareTo(BigDecimal.valueOf(10000)) > 0 || maxY.subtract(minY).compareTo(BigDecimal.valueOf(6700)) > 0) {
-//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
-//        } else {
+        if (maxX.subtract(minX).compareTo(BigDecimal.valueOf(10000)) > 0 || maxY.subtract(minY).compareTo(BigDecimal.valueOf(6500)) > 0) {
+            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
+        } else {
             jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
-//        }
+        }
 
         Set<String> sggCodes = jibunSearchResultDTOS.stream()
                 .map(jibunSearchResultDTO -> jibunSearchResultDTO.getLegalDongCode().substring(0, 5))
@@ -81,34 +79,38 @@ public class JibunQueryFacade {
 
         List<TransactionApartment> newTransactionApartments = new ArrayList<>();
         sggCodes.forEach(legalDongCode -> {
-            try {
-                Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
-                        legalDongCode,
-                        String.valueOf(searchYear) + searchMonth
-                );
-                if (optional.isPresent()) {
-                    ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
-                    List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
 
-                    // 거래내역 저장
-                    List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
-                    for (Jibun foundJibun : foundJibuns) {
-                        newTransactionApartments.addAll(items.stream()
-                                .filter(foundJibun::isSameJibun)
-                                .map(item -> TransactionApartment.from(foundJibun, item))
-                                .toList());
-                    }
-                }
+            Optional<ApartmentTransactionResponse> optional = Optional.empty();
+
+            try {
+                String yyyyMM = String.valueOf(searchYear) + searchMonth;
+                optional = vWorldClient.getRTMSDataSvcAptTradeDev(legalDongCode, yyyyMM);
             } catch (ResourceAccessException e) {
                 log.error("VWorld API 호출 중 에러 발생", e);
             }
+
+            if (optional.isPresent()) {
+                ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
+                List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
+
+                // 거래내역 저장
+                List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
+                for (Jibun foundJibun : foundJibuns) {
+                    newTransactionApartments.addAll(items.stream()
+                            .filter(foundJibun::isSameJibun)
+                            .map(item -> TransactionApartment.from(foundJibun, item))
+                            .toList());
+                }
+            }
         });
 
-        // TODO make it work
-//        transactionApartmentCommandFacade.create(newTransactionApartments);
+        transactionApartmentCommandFacade.create(newTransactionApartments);
+
 
         List<Long> jibunIdList = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).toList();
-        List<TransactionApartment> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInGroupByJibunIdOrderByDealYearAndDealMonth(jibunIdList);
+
+        LocalDate fromDate = LocalDate.now().minusMonths(2);
+        List<TransactionApartment> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInAndYearMonthGroupByJibunId(jibunIdList, fromDate.getYear(), fromDate.getMonth().getValue());
         return JibunSearchResponse.of(jibunSearchResultDTOS, transactionApartments);
 
     }
@@ -187,7 +189,7 @@ public class JibunQueryFacade {
             }
         });
 
-        transactionApartmentCommandFacade.create(newTransactionApartmentDTOs);
+        transactionApartmentCommandFacade.bulkInsert(newTransactionApartmentDTOs);
 
         transactionApartments = transactionApartmentQueryFacade.findByJibunIdAndDealYearAfterAndExclusiveUseArea(jibunId, fromYear, exclusiveUseArea);
         return TransactionApartmentResponse.from(transactionApartments);
