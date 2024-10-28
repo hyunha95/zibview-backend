@@ -29,7 +29,7 @@ public class TransactionApartmentQueryFacade {
         return transactionApartmentService.findByJibunIdIn(jibunIds);
     }
 
-    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(List<Long> jibunIds, int year, int month) {
+    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month) {
         return transactionApartmentService.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
     }
 

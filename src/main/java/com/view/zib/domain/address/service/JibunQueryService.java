@@ -6,11 +6,12 @@ import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface JibunQueryService {
     Jibun getById(Long jibunId);
 
-    List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds);
+    List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds);
 
     List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber);
 

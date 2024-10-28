@@ -34,7 +34,7 @@ public class TransactionApartmentServiceImpl implements TransactionApartmentServ
     }
 
     @Override
-    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(List<Long> jibunIds, int year, int month) {
+    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month) {
         return transactionApartmentRepository.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
     }
 

@@ -6,10 +6,11 @@ import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface JibunCustomRepository {
 
-    List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds);
+    List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds);
 
     List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<JibunMultipleConditionDTO> conditions);
 

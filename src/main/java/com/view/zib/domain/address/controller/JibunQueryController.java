@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/jibuns")
@@ -24,10 +25,10 @@ public class JibunQueryController {
             BigDecimal minY,
             BigDecimal maxX,
             BigDecimal maxY,
-            int zoomLevel,
-            @RequestParam(required = false) List<Long> jibunIds
+            @CookieValue String anonymousUserUUID,
+            int zoomLevel
     ) {
-        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, jibunIds);
+        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
     }
 
     @GetMapping("/{jibunId}")

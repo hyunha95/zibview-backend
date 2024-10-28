@@ -20,7 +20,7 @@ public interface TransactionApartmentJpaRepository extends JpaRepository<Transac
     List<TransactionApartment> findByJibunIdIn(List<Long> jibunIds);
 
     @Query("SELECT ta FROM TransactionApartment ta WHERE ta.jibun.id IN :jibunIds AND ta.dealYear >= :year AND ta.dealMonth >= :month GROUP BY ta.jibun.id")
-    List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(List<Long> jibunIds, int year, int month);
+    List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month);
 
     @Query("SELECT ta FROM TransactionApartment ta WHERE ta.jibun.id = :jibunId GROUP BY ta.exclusiveUseArea ORDER BY ta.dealYear desc, ta.dealMonth desc, ta.dealDay desc")
     List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId);

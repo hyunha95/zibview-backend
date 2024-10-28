@@ -35,7 +35,7 @@ public class TransactionApartmentRepository {
         transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
     }
 
-    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(List<Long> jibunIds, int year, int month) {
+    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month) {
         List<TransactionApartment> transactionApartments = transactionApartmentJpaRepository.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
         transactionApartments
                 .sort(Comparator.comparing(TransactionApartment::getDealYear)

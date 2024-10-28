@@ -8,6 +8,12 @@ spring:
     username: root
     password: dz3L7TgR1T+7JtT8KpFg/GrFf2baq/jBCIs8pLXaAsZUD3sOUGqJFaPImS4syc9L
 
+  data:
+    redis:
+      host: 182.213.255.106
+      port: 6379
+      password: acb266f414f238c7f52286e6f887d14a099ce5cbdf66955ff66bfa06a3e52073
+
 logging:
   level:
     org:

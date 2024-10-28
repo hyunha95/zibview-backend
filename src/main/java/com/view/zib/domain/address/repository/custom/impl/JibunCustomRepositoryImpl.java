@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import static com.view.zib.domain.address.entity.QAddressAdditionalInfo.addressAdditionalInfo;
 import static com.view.zib.domain.address.entity.QJibun.jibun;
@@ -29,8 +30,8 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, List<Long> jibunIds) {
-        return jpaQueryFactory.select(Projections.fields(
+    public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds) {
+        List<JibunSearchResultDTO> result = jpaQueryFactory.select(Projections.fields(
                         JibunSearchResultDTO.class,
                         jibun.id.as("jibunId"),
                         jibun.sidoName,
@@ -56,10 +57,11 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                         locationBuilding.xCoordinate.goe(minX),
                         locationBuilding.xCoordinate.loe(maxX),
                         locationBuilding.yCoordinate.goe(minY),
-                        locationBuilding.yCoordinate.loe(maxY),
-                        jibunIdsNotIn(jibunIds)
+                        locationBuilding.yCoordinate.loe(maxY)
                 )
                 .fetch();
+
+        return result.stream().filter(dto -> !jibunIds.contains(dto.getJibunId())).toList();
     }
 
     @Override
@@ -111,11 +113,5 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                         locationBuilding.yCoordinate.loe(maxY)
                 )
                 .fetch();
-    }
-
-    private BooleanExpression jibunIdsNotIn(List<Long> jibunIds) {
-        if (CollectionUtils.isEmpty(jibunIds)) return null;
-
-        return jibun.id.notIn(jibunIds);
     }
 }
