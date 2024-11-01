@@ -36,5 +36,4 @@ public class AuthController {
 
         response.addHeader("Set-Cookie", cookie.toString());
     }
-
 }
