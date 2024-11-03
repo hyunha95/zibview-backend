@@ -1,6 +1,7 @@
 package com.view.zib.domain.transaction.facade;
 
 import com.view.zib.domain.transaction.entity.TransactionApartment;
+import com.view.zib.domain.transaction.hash.TransactionApartmentHash;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
 import com.view.zib.domain.transaction.service.TransactionApartmentService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class TransactionApartmentQueryFacade {
         return transactionApartmentService.findByJibunIdIn(jibunIds);
     }
 
-    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month) {
-        return transactionApartmentService.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
+    public Set<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, int month) {
+        return transactionApartmentService.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, month);
     }
 
     public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {

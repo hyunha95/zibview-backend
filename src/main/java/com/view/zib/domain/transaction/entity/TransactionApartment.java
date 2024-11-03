@@ -203,7 +203,7 @@ public class TransactionApartment extends TimeEntity {
         return transactionApartment;
     }
 
-    public static TransactionApartment from (ApartmentTransactionResponse.Item item) {
+    public static TransactionApartment from(ApartmentTransactionResponse.Item item) {
         return from(null, item);
     }
 
@@ -227,4 +227,6 @@ public class TransactionApartment extends TimeEntity {
     public String getDealYearMonth() {
         return this.dealYear.toString() + (this.dealMonth < 10 ? "0" + this.dealMonth : this.dealMonth);
     }
+
+
 }

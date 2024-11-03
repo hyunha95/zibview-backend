@@ -12,7 +12,8 @@ import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.facade.TransactionApartmentCommandFacade;
 import com.view.zib.domain.transaction.facade.TransactionApartmentQueryFacade;
-import com.view.zib.domain.user.entity.AnonymousUserHash;
+import com.view.zib.domain.transaction.hash.TransactionApartmentHash;
+import com.view.zib.domain.user.facade.AnonymousUserCommandFacade;
 import com.view.zib.domain.user.facade.AnonymousUserQueryFacade;
 import com.view.zib.global.utils.DateUtils;
 import jakarta.transaction.Transactional;
@@ -41,6 +42,7 @@ public class JibunQueryFacade {
 
     private final JibunDetailCommandFacade jibunDetailCommandFacade;
     private final TransactionApartmentCommandFacade transactionApartmentCommandFacade;
+    private final AnonymousUserCommandFacade anonymousUserCommandFacade;
 
     /**
      * 최근 한달 간의 실거래가 정보 조회
@@ -58,21 +60,25 @@ public class JibunQueryFacade {
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, int zoomLevel, UUID anonymousUserUUID) {
         List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
 
-        AnonymousUserHash anonymousUserHash = anonymousUserQueryFacade.getById(anonymousUserUUID);
-        Set<Long> searchedJibunIds = anonymousUserHash.getSearchedJibunIds();
+        Set<Long> searchedJibunIds = anonymousUserQueryFacade.members(anonymousUserUUID);
 
         // 줌 레벨 별로 지번 정보 조회
 //        if (zoomLevel < 15) {
 //            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
 //        } else {
-            jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, searchedJibunIds);
+            jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, Set.of()); //searchedJibunIds
 //        }
 
         Set<Long> foundJibunIds = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).collect(Collectors.toSet());
-        anonymousUserHash.updateJibunIds(foundJibunIds);
+        anonymousUserCommandFacade.addSet(anonymousUserUUID, foundJibunIds);
 
-        LocalDate fromDate = LocalDate.now().minusMonths(2);
-        List<TransactionApartment> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInAndYearMonthGroupByJibunId(foundJibunIds, fromDate.getYear(), fromDate.getMonth().getValue());
+        LocalDate fromDate = LocalDate.now().minusMonths(1);
+//        List<TransactionApartment> transactionApartments = anonymousUserQueryFacade.findByJibunIdInAndYearMonthGroupByJibunId(foundJibunIds);
+        long start = System.currentTimeMillis();
+        Set<TransactionApartmentHash> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInAndDealYearAndDealMonth(foundJibunIds, fromDate.getYear(), fromDate.getMonth().getValue());
+        long end = System.currentTimeMillis();
+        log.info("transactionApartments: time: {}ms", (end - start));
+
         return JibunSearchResponse.of(jibunSearchResultDTOS, transactionApartments);
 
     }

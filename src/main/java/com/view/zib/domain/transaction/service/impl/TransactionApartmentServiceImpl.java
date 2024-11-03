@@ -1,6 +1,7 @@
 package com.view.zib.domain.transaction.service.impl;
 
 import com.view.zib.domain.transaction.entity.TransactionApartment;
+import com.view.zib.domain.transaction.hash.TransactionApartmentHash;
 import com.view.zib.domain.transaction.repository.TransactionApartmentRepository;
 import com.view.zib.domain.transaction.repository.dto.DuplicateTransactionBuildingDTO;
 import com.view.zib.domain.transaction.service.TransactionApartmentService;
@@ -34,8 +35,8 @@ public class TransactionApartmentServiceImpl implements TransactionApartmentServ
     }
 
     @Override
-    public List<TransactionApartment> findByJibunIdInAndYearMonthGroupByJibunId(Set<Long> jibunIds, int year, int month) {
-        return transactionApartmentRepository.findByJibunIdInAndYearMonthGroupByJibunId(jibunIds, year, month);
+    public Set<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, int month) {
+        return transactionApartmentRepository.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, month);
     }
 
     @Override

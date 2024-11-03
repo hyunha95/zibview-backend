@@ -37,6 +37,7 @@ logging:
   level:
     org:
       springframework:
+#        data: DEBUG
 #        jdbc: TRACE
 #        security: TRACE
 
