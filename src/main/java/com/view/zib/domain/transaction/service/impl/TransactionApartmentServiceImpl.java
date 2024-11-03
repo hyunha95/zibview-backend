@@ -35,8 +35,8 @@ public class TransactionApartmentServiceImpl implements TransactionApartmentServ
     }
 
     @Override
-    public Set<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, int month) {
-        return transactionApartmentRepository.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, month);
+    public List<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, List<Integer> months) {
+        return transactionApartmentRepository.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, months);
     }
 
     @Override

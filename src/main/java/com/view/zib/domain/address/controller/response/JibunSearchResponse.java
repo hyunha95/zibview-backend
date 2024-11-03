@@ -54,7 +54,7 @@ public record JibunSearchResponse(
                 .build();
     }
 
-    public static List<JibunSearchResponse> of(List<JibunSearchResultDTO> jibunSearchResultDTOS, Set<TransactionApartmentHash> transactionApartments) {
+    public static List<JibunSearchResponse> of(List<JibunSearchResultDTO> jibunSearchResultDTOS, List<TransactionApartmentHash> transactionApartments) {
         Map<Long, TransactionApartmentHash> transactionApartmentsByJibunId = transactionApartments.stream()
                 .collect(Collectors.toMap(
                         TransactionApartmentHash::getJibunId,

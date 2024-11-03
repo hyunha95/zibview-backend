@@ -52,37 +52,26 @@ public class TransactionApartmentRepository {
         transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
     }
 
-    public Set<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, int month) {
-//        log.info("jisunIds: {}, year: {}, month: {}", jibunIds, year, month);
+    public List<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, List<Integer> months) {
 
-        List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            for (Long jibunId : jibunIds) {
-                String key = "transactionApartment:" + jibunId + ":" + year + ":" + month;
-                connection.hashCommands().hGetAll(key.getBytes());
-            }
-            return null;
-        });
+        List<TransactionApartmentHash> transactionApartmentHashes = new ArrayList<>();
+        for (Integer month : months) {
+            List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+                for (Long jibunId : jibunIds) {
+                    String key = "transactionApartment:" + jibunId + ":" + year + ":" + month;
+                    connection.hashCommands().hGetAll(key.getBytes());
+                }
+                return null;
+            });
 
-//        Set<TransactionApartmentHash> sets = new HashSet<>();
-//        for (Long jibunId : jibunIds) {
-//            String key = "transactionApartment:" + jibunId + ":" + year + ":" + month;
-//            Map<Object, Object> entries = redisTemplate.boundHashOps(key).entries();
-//            if (entries.isEmpty()) {
-//                continue;
-//            }
-//            TransactionApartmentHash transactionApartmentHash = objectMapper.convertValue(entries, TransactionApartmentHash.class);
-//
-//            sets.add(transactionApartmentHash);
-////            members.forEach(member -> {
-////                TransactionApartmentHash transactionApartmentHash = deserialize(member);
-////                System.out.println("transactionApartmentHash: " + transactionApartmentHash);
-////                sets.add(transactionApartmentHash);
-////            });
-//
-//        }
+            List<TransactionApartmentHash> results = objects.stream()
+                    .filter(o -> !((LinkedHashMap) o).isEmpty())
+                    .map(o -> objectMapper.convertValue(o, TransactionApartmentHash.class))
+                    .toList();
+            transactionApartmentHashes.addAll(results);
+        }
 
-        return null;
-//        return sets;
+        return transactionApartmentHashes;
     }
 
     private TransactionApartmentHash deserialize(Object member) {

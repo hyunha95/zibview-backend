@@ -30,8 +30,8 @@ public class TransactionApartmentQueryFacade {
         return transactionApartmentService.findByJibunIdIn(jibunIds);
     }
 
-    public Set<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, int month) {
-        return transactionApartmentService.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, month);
+    public List<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, List<Integer> months) {
+        return transactionApartmentService.findByJibunIdInAndDealYearAndDealMonth(jibunIds, year, months);
     }
 
     public List<TransactionApartment> findByJibunIdGroupByExclusiveUseAreaOrderByYMD(Long jibunId) {

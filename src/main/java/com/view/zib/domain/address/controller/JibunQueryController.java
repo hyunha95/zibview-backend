@@ -26,7 +26,7 @@ public class JibunQueryController {
             BigDecimal maxX,
             BigDecimal maxY,
             String anonymousUserUUID,
-            int zoomLevel
+            @RequestParam(required = false) Integer zoomLevel
     ) {
         return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
     }
