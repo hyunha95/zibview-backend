@@ -34,7 +34,6 @@ public class RedisConfig {
     }
 
     @Bean
-    @Qualifier("transactionApartmentRedisTemplate")
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
