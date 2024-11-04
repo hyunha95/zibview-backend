@@ -58,7 +58,9 @@ public record JibunSearchResponse(
         Map<Long, TransactionApartmentHash> transactionApartmentsByJibunId = transactionApartments.stream()
                 .collect(Collectors.toMap(
                         TransactionApartmentHash::getJibunId,
-                        Function.identity()));
+                        Function.identity(),
+                        (a, b) -> a)
+                );
 
         return jibunSearchResultDTOS.stream()
                 .filter(dto -> transactionApartmentsByJibunId.containsKey(dto.getJibunId()))

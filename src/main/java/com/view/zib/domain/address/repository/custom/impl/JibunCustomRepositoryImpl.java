@@ -2,15 +2,14 @@ package com.view.zib.domain.address.repository.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.address.repository.custom.JibunCustomRepository;
 import com.view.zib.domain.address.repository.dto.JibunMultipleConditionDTO;
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,11 +17,11 @@ import java.util.Set;
 
 import static com.view.zib.domain.address.entity.QAddressAdditionalInfo.addressAdditionalInfo;
 import static com.view.zib.domain.address.entity.QJibun.jibun;
-import static com.view.zib.domain.address.entity.QJibunDetail.jibunDetail;
 import static com.view.zib.domain.address.entity.QRoadNameAddress.roadNameAddress;
 import static com.view.zib.domain.address.entity.QRoadNameCode.roadNameCode;
 import static com.view.zib.domain.location.entity.QLocationBuilding.locationBuilding;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class JibunCustomRepositoryImpl implements JibunCustomRepository {
@@ -61,7 +60,10 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                 )
                 .fetch();
 
-        return result.stream().filter(dto -> !jibunIds.contains(dto.getJibunId())).toList();
+        long start = System.currentTimeMillis();
+        List<JibunSearchResultDTO> list = result.stream().filter(dto -> !jibunIds.contains(dto.getJibunId())).toList();
+        log.info("filtering time: {}", System.currentTimeMillis() - start);
+        return list;
     }
 
     @Override

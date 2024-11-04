@@ -28,7 +28,11 @@ public class JibunQueryController {
             String anonymousUserUUID,
             @RequestParam(required = false) Integer zoomLevel
     ) {
-        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
+        long start = System.currentTimeMillis();
+        List<JibunSearchResponse> addressesInUtmk = jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
+        long end = System.currentTimeMillis();
+        System.out.println("searchByUtmk: " + (end - start) + "ms");
+        return addressesInUtmk;
     }
 
     @GetMapping("/{jibunId}")

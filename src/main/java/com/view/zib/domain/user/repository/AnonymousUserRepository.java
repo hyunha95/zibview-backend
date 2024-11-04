@@ -25,9 +25,12 @@ public class AnonymousUserRepository {
     }
 
     public void addSet(UUID anonymousUserUUID, Set<Long> searchedJibunIds, Duration expiresIn) {
-        for (Long searchedJibunId : searchedJibunIds) {
-            redisTemplate.opsForSet().add(anonymousUserUUID.toString(), searchedJibunId.toString());
-        }
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            for (Long searchedJibunId : searchedJibunIds) {
+                connection.setCommands().sAdd(anonymousUserUUID.toString().getBytes(), searchedJibunId.toString().getBytes());
+            }
+            return null;
+        });
         redisTemplate.expire(anonymousUserUUID.toString(), expiresIn);
     }
 
