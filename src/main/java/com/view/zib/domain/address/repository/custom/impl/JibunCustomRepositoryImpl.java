@@ -68,8 +68,11 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
 
     @Override
     public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<JibunMultipleConditionDTO> conditions) {
-        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (conditions.isEmpty()) {
+            return List.of();
+        }
 
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
         for (JibunMultipleConditionDTO condition : conditions) {
             booleanBuilder.or(
                     jibun.legalDongCode.eq(condition.legalDongCode())

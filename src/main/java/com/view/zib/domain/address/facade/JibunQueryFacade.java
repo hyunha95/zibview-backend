@@ -1,5 +1,6 @@
 package com.view.zib.domain.address.facade;
 
+import com.google.common.collect.Lists;
 import com.view.zib.domain.address.controller.response.ApartmentResponse;
 import com.view.zib.domain.address.controller.response.JibunSearchResponse;
 import com.view.zib.domain.address.controller.response.TransactionApartmentResponse;
@@ -134,32 +135,47 @@ public class JibunQueryFacade {
         yearMonthRangeFrom.removeAll(registeredDealYearMonth);
 
         // 실거래가 정보 조회
-        List<TransactionApartmentDTO> newTransactionApartmentDTOs = new CopyOnWriteArrayList<>();
-        yearMonthRangeFrom.parallelStream().forEach(yearMonth -> {
+
+        yearMonthRangeFrom.forEach(yearMonth -> {
             try {
                 Optional<ApartmentTransactionResponse> optional = vWorldClient.getRTMSDataSvcAptTradeDev(
                         jibun.getSsgCode(),
-                        yearMonth
-                );
+                        yearMonth);
+
                 if (optional.isPresent()) {
                     ApartmentTransactionResponse apartmentTransactionResponse = optional.get();
                     List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
+                    log.info("List<ApartmentTransactionResponse.Item>.size: {}", items.size());
 
-                    // 거래내역 저장
-                    List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
-                    for (Jibun jibunEntity : foundJibuns) {
-                        newTransactionApartmentDTOs.addAll(items.stream()
-                                .filter(jibunEntity::isSameJibun)
-                                .map(item -> TransactionApartmentDTO.from(jibunEntity, item))
-                                .toList());
-                    }
+                    Lists.partition(items, 300).forEach(partitionItems -> {
+                        List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(partitionItems);
+                        List<TransactionApartmentDTO> newTransactionApartmentDTOs = new ArrayList<>();
+                        for (Jibun jibunEntity : foundJibuns) {
+                            newTransactionApartmentDTOs.addAll(partitionItems.stream()
+                                    .filter(jibunEntity::isSameJibun)
+                                    .map(item -> TransactionApartmentDTO.from(jibunEntity, item))
+                                    .toList());
+                        }
+                        transactionApartmentCommandFacade.bulkInsert(newTransactionApartmentDTOs);
+                    });
+//
+//                    // 거래내역 저장
+//                    List<TransactionApartmentDTO> newTransactionApartmentDTOs = new CopyOnWriteArrayList<>();
+//                    List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
+//                    for (Jibun jibunEntity : foundJibuns) {
+//                        newTransactionApartmentDTOs.addAll(items.stream()
+//                                .filter(jibunEntity::isSameJibun)
+//                                .map(item -> TransactionApartmentDTO.from(jibunEntity, item))
+//                                .toList());
+//                    }
+//                    transactionApartmentCommandFacade.bulkInsert(newTransactionApartmentDTOs);
                 }
             } catch (ResourceAccessException e) {
                 log.error("VWorld API 호출 중 에러 발생", e);
             }
         });
 
-        transactionApartmentCommandFacade.bulkInsert(newTransactionApartmentDTOs);
+
 
         transactionApartments = transactionApartmentQueryFacade.findByJibunIdAndDealYearAfterAndExclusiveUseArea(jibunId, fromYear, exclusiveUseArea);
         return TransactionApartmentResponse.from(transactionApartments);
