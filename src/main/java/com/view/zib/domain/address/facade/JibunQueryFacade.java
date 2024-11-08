@@ -147,7 +147,7 @@ public class JibunQueryFacade {
                     List<ApartmentTransactionResponse.Item> items = apartmentTransactionResponse.body().items().item();
                     log.info("List<ApartmentTransactionResponse.Item>.size: {}", items.size());
 
-                    Lists.partition(items, 300).forEach(partitionItems -> {
+                    Lists.partition(items, 200).forEach(partitionItems -> {
                         List<Jibun> foundJibuns = jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(partitionItems);
                         List<TransactionApartmentDTO> newTransactionApartmentDTOs = new ArrayList<>();
                         for (Jibun jibunEntity : foundJibuns) {
