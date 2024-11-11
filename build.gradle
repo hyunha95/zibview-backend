@@ -95,6 +95,10 @@ dependencies {
     implementation 'net.coobird:thumbnailator:0.4.20'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.3'
+
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:33.3.1-jre'
+
 }
 
 sourceSets{
