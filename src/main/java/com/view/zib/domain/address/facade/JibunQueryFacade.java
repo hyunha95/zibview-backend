@@ -136,13 +136,8 @@ public class JibunQueryFacade {
         yearMonthRangeFrom.removeAll(registeredDealYearMonth);
 
         // 실거래가 정보 조회
-
-        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
-            for (String yearMonth : yearMonthRangeFrom) {
-                executorService.submit(fetchTransactionInfo(jibun, yearMonth));
-            }
-        } catch(Exception e) {
-            log.error("ExecutorService 에러 발생", e);
+        for (String yearMonth : yearMonthRangeFrom) {
+            Thread.ofVirtual().start(fetchTransactionInfo(jibun, yearMonth));
         }
 
         transactionApartments = transactionApartmentQueryFacade.findByJibunIdAndDealYearAfterAndExclusiveUseArea(jibunId, fromYear, exclusiveUseArea);
