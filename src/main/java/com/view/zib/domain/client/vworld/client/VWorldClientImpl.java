@@ -121,7 +121,7 @@ public class VWorldClientImpl implements VWorldClient {
                         .queryParam("DEAL_YMD", dealYmd)
                         .queryParam("serviceKey", apiProperties.getVWorld().getKey())
                         .queryParam("pageNo", "1")
-                        .queryParam("numOfRows", "1000")
+                        .queryParam("numOfRows", "10000")
                         .build())
                 .exchange((request, response) -> {
                     validateResponse(response);
