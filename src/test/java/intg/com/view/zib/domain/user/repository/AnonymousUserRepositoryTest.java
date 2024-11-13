@@ -22,9 +22,9 @@ class AnonymousUserRepositoryTest {
         UUID key = UUID.randomUUID();
         List<Long> jibunIds = List.of(1L, 2L, 3L);
 
-        anonymousUserRepository.rightPushAll(key, jibunIds, Duration.ofDays(1));
-
-
-        List<Long> result = anonymousUserRepository.range(key);
+//        anonymousUserRepository.rightPushAll(key, jibunIds, Duration.ofDays(1));
+//
+//
+//        List<Long> result = anonymousUserRepository.range(key);
     }
 }

@@ -102,6 +102,6 @@ dev-deploy:
     - ssh $UBUNTU_USER@$UBUNTU_HOST "docker pull $DOCKER_IMAGE_NAME"
     - ssh $UBUNTU_USER@$UBUNTU_HOST "docker stop $CONTAINER_NAME || true"
     - ssh $UBUNTU_USER@$UBUNTU_HOST "docker rm $CONTAINER_NAME || true"
-    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker run -d --name $CONTAINER_NAME -p 8080:8080 $DOCKER_IMAGE_NAME"
+    - ssh $UBUNTU_USER@$UBUNTU_HOST "docker run -d --restart always --name $CONTAINER_NAME -p 8080:8080 $DOCKER_IMAGE_NAME"
   after_script:
     - ssh-add -D

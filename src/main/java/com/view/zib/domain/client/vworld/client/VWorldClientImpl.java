@@ -23,13 +23,11 @@ import java.util.Optional;
 public class VWorldClientImpl implements VWorldClient {
 
     private final RestClient vworldRestClient;
-    private final RestClient officetelTransactionRestClient;
     private final ApiProperties apiProperties;
 
-    public VWorldClientImpl(RestClient vworldRestClient, RestClient officetelTransactionRestClient, ApiProperties apiProperties) {
+    public VWorldClientImpl(RestClient vworldRestClient, ApiProperties apiProperties) {
         this.vworldRestClient = vworldRestClient;
         this.apiProperties = apiProperties;
-        this.officetelTransactionRestClient = officetelTransactionRestClient;
     }
 
     @Override
