@@ -1,4 +1,4 @@
-package com.view.zib.domain.client.naver;
+package com.view.zib.domain.client.naver.enums;
 
 public enum Sort {
 

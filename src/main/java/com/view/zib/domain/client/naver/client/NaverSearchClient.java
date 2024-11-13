@@ -1,8 +1,9 @@
 package com.view.zib.domain.client.naver.client;
 
-import com.view.zib.domain.client.naver.Sort;
+import com.view.zib.domain.client.naver.dto.NaverNewsResponse;
+import com.view.zib.domain.client.naver.enums.Sort;
 
 public interface NaverSearchClient {
 
-    void searchNews(String query, int display, int start, Sort sort);
+    NaverNewsResponse searchNews(String query, int display, int start, Sort sort);
 }

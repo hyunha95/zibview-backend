@@ -22,7 +22,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     public final String[] whiteList = new String []{
-            "/api/jibuns/**", "/api/auth/**"
+            "/api/jibuns/**", "/api/auth/**", "/api/news/**"
     };
 
     @Bean
