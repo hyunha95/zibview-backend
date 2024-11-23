@@ -4,12 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://182.213.255.106:3306/zibview?serverTimezone=Asia/Seoul&rewriteBatchedStatements=true # &profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
-#    username: root
-#    password: dz3L7TgR1T+7JtT8KpFg/GrFf2baq/jBCIs8pLXaAsZUD3sOUGqJFaPImS4syc9L
-    url: jdbc:mysql://182.213.255.106:3306/zibview?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://182.213.255.106:3307/zibview?serverTimezone=Asia/Seoul&rewriteBatchedStatements=true # &profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
     username: root
-    password: SFcFu7KTAObkXhg4H1g4PEttawSYX6Z2/FFwmlp14ectK3KHOPmUXQCJVpV6jh8+
+    password: dz3L7TgR1T+7JtT8KpFg/GrFf2baq/jBCIs8pLXaAsZUD3sOUGqJFaPImS4syc9L
 
 
   data:
@@ -20,8 +17,12 @@ spring:
 
 logging:
   level:
+    tracer: trace
     org:
       springframework:
+        data:
+          elasticsearch:
+            core: trace
 #        jdbc: TRACE
 #        security: TRACE
 

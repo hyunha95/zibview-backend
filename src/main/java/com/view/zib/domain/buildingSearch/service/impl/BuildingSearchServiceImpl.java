@@ -2,6 +2,7 @@ package com.view.zib.domain.buildingSearch.service.impl;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import com.view.zib.domain.buildingSearch.document.BuildingSearch;
 import com.view.zib.domain.buildingSearch.service.BuildingSearchService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class BuildingSearchServiceImpl implements BuildingSearchService {
         MultiMatchQuery multiMatchQuery = new MultiMatchQuery.Builder()
                 .fields("addressSearchAsYouType", "buildingNameSearchAsYouType")
                 .query(query)
+                .type(TextQueryType.BoolPrefix)
                 .build();
 
         Query withQuery = new Query.Builder()

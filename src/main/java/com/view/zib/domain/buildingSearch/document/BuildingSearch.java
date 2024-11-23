@@ -1,10 +1,12 @@
 package com.view.zib.domain.buildingSearch.document;
 
 import jakarta.persistence.Id;
+import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@Data
 @Document(indexName = "building_search")
 public class BuildingSearch {
 
