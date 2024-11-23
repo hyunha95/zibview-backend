@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-prod:3306/zibview?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://182.213.255.106:3306/zibview?serverTimezone=Asia/Seoul
     username: root
-    password: 1234
+    password: SFcFu7KTAObkXhg4H1g4PEttawSYX6Z2/FFwmlp14ectK3KHOPmUXQCJVpV6jh8+
 
 logging:
   level:

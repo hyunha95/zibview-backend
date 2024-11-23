@@ -21,9 +21,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public final String[] whiteList = new String []{
-            "/api/jibuns/**", "/api/auth/**", "/api/news/**"
-    };
+//    public final String[] whiteList = new String []{
+//            "/api/jibuns/**", "/api/auth/**", "/api/news/**"
+//    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,8 +31,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(whiteList).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .exceptionHandling(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
