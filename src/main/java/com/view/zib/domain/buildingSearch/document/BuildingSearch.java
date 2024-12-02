@@ -10,7 +10,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Document(indexName = "building_search")
 public class BuildingSearch {
     @Id
-    private Long id;
+    private Long additionalInfoId;
+
+    @Field(type = FieldType.Keyword)
+    private String managementNo;
 
     @Field(type = FieldType.Keyword)
     private String buildingNameKeyword;

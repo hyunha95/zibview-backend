@@ -51,6 +51,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                 .join(roadNameAddress.roadNameCode, roadNameCode)
                 .join(roadNameAddress.locationBuilding, locationBuilding)
                 .where(
+                        jibun.representative,
                         addressAdditionalInfo.apartment,
                         locationBuilding.buildingName.isNotEmpty(),
                         locationBuilding.xCoordinate.goe(minX),

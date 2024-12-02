@@ -1,9 +1,6 @@
 package com.view.zib.domain.address.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +14,9 @@ public class AddressAdditionalInfo {
     @Column(name = "address_additional_info_id", nullable = false)
     private Long id;
 
-    @Size(max = 25)
-    @Column(name = "management_no", nullable = false, length = 25)
-    private String managementNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "management_no")
+    private Jibun jibun;
 
     @Size(max = 10)
     @Column(name = "hjd_code", length = 10)

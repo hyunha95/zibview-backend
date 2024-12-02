@@ -27,6 +27,11 @@ public class JibunQueryServiceImpl implements JibunQueryService {
     }
 
     @Override
+    public Jibun getJibunByManagementNo(String managementNo) {
+        return jibunRepository.getJibunByManagementNo(managementNo);
+    }
+
+    @Override
     public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds) {
         return jibunRepository.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
     }

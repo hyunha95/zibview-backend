@@ -38,6 +38,11 @@ public class JibunQueryController {
         return jibunQueryFacade.findJibunById(jibunId);
     }
 
+    @GetMapping("/management-no/{managementNo}")
+    public ApartmentResponse findJibunByManagementNo(@PathVariable String managementNo) {
+        return jibunQueryFacade.findJibunByManagementNo(managementNo);
+    }
+
     @GetMapping("/{jibunId}/transactions")
     public List<TransactionApartmentResponse> pastYearsTransactions(
             @PathVariable Long jibunId,

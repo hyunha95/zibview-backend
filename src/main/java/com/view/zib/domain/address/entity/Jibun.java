@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +29,12 @@ public class Jibun {
     @OneToMany(mappedBy = "jibun", fetch = FetchType.LAZY)
     private List<TransactionApartment> transactionApartments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "jibun", fetch = FetchType.LAZY)
+    private List<AddressAdditionalInfo> addressAdditionalInfos = new ArrayList<>();
+
     @Size(max = 25)
     @NotNull
-    @Column(name = "management_no", nullable = false, length = 25, insertable=false, updatable=false)
+    @Column(name = "management_no", nullable = false, length = 25)
     private String managementNo;
 
     @Size(max = 3)
@@ -71,8 +73,8 @@ public class Jibun {
     private Integer jibunSub;
 
     @Size(max = 1)
-    @Column(name = "representative_yn", length = 1)
-    private String representativeYn;
+    @Column(name = "representative", length = 1, columnDefinition = "tinyint(1)")
+    private boolean representative;
 
     /**
      * 시군구 코드

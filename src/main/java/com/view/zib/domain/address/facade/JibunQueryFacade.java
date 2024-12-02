@@ -25,9 +25,6 @@ import org.springframework.web.client.ResourceAccessException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -84,13 +81,7 @@ public class JibunQueryFacade {
         log.info("transactionApartments: time: {}ms", (end - start));
 
         return JibunSearchResponse.of(jibunSearchResultDTOS, transactionApartments);
-
     }
-
-    public List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber) {
-        return jibunQueryService.findByLegalDongCodeAndJibunNumber(legalDongCode, jibunNumber);
-    }
-
 
     /**
      * 지번 ID로 지번 정보 조회
@@ -105,12 +96,13 @@ public class JibunQueryFacade {
         }
 
         List<TransactionApartment> foundTransactionApartments = transactionApartmentQueryFacade.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
-
         return ApartmentResponse.from(jibun, foundTransactionApartments);
     }
 
-    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items) {
-        return jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
+    public ApartmentResponse findJibunByManagementNo(String managementNo) {
+        Jibun jibun = jibunQueryService.getJibunByManagementNo(managementNo);
+
+        return findJibunById(jibun.getId());
     }
 
     /**
@@ -170,6 +162,8 @@ public class JibunQueryFacade {
             }
         };
     }
+
+
 }
 
 

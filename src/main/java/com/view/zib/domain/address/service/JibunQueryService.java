@@ -11,6 +11,8 @@ import java.util.Set;
 public interface JibunQueryService {
     Jibun getById(Long jibunId);
 
+    Jibun getJibunByManagementNo(String managementNo);
+
     List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds);
 
     List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber);
@@ -20,4 +22,6 @@ public interface JibunQueryService {
     List<Jibun> findByIdIn(List<Long> jibunIds);
 
     List<JibunSearchResultDTO> findAddressInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY);
+
+
 }
