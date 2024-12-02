@@ -20,7 +20,7 @@ public class BuildingSearchServiceImpl implements BuildingSearchService {
 
     public SearchHits<BuildingSearch> searchAutocomplete(String query) {
         MultiMatchQuery multiMatchQuery = new MultiMatchQuery.Builder()
-                .fields("addressSearchAsYouType", "buildingNameSearchAsYouType")
+                .fields("buildingNameSearchAsYouType")
                 .query(query)
                 .type(TextQueryType.BoolPrefix)
                 .build();
@@ -38,7 +38,7 @@ public class BuildingSearchServiceImpl implements BuildingSearchService {
 
     public SearchHits<BuildingSearch> searchWithEdgeNgram(String query) {
         MultiMatchQuery multiMatchQuery = new MultiMatchQuery.Builder()
-                .fields("addressNgrams", "buildingNameNgrams")
+                .fields("buildingNameNgrams")
                 .query(query)
                 .build();
 

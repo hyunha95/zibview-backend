@@ -39,7 +39,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
             return ClientConfiguration.builder()
                     .connectedTo("182.213.255.106:9200")
                     .usingSsl(createSSLContext("certs/http_ca.crt"), (hostname, session) -> true) // 비활성화
-                    .withBasicAuth("elastic", "N6ytDUx8QeopL30NQ4sl")
+                    .withBasicAuth("elastic", "NDLJzdVt0f*BcydLL6uE")
                     .withConnectTimeout(Duration.ofSeconds(5))
                     .withSocketTimeout(Duration.ofSeconds(3))
                     .withDefaultHeaders(httpHeaders)

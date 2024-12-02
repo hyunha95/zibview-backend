@@ -5,12 +5,14 @@ import com.view.zib.domain.address.controller.response.JibunSearchResponse;
 import com.view.zib.domain.address.controller.response.TransactionApartmentResponse;
 import com.view.zib.domain.address.facade.JibunQueryFacade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/jibuns")
 @RestController
@@ -28,11 +30,7 @@ public class JibunQueryController {
             String anonymousUserUUID,
             @RequestParam(required = false) Integer zoomLevel
     ) {
-        long start = System.currentTimeMillis();
-        List<JibunSearchResponse> addressesInUtmk = jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
-        long end = System.currentTimeMillis();
-        System.out.println("searchByUtmk: " + (end - start) + "ms");
-        return addressesInUtmk;
+        return jibunQueryFacade.findAddressesInUtmk(minX, minY, maxX, maxY, zoomLevel, UUID.fromString(anonymousUserUUID));
     }
 
     @GetMapping("/{jibunId}")
