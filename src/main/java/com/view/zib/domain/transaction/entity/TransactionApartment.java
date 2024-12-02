@@ -3,6 +3,7 @@ package com.view.zib.domain.transaction.entity;
 import com.view.zib.domain.address.entity.Jibun;
 import com.view.zib.domain.client.vworld.dto.ApartmentTransactionResponse;
 import com.view.zib.global.jpa.TimeEntity;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -92,33 +93,27 @@ public class TransactionApartment extends TimeEntity {
     @Column(name = "jibun", length = 20)
     private String jibunNumber;
 
-    @Size(max = 22)
-    @Column(name = "exclusive_use_area", length = 22)
-    private String exclusiveUseArea;
+    @Column(name = "exclusive_use_area")
+    private BigDecimal exclusiveUseArea;
 
-    @Size(max = 4)
     @NotNull
-    @Column(name = "deal_year", nullable = false, length = 4)
-    private String dealYear;
+    @Column(name = "deal_year", nullable = false)
+    private Integer dealYear;
 
-    @Size(max = 2)
     @NotNull
-    @Column(name = "deal_month", nullable = false, length = 2)
-    private String dealMonth;
+    @Column(name = "deal_month", nullable = false)
+    private Integer dealMonth;
 
-    @Size(max = 2)
     @NotNull
-    @Column(name = "deal_day", nullable = false, length = 2)
-    private String dealDay;
+    @Column(name = "deal_day", nullable = false)
+    private Integer dealDay;
 
     @Size(max = 40)
     @NotNull
     @Column(name = "deal_amount", nullable = false, length = 40)
     private String dealAmount;
 
-    @Size(max = 10)
-    @Column(name = "floor", length = 10)
-    private String floor;
+    private Integer floor;
 
     @Size(max = 4)
     @Column(name = "built_year", length = 4)
@@ -167,7 +162,7 @@ public class TransactionApartment extends TimeEntity {
 
 
     public static TransactionApartment from (Jibun jibun, ApartmentTransactionResponse.Item item) {
-        return TransactionApartment.builder()
+        TransactionApartment transactionApartment = TransactionApartment.builder()
                 .jibun(jibun)
                 .sggCode(item.sggCd())
                 .emdCode(item.umdCd())
@@ -184,12 +179,12 @@ public class TransactionApartment extends TimeEntity {
                 .legalDongName(item.umdNm())
                 .apartmentName(item.aptNm())
                 .jibunNumber(item.jibun())
-                .exclusiveUseArea(item.excluUseAr())
-                .dealYear(item.dealYear())
-                .dealMonth(item.dealMonth())
-                .dealDay(item.dealDay())
+                .exclusiveUseArea(StringUtils.isNotBlank(item.excluUseAr()) ? new BigDecimal(item.excluUseAr()) : null)
+                .dealYear(Integer.parseInt(item.dealYear()))
+                .dealMonth(Integer.parseInt(item.dealMonth()))
+                .dealDay(Integer.parseInt(item.dealDay()))
                 .dealAmount(item.dealAmount())
-                .floor(item.floor())
+                .floor(Integer.parseInt(item.floor()))
                 .builtYear(item.buildYear())
                 .apartmentSeq(item.aptSeq())
                 .cancelDealType(item.cdealType())
@@ -202,6 +197,14 @@ public class TransactionApartment extends TimeEntity {
                 .buyerGbn(item.buyerGbn())
                 .landLeaseholdGbn(item.landLeaseholdGbn())
                 .build();
+
+        jibun.addEntity(transactionApartment);
+
+        return transactionApartment;
+    }
+
+    public static TransactionApartment from(ApartmentTransactionResponse.Item item) {
+        return from(null, item);
     }
 
     /**
@@ -218,6 +221,12 @@ public class TransactionApartment extends TimeEntity {
      * @return
      */
     public BigDecimal getExclusiveUseAreaInPyung() {
-        return new BigDecimal(this.exclusiveUseArea).multiply(BigDecimal.valueOf(0.3025)).setScale(0, RoundingMode.FLOOR);
+        return this.exclusiveUseArea.multiply(BigDecimal.valueOf(0.3025)).setScale(0, RoundingMode.FLOOR);
     }
+
+    public String getDealYearMonth() {
+        return this.dealYear.toString() + (this.dealMonth < 10 ? "0" + this.dealMonth : this.dealMonth);
+    }
+
+
 }

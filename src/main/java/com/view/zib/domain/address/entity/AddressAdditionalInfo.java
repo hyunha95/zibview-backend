@@ -50,7 +50,7 @@ public class AddressAdditionalInfo {
     private String sggBuildingName;
 
     @Size(max = 1)
-    @Column(name = "apartment_yn", length = 1)
-    private String apartmentYn;
+    @Column(name = "apartment", length = 1, columnDefinition = "tinyint(1)")
+    private boolean apartment;
 
 }

@@ -11,6 +11,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -19,9 +21,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public final String[] whiteList = new String []{
-            "/api/jibuns/**"
-    };
+//    public final String[] whiteList = new String []{
+//            "/api/jibuns/**", "/api/auth/**", "/api/news/**"
+//    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,8 +31,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(whiteList).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .exceptionHandling(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
@@ -41,7 +43,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "https://www.zibview.com/", "https://zibview.com/"));
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true);

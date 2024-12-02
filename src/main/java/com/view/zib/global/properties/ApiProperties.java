@@ -13,6 +13,7 @@ public class ApiProperties {
     private Juso juso;
     private KakaoAddress kakaoAddress;
     private KakaoMap kakaoMap;
+    private Naver naver;
 
     @Data
     public static class Zibview {
@@ -46,5 +47,13 @@ public class ApiProperties {
     public static class KakaoMap {
         @NotEmpty
         private String key;
+    }
+
+    @Data
+    public static class Naver {
+        @NotEmpty
+        private String clientId;
+        @NotEmpty
+        private String clientSecret;
     }
 }

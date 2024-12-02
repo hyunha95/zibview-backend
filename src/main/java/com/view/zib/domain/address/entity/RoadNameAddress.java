@@ -120,13 +120,13 @@ public class RoadNameAddress {
         sb.append(this.buildingMainNo);
         if (this.buildingSubNo > 0) sb.append("-").append(this.buildingSubNo);
 
-        if ("0".equals(roadNameCode.getEmdDivision()) && "1".equals(addressAdditionalInfo.getApartmentYn())) {
+        if ("0".equals(roadNameCode.getEmdDivision()) && addressAdditionalInfo.isApartment()) {
             if (!StringUtils.isBlank(addressAdditionalInfo.getSggBuildingName())) {
                 sb.append("(").append(addressAdditionalInfo.getSggBuildingName()).append(")");
             }
-        } else if ("1".equals(roadNameCode.getEmdDivision()) && "0".equals(addressAdditionalInfo.getApartmentYn())) {
+        } else if ("1".equals(roadNameCode.getEmdDivision()) && !addressAdditionalInfo.isApartment()) {
             sb.append("(").append(roadNameCode.getEmdName()).append(")");
-        } else if ("1".equals(roadNameCode.getEmdDivision()) && "1".equals(addressAdditionalInfo.getApartmentYn())) {
+        } else if ("1".equals(roadNameCode.getEmdDivision()) && addressAdditionalInfo.isApartment()) {
             sb.append("(").append(roadNameCode.getEmdName());
             if (!StringUtils.isBlank(addressAdditionalInfo.getSggBuildingName())) {
                 sb.append(",").append(addressAdditionalInfo.getSggBuildingName());

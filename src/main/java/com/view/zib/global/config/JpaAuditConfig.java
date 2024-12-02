@@ -3,6 +3,7 @@ package com.view.zib.global.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -16,6 +17,10 @@ public class JpaAuditConfig implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.of("visitor");
+        }
+
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
             return Optional.empty();
 //            throw new IllegalStateException("No JWT token found in security context");

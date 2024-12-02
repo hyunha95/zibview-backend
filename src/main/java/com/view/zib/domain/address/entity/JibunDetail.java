@@ -1,6 +1,7 @@
 package com.view.zib.domain.address.entity;
 
 import com.view.zib.domain.client.vworld.dto.VWorldResponseDto;
+import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,10 @@ public class JibunDetail extends BaseEntity {
     private Jibun jibun;
 
     @Size(max = 100)
+    @Column(name = "apartment_name", length = 100)
+    private String apartmentName;
+
+    @Size(max = 100)
     @Column(name = "main_purpose_code_name", length = 100)
     private String mainPurposeCodeName;
 
@@ -45,12 +50,12 @@ public class JibunDetail extends BaseEntity {
     private String roofCode;
 
     @Size(max = 100)
-    @Column(name = "root_code_name", length = 100)
-    private String rootCodeName;
+    @Column(name = "roof_code_name", length = 100)
+    private String roofCodeName;
 
     @Size(max = 500)
-    @Column(name = "etc_root_name", length = 500)
-    private String etcRootName;
+    @Column(name = "etc_roof_name", length = 500)
+    private String etcRoofName;
 
     @Column(name = "house_hold_count")
     private Integer houseHoldCount;
@@ -106,6 +111,9 @@ public class JibunDetail extends BaseEntity {
     @Column(name = "earthquake_resistant_ability", length = 200)
     private String earthquakeResistantAbility;
 
+    @Column(name = "built_year")
+    private Integer builtYear;
+
     public static JibunDetail of(Jibun jibun, VWorldResponseDto.Item item) {
         return JibunDetail.builder()
                 .jibun(jibun)
@@ -113,8 +121,8 @@ public class JibunDetail extends BaseEntity {
                 .mainPurposeCode(item.mainPurposeCode())
                 .etcPurposeName(item.etcPurposeName())
                 .roofCode(item.roofCode())
-                .rootCodeName(item.rootCodeName())
-                .etcRootName(item.etcRootName())
+                .roofCodeName(item.rootCodeName())
+                .etcRoofName(item.etcRootName())
                 .houseHoldCount(item.houseHoldCount())
                 .familyCount(item.familyCount())
                 .height(item.height())
@@ -133,5 +141,13 @@ public class JibunDetail extends BaseEntity {
                 .earthquakeResistant(item.earthquakeResistant())
                 .earthquakeResistantAbility(item.earthquakeResistantAbility())
                 .build();
+    }
+
+    public void updateBuiltYear(int builtYear) {
+        this.builtYear = builtYear;
+    }
+
+    public void updateAparmentName(String apartmentName) {
+        this.apartmentName = apartmentName;
     }
 }

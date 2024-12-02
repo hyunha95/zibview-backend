@@ -31,7 +31,7 @@ class AddressJdbcClientImplTest {
         String addressId = "00000778-7e72-4840-91dc-45ee87fa2520";
 
         // when
-        Address lockedAddress = addressRepository.getByIdForUpdate(addressId).get();
+//        Address lockedAddress = addressRepository.getByIdForUpdate(addressId).get();
 
         Optional<Address> skipLockedAddress = addressJdbcClient.getByIdForUpdateSkipLocked(addressId);
 

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://182.213.255.106:3307/zibview?serverTimezone=Asia/Seoul&rewriteBatchedStatements=true # &profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    username: root
+    password: dz3L7TgR1T+7JtT8KpFg/GrFf2baq/jBCIs8pLXaAsZUD3sOUGqJFaPImS4syc9L
+
+
+  data:
+    redis:
+      host: 182.213.255.106
+      port: 6379
+      password: acb266f414f238c7f52286e6f887d14a099ce5cbdf66955ff66bfa06a3e52073
+
+logging:
+  level:
+    tracer: trace
+    org:
+      springframework:
+        data:
+          elasticsearch:
+            core: trace
+#        jdbc: TRACE
+#        security: TRACE
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+okta:
+  oauth2:
+    issuer: "https://dev-yqvrvh36brvqbhfs.jp.auth0.com/"
+    client-id: "QDbCe5lwg9082thCdd3UtGztaByOUvGW"
+    client-secret: "v4eI3Mfqh_PNgp3dAjx0senLINkBaqTpv1r0fiLrhwZMm9B9gSLlD-x7ZxEXiaHN"
+    audience: "http://172.30.1.11:8080"
+
+storage:
+  root-path: "/home/hyunha/dev/assets"
+

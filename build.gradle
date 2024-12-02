@@ -48,9 +48,11 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:mysql'
 
+    testImplementation 'org.testcontainers:mysql'
     runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
     // =============================
     // = lombok
@@ -89,11 +91,15 @@ dependencies {
 
     implementation 'commons-collections:commons-collections:3.2.2'
 
-    implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2' // 4.1.x 중 최신 버전을 선택
+//    implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2' // 4.1.x 중 최신 버전을 선택
 
     implementation 'net.coobird:thumbnailator:0.4.20'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.3'
+
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:33.3.1-jre'
+
 }
 
 sourceSets{

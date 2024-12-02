@@ -53,4 +53,17 @@ public class HttpInterfaceConfig {
                 .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
+
+    @Bean("naverSearchRestClient")
+    public RestClient naverSearchRestClient(RestClient.Builder builder) {
+        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory("https://openapi.naver.com/v1/search/news.json");
+            uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+
+        return builder
+                .uriBuilderFactory(uriBuilderFactory)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader("X-Naver-Client-Id", apiProperties.getNaver().getClientId())
+                .defaultHeader("X-Naver-Client-Secret", apiProperties.getNaver().getClientSecret())
+                .build();
+    }
 }

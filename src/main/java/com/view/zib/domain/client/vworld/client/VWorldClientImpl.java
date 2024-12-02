@@ -8,6 +8,7 @@ import com.view.zib.global.properties.ApiProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -22,19 +23,23 @@ import java.util.Optional;
 public class VWorldClientImpl implements VWorldClient {
 
     private final RestClient vworldRestClient;
-    private final RestClient officetelTransactionRestClient;
     private final ApiProperties apiProperties;
 
-    public VWorldClientImpl(RestClient vworldRestClient, RestClient officetelTransactionRestClient, ApiProperties apiProperties) {
+    public VWorldClientImpl(RestClient vworldRestClient, ApiProperties apiProperties) {
         this.vworldRestClient = vworldRestClient;
         this.apiProperties = apiProperties;
-        this.officetelTransactionRestClient = officetelTransactionRestClient;
     }
 
     @Override
-    public Optional<VWorldResponseDto> searchJibunDetail(String ssgCd, String bjdCd, int jibun, int subJibun) {
+    public Optional<VWorldResponseDto> searchJibunDetail(String legalDongCode, int jibun, int subJibun) {
+        Assert.notNull(legalDongCode, "legalDongCode must not be null");
+
+        String ssgCd = legalDongCode.substring(0, 5);
+        String bjdCd = legalDongCode.substring(5, 10);
+
         return vworldRestClient.get()
                 .uri(uriBuilder -> uriBuilder
+                        .path("/BldRgstService_v2/getBrTitleInfo")
                         .queryParam(encode("serviceKey"), apiProperties.getVWorld().getKey())
                         .queryParam(encode("sigunguCd"), encode(ssgCd))
                         .queryParam(encode("bjdongCd"), encode(bjdCd))
@@ -79,27 +84,25 @@ public class VWorldClientImpl implements VWorldClient {
      * 국토교통부_오피스텔 전월세 실거래가 자료
      * https://www.data.go.kr/data/15126475/openapi.do#/API%20%EB%AA%A9%EB%A1%9D/getRTMSDataSvcOffiRent
      */
-    @Override
-    public Optional<OfficeTelTransactionClientDTO> getRTMSDataSvcOffiRent(String legalDongCode, String dealYmd) {
-        log.info("[VWORLD] 국토교통부_오피스텔 전월세 실거래가 자료 조회 시작 legalDongCode: [{}], dealYmd: [{}]", legalDongCode, dealYmd);
-        String lawdCd = legalDongCode.substring(0, 5);
-
-
-
-        return officetelTransactionRestClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("LAWD_CD", lawdCd)
-                        .queryParam("DEAL_YMD", dealYmd)
-                        .queryParam("serviceKey", apiProperties.getVWorld().getKey())
-                        .queryParam("pageNo", "1")
-                        .queryParam("numOfRows", "1000")
-                        .build())
-                .exchange((request, response) -> {
-                    validateResponse(response);
-                    return getOfficeTelTransactionClientDTO(response);
-                });
-    }
+//    @Override
+//    public Optional<OfficeTelTransactionClientDTO> getRTMSDataSvcOffiRent(String legalDongCode, String dealYmd) {
+//        log.info("[VWORLD] 국토교통부_오피스텔 전월세 실거래가 자료 조회 시작 legalDongCode: [{}], dealYmd: [{}]", legalDongCode, dealYmd);
+//        String lawdCd = legalDongCode.substring(0, 5);
+//
+//        return officetelTransactionRestClient
+//                .get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .queryParam("LAWD_CD", lawdCd)
+//                        .queryParam("DEAL_YMD", dealYmd)
+//                        .queryParam("serviceKey", apiProperties.getVWorld().getKey())
+//                        .queryParam("pageNo", "1")
+//                        .queryParam("numOfRows", "1000")
+//                        .build())
+//                .exchange((request, response) -> {
+//                    validateResponse(response);
+//                    return getOfficeTelTransactionClientDTO(response);
+//                });
+//    }
 
     /**
      * 국토교통부_아파트 매매 실거래가 상세 자료
@@ -107,7 +110,7 @@ public class VWorldClientImpl implements VWorldClient {
      */
     @Override
     public Optional<ApartmentTransactionResponse> getRTMSDataSvcAptTradeDev(String sggCode, String dealYmd) {
-        log.info("[VWORLD] 국토교통부_오피스텔 전월세 실거래가 상세 자료 조회 시작 sggCode: [{}], dealYmd: [{}]", sggCode, dealYmd);
+        log.info("[VWORLD] 국토교통부_아파트 매매 실거래가 상세 자료 조회 시작 sggCode: [{}], dealYmd: [{}]", sggCode, dealYmd);
 
         return vworldRestClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -116,7 +119,7 @@ public class VWorldClientImpl implements VWorldClient {
                         .queryParam("DEAL_YMD", dealYmd)
                         .queryParam("serviceKey", apiProperties.getVWorld().getKey())
                         .queryParam("pageNo", "1")
-                        .queryParam("numOfRows", "1000")
+                        .queryParam("numOfRows", "10000")
                         .build())
                 .exchange((request, response) -> {
                     validateResponse(response);

@@ -2,11 +2,13 @@ package com.view.zib.domain.address.controller.response;
 
 import com.view.zib.domain.address.repository.dto.JibunSearchResultDTO;
 import com.view.zib.domain.transaction.entity.TransactionApartment;
+import com.view.zib.domain.transaction.hash.TransactionApartmentHash;
 import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,7 @@ public record JibunSearchResponse(
 ) {
 
 
-    public static JibunSearchResponse from(JibunSearchResultDTO jibunSearchResultDTO, TransactionApartment transactionApartment) {
+    public static JibunSearchResponse from(JibunSearchResultDTO jibunSearchResultDTO, TransactionApartmentHash transactionApartment) {
 
         return JibunSearchResponse.builder()
                 .jibunId(jibunSearchResultDTO.getJibunId())
@@ -52,11 +54,13 @@ public record JibunSearchResponse(
                 .build();
     }
 
-    public static List<JibunSearchResponse> of(List<JibunSearchResultDTO> jibunSearchResultDTOS, List<TransactionApartment> transactionApartments) {
-        Map<Long, TransactionApartment> transactionApartmentsByJibunId = transactionApartments.stream()
+    public static List<JibunSearchResponse> of(List<JibunSearchResultDTO> jibunSearchResultDTOS, List<TransactionApartmentHash> transactionApartments) {
+        Map<Long, TransactionApartmentHash> transactionApartmentsByJibunId = transactionApartments.stream()
                 .collect(Collectors.toMap(
-                        transactionApartment -> transactionApartment.getJibun().getId(),
-                        Function.identity()));
+                        TransactionApartmentHash::getJibunId,
+                        Function.identity(),
+                        (a, b) -> a)
+                );
 
         return jibunSearchResultDTOS.stream()
                 .filter(dto -> transactionApartmentsByJibunId.containsKey(dto.getJibunId()))

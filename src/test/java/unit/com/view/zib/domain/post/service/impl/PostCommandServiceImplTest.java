@@ -18,21 +18,21 @@ class PostCommandServiceImplTest {
 
     private FakeImageRepository fakeImageRepository = new FakeImageRepository();
 
-    @BeforeEach
-    void init() {
-        FakeUserRepository fakeUserRepository = new FakeUserRepository();
+//    @BeforeEach
+//    void init() {
+//        FakeUserRepository fakeUserRepository = new FakeUserRepository();
+//
+//        fakeUserRepository.save(User.builder().build());
 
-        fakeUserRepository.save(User.builder().build());
-
-        postCommandService = PostCommandServiceImpl.builder()
-                .userService(new FakeUserService(fakeUserRepository))
-                .postRepository(new FakePostRepository())
-                .userAddressRepository(new FakeUserAddressRepository())
-                .authService(new FakeAuthService())
-                .addressRepository(new FakeAddressRepository())
-                .imageRepository(fakeImageRepository)
-                .build();
-    }
+//        postCommandService = PostCommandServiceImpl.builder()
+//                .userService(new FakeUserService(fakeUserRepository))
+//                .postRepository(new FakePostRepository())
+//                .userAddressRepository(new FakeUserAddressRepository())
+//                .authService(new FakeAuthService())
+//                .addressRepository(new FakeAddressRepository())
+//                .imageRepository(fakeImageRepository)
+//                .build();
+//    }
 
     @Test
     void testCreateShouldSuccess() {
