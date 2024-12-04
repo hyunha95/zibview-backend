@@ -33,6 +33,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
         List<JibunSearchResultDTO> result = jpaQueryFactory.select(Projections.fields(
                         JibunSearchResultDTO.class,
                         jibun.id.as("jibunId"),
+                        jibun.managementNo,
                         jibun.sidoName,
                         jibun.sggName,
                         jibun.emdName,

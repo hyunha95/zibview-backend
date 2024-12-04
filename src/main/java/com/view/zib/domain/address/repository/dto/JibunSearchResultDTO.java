@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Setter
 public class JibunSearchResultDTO {
     private Long jibunId;
+    private String managementNo;
     private String sidoName;
     private String sggName;
     private String emdName;
