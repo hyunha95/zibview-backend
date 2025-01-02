@@ -1,6 +1,5 @@
 package com.view.zib.domain.transaction.repository;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.view.zib.domain.transaction.entity.TransactionApartment;
 import com.view.zib.domain.transaction.hash.TransactionApartmentHash;
@@ -12,15 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.*;
 
 @Slf4j
@@ -52,20 +48,20 @@ public class TransactionApartmentRepository {
         transactionApartmentJdbcTemplate.bulkInsert(newTransactionApartments);
     }
 
-    public List<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, int year, List<Integer> months) {
+    public List<TransactionApartmentHash> findByJibunIdInAndDealYearAndDealMonth(Set<Long> jibunIds, List<java.time.YearMonth> yearMonths) {
 
         List<TransactionApartmentHash> transactionApartmentHashes = new ArrayList<>();
-        for (Integer month : months) {
+        for (YearMonth yearMonth : yearMonths) {
             List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
                 for (Long jibunId : jibunIds) {
-                    String key = "transactionApartment:" + jibunId + ":" + year + ":" + month;
+                    String key = "transactionApartment:" + jibunId + ":" + yearMonth.getYear() + ":" + yearMonth.getMonthValue();
                     connection.hashCommands().hGetAll(key.getBytes());
                 }
                 return null;
             });
 
             List<TransactionApartmentHash> results = objects.stream()
-                    .filter(o -> !((LinkedHashMap) o).isEmpty())
+                    .filter(o -> !((LinkedHashMap<?, ?>) o).isEmpty())
                     .map(o -> objectMapper.convertValue(o, TransactionApartmentHash.class))
                     .toList();
             transactionApartmentHashes.addAll(results);

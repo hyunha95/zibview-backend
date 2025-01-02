@@ -24,6 +24,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,16 @@ public class JibunQueryFacade {
         anonymousUserCommandFacade.addSet(anonymousUserUUID, foundJibunIds);
 
         LocalDate now = LocalDate.now();
+        LocalDate prevMonth = now.minusMonths(1);
         start = System.currentTimeMillis();
-        List<TransactionApartmentHash> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInAndDealYearAndDealMonth(foundJibunIds, now.getYear(), List.of(now.getMonth().getValue(), now.minusMonths(1).getMonthValue()));
+
+
+        List<TransactionApartmentHash> transactionApartments =
+                transactionApartmentQueryFacade.findByJibunIdInAndDealYearAndDealMonth(
+                        foundJibunIds,
+                        List.of(YearMonth.of(prevMonth.getYear(), prevMonth.getMonthValue()),
+                                YearMonth.of(now.getYear(), now.getMonthValue()))
+                );
         long end = System.currentTimeMillis();
         log.info("transactionApartments: time: {}ms", (end - start));
 
