@@ -20,7 +20,6 @@ public class JibunQueryController {
 
     private final JibunQueryFacade jibunQueryFacade;
 
-
     @GetMapping("/search-by-utmk")
     public List<JibunSearchResponse> searchByUtmk(
             BigDecimal minX,

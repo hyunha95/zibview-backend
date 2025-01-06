@@ -58,19 +58,11 @@ public class JibunQueryFacade {
      * @return
      */
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, int zoomLevel, UUID anonymousUserUUID) {
-        List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
-
         long start = System.currentTimeMillis();
         Set<Long> searchedJibunIds = anonymousUserQueryFacade.members(anonymousUserUUID);
         log.info("took {}ms to get searchedJibunIds", System.currentTimeMillis() - start);
 
-        // 줌 레벨 별로 지번 정보 조회
-//        if (zoomLevel < 15) {
-//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
-//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
-//        } else {
-            jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, searchedJibunIds); //searchedJibunIds
-//        }
+        List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, searchedJibunIds); //searchedJibunIds
 
         Set<Long> foundJibunIds = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).collect(Collectors.toSet());
         anonymousUserCommandFacade.addSet(anonymousUserUUID, foundJibunIds);

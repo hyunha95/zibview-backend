@@ -50,4 +50,11 @@ public class AddressAdditionalInfo {
     @Column(name = "apartment", length = 1, columnDefinition = "tinyint(1)")
     private boolean apartment;
 
+    @Size(max = 1)
+    @Column(name = "representative", length = 1, columnDefinition = "tinyint(1)")
+    private boolean representative;
+
+    public String getNotEmptyBuildingName() {
+        return buildingName.isBlank() ? sggBuildingName : buildingName;
+    }
 }
