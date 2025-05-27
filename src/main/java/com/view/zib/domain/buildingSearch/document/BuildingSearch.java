@@ -6,11 +6,16 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.math.BigDecimal;
+
 @Data
 @Document(indexName = "building_search")
 public class BuildingSearch {
     @Id
-    private Long id;
+    private Long additionalInfoId;
+
+    @Field(type = FieldType.Keyword)
+    private String managementNo;
 
     @Field(type = FieldType.Keyword)
     private String buildingNameKeyword;
@@ -23,4 +28,10 @@ public class BuildingSearch {
 
     @Field(type = FieldType.Keyword)
     private String dongNameWithBuildingName;
+
+    @Field(type = FieldType.Keyword)
+    private BigDecimal xCoordinate;
+
+    @Field(type = FieldType.Keyword)
+    private BigDecimal yCoordinate;
 }

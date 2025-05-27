@@ -23,6 +23,11 @@ public class JibunRepository {
                 .orElseThrow(() -> new ResourceNotFoundException("Jibun", jibunId));
     }
 
+    public Jibun getJibunByManagementNo(String managementNo) {
+        return jibunJpaRepository.findJByManagementNoAndRepresentativeIsTrue(managementNo)
+                .orElseThrow(() -> new ResourceNotFoundException("Jibun", managementNo));
+    }
+
     public List<JibunSearchResultDTO> findAddressesInUtmkAndNotInJibunIds(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, Set<Long> jibunIds) {
         return jibunJpaRepository.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, jibunIds);
     }

@@ -33,6 +33,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
         List<JibunSearchResultDTO> result = jpaQueryFactory.select(Projections.fields(
                         JibunSearchResultDTO.class,
                         jibun.id.as("jibunId"),
+                        jibun.managementNo,
                         jibun.sidoName,
                         jibun.sggName,
                         jibun.emdName,
@@ -51,6 +52,7 @@ public class JibunCustomRepositoryImpl implements JibunCustomRepository {
                 .join(roadNameAddress.roadNameCode, roadNameCode)
                 .join(roadNameAddress.locationBuilding, locationBuilding)
                 .where(
+                        jibun.representative,
                         addressAdditionalInfo.apartment,
                         locationBuilding.buildingName.isNotEmpty(),
                         locationBuilding.xCoordinate.goe(minX),

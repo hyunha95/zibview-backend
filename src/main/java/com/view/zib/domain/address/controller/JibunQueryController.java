@@ -20,7 +20,6 @@ public class JibunQueryController {
 
     private final JibunQueryFacade jibunQueryFacade;
 
-
     @GetMapping("/search-by-utmk")
     public List<JibunSearchResponse> searchByUtmk(
             BigDecimal minX,
@@ -36,6 +35,11 @@ public class JibunQueryController {
     @GetMapping("/{jibunId}")
     public ApartmentResponse findJibunById(@PathVariable Long jibunId) {
         return jibunQueryFacade.findJibunById(jibunId);
+    }
+
+    @GetMapping("/management-no/{managementNo}")
+    public ApartmentResponse findJibunByManagementNo(@PathVariable String managementNo) {
+        return jibunQueryFacade.findJibunByManagementNo(managementNo);
     }
 
     @GetMapping("/{jibunId}/transactions")

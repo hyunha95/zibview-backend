@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface JibunJpaRepository extends JpaRepository<Jibun, Long>, JibunCustomRepository {
+
+    Optional<Jibun> findJByManagementNoAndRepresentativeIsTrue(String managementNo);
 
     @Query("SELECT j FROM Jibun j WHERE j.legalDongCode = :legalDongCode AND j.jibunMain = :jibunMain AND j.jibunSub = :jibunSub")
     List<Jibun> findByLegalDongCodeAndJibunMainAndJibunSub(String legalDongCode, String jibunMain, String jibunSub);

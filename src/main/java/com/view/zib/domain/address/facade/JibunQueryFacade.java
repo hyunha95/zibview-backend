@@ -24,10 +24,8 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -60,37 +58,31 @@ public class JibunQueryFacade {
      * @return
      */
     public List<JibunSearchResponse> findAddressesInUtmk(BigDecimal minX, BigDecimal minY, BigDecimal maxX, BigDecimal maxY, int zoomLevel, UUID anonymousUserUUID) {
-        List<JibunSearchResultDTO> jibunSearchResultDTOS = new ArrayList<>();
-
         long start = System.currentTimeMillis();
         Set<Long> searchedJibunIds = anonymousUserQueryFacade.members(anonymousUserUUID);
         log.info("took {}ms to get searchedJibunIds", System.currentTimeMillis() - start);
 
-        // 줌 레벨 별로 지번 정보 조회
-//        if (zoomLevel < 15) {
-//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
-//            jibunSearchResultDTOS = jibunQueryService.findAddressInUtmk(minX, minY, maxX, maxY);
-//        } else {
-            jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, searchedJibunIds); //searchedJibunIds
-//        }
+        List<JibunSearchResultDTO> jibunSearchResultDTOS = jibunQueryService.findAddressesInUtmkAndNotInJibunIds(minX, minY, maxX, maxY, searchedJibunIds); //searchedJibunIds
 
         Set<Long> foundJibunIds = jibunSearchResultDTOS.stream().map(JibunSearchResultDTO::getJibunId).collect(Collectors.toSet());
         anonymousUserCommandFacade.addSet(anonymousUserUUID, foundJibunIds);
 
         LocalDate now = LocalDate.now();
+        LocalDate prevMonth = now.minusMonths(1);
         start = System.currentTimeMillis();
-        List<TransactionApartmentHash> transactionApartments = transactionApartmentQueryFacade.findByJibunIdInAndDealYearAndDealMonth(foundJibunIds, now.getYear(), List.of(now.getMonth().getValue(), now.minusMonths(1).getMonthValue()));
+
+
+        List<TransactionApartmentHash> transactionApartments =
+                transactionApartmentQueryFacade.findByJibunIdInAndDealYearAndDealMonth(
+                        foundJibunIds,
+                        List.of(YearMonth.of(prevMonth.getYear(), prevMonth.getMonthValue()),
+                                YearMonth.of(now.getYear(), now.getMonthValue()))
+                );
         long end = System.currentTimeMillis();
         log.info("transactionApartments: time: {}ms", (end - start));
 
         return JibunSearchResponse.of(jibunSearchResultDTOS, transactionApartments);
-
     }
-
-    public List<Jibun> findByLegalDongCodeAndJibunNumber(String legalDongCode, String jibunNumber) {
-        return jibunQueryService.findByLegalDongCodeAndJibunNumber(legalDongCode, jibunNumber);
-    }
-
 
     /**
      * 지번 ID로 지번 정보 조회
@@ -105,12 +97,13 @@ public class JibunQueryFacade {
         }
 
         List<TransactionApartment> foundTransactionApartments = transactionApartmentQueryFacade.findByJibunIdGroupByExclusiveUseAreaOrderByYMD(jibunId);
-
         return ApartmentResponse.from(jibun, foundTransactionApartments);
     }
 
-    public List<Jibun> findByMultipleLegalDongCodeAndJibunNumber(List<ApartmentTransactionResponse.Item> items) {
-        return jibunQueryService.findByMultipleLegalDongCodeAndJibunNumber(items);
+    public ApartmentResponse findJibunByManagementNo(String managementNo) {
+        Jibun jibun = jibunQueryService.getJibunByManagementNo(managementNo);
+
+        return findJibunById(jibun.getId());
     }
 
     /**
@@ -170,6 +163,8 @@ public class JibunQueryFacade {
             }
         };
     }
+
+
 }
 
 
