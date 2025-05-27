@@ -26,10 +26,10 @@ management:
 
 okta:
   oauth2:
-    issuer: "https://dev-yqvrvh36brvqbhfs.jp.auth0.com/"
-    client-id: "QDbCe5lwg9082thCdd3UtGztaByOUvGW"
-    client-secret: "v4eI3Mfqh_PNgp3dAjx0senLINkBaqTpv1r0fiLrhwZMm9B9gSLlD-x7ZxEXiaHN"
-    audience: "http://172.30.1.11:8080"
+    issuer:
+    client-id:
+    client-secret:
+    audience:
 
 storage:
   root-path: "/home/hyunha/dev/assets"
